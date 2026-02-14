@@ -1,0 +1,206 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://finalstatepress.com/schemas/dita-plan/v1",
+  "title": "DITA Package Processing Plan",
+  "description": "Deterministic execution plan derived from discovery output. This document defines exactly what actions will be evaluated by the execution layer, in what form, and for what reason.",
+  "type": "object",
+
+  "required": [
+    "plan_version",
+    "generated_at",
+    "source_discovery",
+    "intent",
+    "actions"
+  ],
+
+  "additionalProperties": false,
+
+  "properties": {
+    "plan_version": {
+      "type": "integer",
+      "const": 1,
+      "description": "Version identifier for the plan schema. This value is frozen to guarantee forward and backward compatibility."
+    },
+
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp indicating when this plan was generated."
+    },
+
+    "source_discovery": {
+      "type": "object",
+      "description": "Provenance information describing the discovery artifact from which this plan was derived.",
+      "required": ["path", "schema_version", "artifact_count"],
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Path to the discovery artifact used as input when generating this plan."
+        },
+        "schema_version": {
+          "type": "integer",
+          "description": "Schema version of the discovery contract used to generate this plan."
+        },
+        "artifact_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of artifacts present in the discovery inventory at plan time."
+        }
+      }
+    },
+
+    "intent": {
+      "type": "object",
+      "description": "High-level intent describing the purpose of this plan. Intent influences which actions are generated and how they are interpreted.",
+      "required": ["target", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Declared execution target or use case for this plan.",
+          "enum": [
+            "heretto_ccms_ingestion",
+            "dita_normalization",
+            "analysis_only"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable explanation of why this plan was generated."
+        }
+      }
+    },
+
+    "actions": {
+      "type": "array",
+      "description": "Ordered list of deterministic actions to be evaluated during execution.",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/action"
+      }
+    },
+
+    "invariants": {
+      "type": "array",
+      "description": "Optional list of invariants that must remain true across execution. Used for auditing and validation.",
+      "items": {
+        "$ref": "#/$defs/invariant"
+      },
+      "default": []
+    }
+  },
+
+  "$defs": {
+    "actionType": {
+      "type": "string",
+      "description": "Frozen set of allowed plan action types. This enum defines the full vocabulary understood by the execution layer.",
+      "enum": [
+        "copy_map",
+        "copy_topic",
+        "copy_media",
+        "select_main_map",
+        "rename_artifact",
+        "reparent_topic",
+        "exclude_artifact",
+        "noop"
+      ]
+    },
+
+    "copyParameters": {
+      "type": "object",
+      "description": "Parameter contract for copy-style actions. Both paths must be package-relative.",
+      "required": ["source_path", "target_path"],
+      "additionalProperties": false,
+      "properties": {
+        "source_path": {
+          "type": "string",
+          "description": "Package-relative path to the source artifact."
+        },
+        "target_path": {
+          "type": "string",
+          "description": "Package-relative path indicating where the artifact should be copied."
+        }
+      }
+    },
+
+    "action": {
+      "type": "object",
+      "description": "Single deterministic execution action. Each action is evaluated independently by the execution layer.",
+      "required": ["id", "type", "target", "reason"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for this action within the plan."
+        },
+
+        "type": {
+          "$ref": "#/$defs/actionType",
+          "description": "Action type determining which execution handler will process this action."
+        },
+
+        "target": {
+          "type": "string",
+          "description": "Primary package-relative path this action operates on."
+        },
+
+        "parameters": {
+          "type": "object",
+          "description": "Optional action-specific parameters. Structure is determined by the action type."
+        },
+
+        "reason": {
+          "type": "string",
+          "description": "Human-readable justification for why this action exists."
+        },
+
+        "derived_from_evidence": {
+          "type": "array",
+          "description": "Optional list of evidence identifiers from discovery that led to this action being generated.",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        }
+      },
+
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": ["copy_map", "copy_topic", "copy_media"]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "parameters": {
+                "$ref": "#/$defs/copyParameters"
+              }
+            },
+            "required": ["parameters"]
+          }
+        }
+      ]
+    },
+
+    "invariant": {
+      "type": "object",
+      "description": "Declarative invariant that must remain true across execution. Used for auditing, validation, or future enforcement.",
+      "required": ["id", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the invariant."
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable statement describing the invariant."
+        }
+      }
+    }
+  }
+}

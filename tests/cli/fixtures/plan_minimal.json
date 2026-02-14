@@ -1,0 +1,24 @@
+{
+  "plan_version": 1,
+  "generated_at": "2026-01-01T00:00:00Z",
+  "source_discovery": {
+    "path": "discovery.json",
+    "schema_version": 1,
+    "artifact_count": 1
+  },
+  "intent": {
+    "target": "analysis_only",
+    "description": "Minimal plan fixture for CLI and loader tests"
+  },
+  "actions": [
+    {
+      "id": "noop-001",
+      "type": "noop",
+      "target": "index.ditamap",
+      "reason": "Minimal no-op action for test coverage",
+      "parameters": {},
+      "derived_from_evidence": []
+    }
+  ],
+  "invariants": []
+}

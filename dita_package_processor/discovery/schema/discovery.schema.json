@@ -1,0 +1,232 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://finalstatepress.com/schemas/dita-discovery/v2",
+  "title": "DITA Package Discovery Contract",
+  "description": "Stable discovery contract describing the observable structure of a DITA package. Artifacts represent files, the graph represents structural truth, and relationships are a backward-compatible projection of graph edges.",
+  "type": "object",
+
+  "required": ["artifacts", "relationships", "graph", "summary"],
+  "additionalProperties": false,
+
+  "properties": {
+    "artifacts": {
+      "type": "array",
+      "description": "Complete inventory of discovered package artifacts, including maps, topics, and media files.",
+      "minItems": 0,
+      "items": {
+        "$ref": "#/$defs/artifact"
+      }
+    },
+
+    "relationships": {
+      "type": "array",
+      "description": "Backward-compatible flat list of structural relationships. This is an alias of graph.edges and exists to support legacy consumers.",
+      "items": {
+        "$ref": "#/$defs/edge"
+      }
+    },
+
+    "graph": {
+      "type": "object",
+      "description": "Canonical structural graph of the package. Nodes represent semantic artifacts, and edges represent directed relationships between them.",
+      "required": ["nodes", "edges"],
+      "additionalProperties": false,
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "description": "Set of semantic artifact identifiers participating in the graph. Media artifacts are excluded during normalization.",
+          "items": {
+            "type": "string",
+            "description": "Package-relative path identifying an artifact node."
+          }
+        },
+        "edges": {
+          "type": "array",
+          "description": "Directed relationships between artifact nodes, derived from structural analysis.",
+          "items": {
+            "$ref": "#/$defs/edge"
+          }
+        }
+      }
+    },
+
+    "summary": {
+      "type": "object",
+      "description": "Aggregate counts summarizing the discovery results.",
+      "required": [
+        "total_artifacts",
+        "relationship_count",
+        "media_count"
+      ],
+      "additionalProperties": {
+        "type": "integer",
+        "description": "Integer summary metric produced during discovery."
+      }
+    }
+  },
+
+  "$defs": {
+    "artifact": {
+      "type": "object",
+      "description": "A single discovered file within the DITA package, annotated with classification, metadata, and supporting evidence.",
+      "required": ["path", "artifact_type"],
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Package-relative filesystem path to the artifact."
+        },
+
+        "artifact_type": {
+          "type": "string",
+          "description": "High-level artifact category determined during discovery.",
+          "enum": ["map", "topic", "media"]
+        },
+
+        "classification": {
+          "type": ["string", "null"],
+          "description": "Semantic classification inferred for the artifact, such as concept, task, or reference. Null for media artifacts."
+        },
+
+        "confidence": {
+          "type": ["number", "null"],
+          "description": "Confidence score associated with the inferred classification. Null when classification does not apply."
+        },
+
+        "metadata": {
+          "type": "object",
+          "description": "Low-level file metadata captured during discovery.",
+          "additionalProperties": true,
+          "properties": {
+            "size_bytes": {
+              "type": "integer",
+              "description": "Size of the artifact in bytes.",
+              "minimum": 0
+            },
+            "extension": {
+              "type": "string",
+              "description": "File extension of the artifact."
+            }
+          }
+        },
+
+        "notes": {
+          "type": "array",
+          "description": "Human-readable notes recorded during discovery for diagnostic or explanatory purposes.",
+          "items": {
+            "type": "string"
+          }
+        },
+
+        "evidence": {
+          "type": "array",
+          "description": "Evidence records justifying classification and role assertions made during discovery.",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        }
+      },
+
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "artifact_type": { "const": "media" }
+            }
+          },
+          "then": {
+            "description": "Constraint block enforcing that media artifacts do not carry semantic classification or evidence.",
+            "properties": {
+              "classification": { "const": null },
+              "confidence": { "const": null },
+              "evidence": {
+                "type": "array",
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "artifact_type": {
+                "enum": ["map", "topic"]
+              }
+            }
+          },
+          "then": {
+            "description": "Constraint block allowing semantic classification and confidence for map and topic artifacts.",
+            "properties": {
+              "classification": {
+                "type": ["string", "null"]
+              },
+              "confidence": {
+                "type": ["number", "null"]
+              }
+            }
+          }
+        }
+      ]
+    },
+
+    "edge": {
+      "type": "object",
+      "description": "Directed relationship between two artifacts, derived from structural patterns in the package.",
+      "required": ["source", "target", "type", "pattern_id"],
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "Package-relative path of the source artifact."
+        },
+        "target": {
+          "type": "string",
+          "description": "Package-relative path of the target artifact."
+        },
+        "type": {
+          "type": "string",
+          "description": "Relationship type inferred during discovery.",
+          "enum": [
+            "mapref",
+            "topicref",
+            "xref",
+            "image",
+            "object"
+          ]
+        },
+        "pattern_id": {
+          "type": "string",
+          "description": "Identifier of the discovery pattern that justified the existence of this relationship."
+        }
+      }
+    },
+
+    "evidence": {
+      "type": "object",
+      "description": "Structured justification for a semantic assertion made during discovery.",
+      "required": ["pattern_id", "asserted_role", "confidence", "rationale"],
+      "additionalProperties": false,
+      "properties": {
+        "pattern_id": {
+          "type": "string",
+          "description": "Identifier of the discovery pattern that produced this evidence."
+        },
+        "asserted_role": {
+          "type": ["string", "null"],
+          "description": "Semantic role asserted by the pattern, if applicable."
+        },
+        "confidence": {
+          "type": "number",
+          "description": "Confidence score associated with the asserted role."
+        },
+        "rationale": {
+          "type": "array",
+          "description": "Human-readable reasons explaining why the assertion was made.",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

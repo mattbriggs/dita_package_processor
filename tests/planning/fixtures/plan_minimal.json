@@ -1,0 +1,24 @@
+{
+  "plan_version": 1,
+  "generated_at": "2026-01-04T22:00:00Z",
+  "source_discovery": {
+    "path": "discovery.json",
+    "schema_version": 1,
+    "artifact_count": 58
+  },
+  "intent": {
+    "target": "heretto_ccms_ingestion",
+    "description": "Prepare DITA package for Heretto ingestion"
+  },
+  "actions": [
+    {
+      "id": "select-main-map",
+      "type": "select_main_map",
+      "target": "index.ditamap",
+      "reason": "index.ditamap classified as MAIN with highest confidence",
+      "derived_from_evidence": [
+        "main_map_by_index"
+      ]
+    }
+  ]
+}

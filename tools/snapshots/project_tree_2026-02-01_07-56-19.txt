@@ -1,0 +1,322 @@
+Project Tree Report
+Generated: 2026-02-01T07:56:19.699101
+Root: /conversion-engineering/dita_package_processor
+
+ASCII TREE
+============================================================
+dita_package_processor
+├── dita_package_processor
+│   ├── __pycache__
+│   ├── discovery
+│   │   ├── __pycache__
+│   │   ├── extractors
+│   │   │   ├── __pycache__
+│   │   │   ├── __init__.py
+│   │   │   ├── map_refs.py
+│   │   │   └── topic_refs.py
+│   │   ├── schema
+│   │   │   └── discovery.schema.json
+│   │   ├── .DS_Store
+│   │   ├── __init__.py
+│   │   ├── classifiers.py
+│   │   ├── graph.py
+│   │   ├── models.py
+│   │   ├── path_normalizer.py
+│   │   ├── patterns.py
+│   │   ├── relationships.py
+│   │   ├── report.py
+│   │   ├── scanner.py
+│   │   └── signatures.py
+│   ├── execution
+│   │   ├── __pycache__
+│   │   ├── executors
+│   │   │   ├── __pycache__
+│   │   │   ├── __init__.py
+│   │   │   └── filesystem.py
+│   │   ├── handlers
+│   │   │   ├── __pycache__
+│   │   │   ├── fs
+│   │   │   │   ├── __pycache__
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── fs_copy_map.py
+│   │   │   │   ├── fs_copy_media.py
+│   │   │   │   └── fs_copy_topic.py
+│   │   │   ├── semantic
+│   │   │   │   ├── __pycache__
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── s_copy_file.py
+│   │   │   │   ├── s_copy_map.py
+│   │   │   │   ├── s_delete_file.py
+│   │   │   │   ├── s_extract_glossary.py
+│   │   │   │   ├── s_inject_glossary.py
+│   │   │   │   ├── s_inject_topicref.py
+│   │   │   │   ├── s_inject_topicrefs.py
+│   │   │   │   ├── s_wrap_map.py
+│   │   │   │   └── s_wrap_map_topicrefs.py
+│   │   │   └── __init__.py
+│   │   ├── safety
+│   │   │   ├── __pycache__
+│   │   │   ├── __init__.py
+│   │   │   ├── guards.py
+│   │   │   ├── policies.py
+│   │   │   └── sandbox.py
+│   │   ├── schema
+│   │   │   └── execution_report.schema.json
+│   │   ├── __init__.py
+│   │   ├── bootstrap.py
+│   │   ├── dispatcher.py
+│   │   ├── dry_run_executor.py
+│   │   ├── models.py
+│   │   ├── registry.py
+│   │   └── report_writer.py
+│   ├── knowledge
+│   │   ├── __pycache__
+│   │   ├── __init__.py
+│   │   ├── invariants.py
+│   │   ├── known_patterns.py
+│   │   ├── known_patterns.yaml
+│   │   └── map_types.py
+│   ├── materialization
+│   │   ├── __pycache__
+│   │   ├── __init__.py
+│   │   ├── builder.py
+│   │   ├── collision.py
+│   │   ├── layout.py
+│   │   ├── models.py
+│   │   ├── orchestrator.py
+│   │   └── validation.py
+│   ├── planning
+│   │   ├── __pycache__
+│   │   ├── actions
+│   │   │   ├── __init__.py
+│   │   │   ├── assert_invariant.py
+│   │   │   ├── copy_map.py
+│   │   │   ├── copy_media.py
+│   │   │   ├── copy_topic.py
+│   │   │   ├── delete_file.py
+│   │   │   ├── extract_glossary.py
+│   │   │   ├── inject_glossary.py
+│   │   │   ├── inject_topicref.py
+│   │   │   ├── inject_topicrefs.py
+│   │   │   ├── rename_map.py
+│   │   │   └── wrap_map.py
+│   │   ├── contracts
+│   │   │   ├── __pycache__
+│   │   │   ├── __init__.py
+│   │   │   ├── discovery_to_planning.py
+│   │   │   ├── errors.py
+│   │   │   ├── planning_input.py
+│   │   │   └── planning_input.schema.json
+│   │   ├── schema
+│   │   │   └── plan.schema.json
+│   │   ├── .DS_Store
+│   │   ├── __init__.py
+│   │   ├── executor.py
+│   │   ├── graph_planner.py
+│   │   ├── hydrator.py
+│   │   ├── input_normalizer.py
+│   │   ├── invariants.py
+│   │   ├── layout_rules.py
+│   │   ├── loader.py
+│   │   ├── models.py
+│   │   ├── planner.py
+│   │   └── validation.py
+│   ├── steps
+│   │   ├── __pycache__
+│   │   ├── __init__.py
+│   │   ├── base.py
+│   │   ├── process_maps.py
+│   │   ├── refactor_glossary.py
+│   │   ├── remove_index_map.py
+│   │   └── rename_main_map.py
+│   ├── .DS_Store
+│   ├── __init__.py
+│   ├── __main__.py
+│   ├── cli.py
+│   ├── cli_discover.py
+│   ├── cli_execute.py
+│   ├── cli_plan.py
+│   ├── cli_run.py
+│   ├── config.py
+│   ├── dita_xml.py
+│   ├── orchestration.py
+│   ├── pipeline.py
+│   └── utils.py
+├── docs
+│   ├── reference
+│   │   ├── patterns
+│   │   │   ├── abstract_map_by_title.md
+│   │   │   ├── glossary_topic_by_root.md
+│   │   │   ├── index.md
+│   │   │   ├── main_map_by_index.md
+│   │   │   ├── single_root_map.md
+│   │   │   ├── unknown_map_fallback.md
+│   │   │   └── unknown_topic_fallback.md
+│   │   └── schemas
+│   │       ├── discovery.schema.md
+│   │       ├── execution_report.schema.md
+│   │       ├── metaschema.md
+│   │       ├── plan.schema.md
+│   │       └── planning_input.schema.md
+│   ├── api-reference.md
+│   ├── configuration.md
+│   ├── design.md
+│   ├── developing-migration-job.md
+│   ├── discovery-report.md
+│   ├── discovery.md
+│   ├── executor-arc-design.md
+│   ├── extensions-guide.md
+│   ├── extensions.md
+│   ├── getting-started.md
+│   ├── hardening.md
+│   ├── how-to-create-handlers.md
+│   ├── howto-transform-a-package.md
+│   ├── index.md
+│   ├── new-patterns.md
+│   ├── pattern-discovery-contract.md
+│   ├── pattern-evaluator.md
+│   ├── pattern-worked-example.md
+│   ├── patterns-actions-handlers.md
+│   ├── pipeline-integration.md
+│   ├── pipeline.md
+│   ├── run-vs-execute.md
+│   └── testing.md
+├── reports
+│   └── discovery
+├── tests
+│   ├── __pycache__
+│   ├── cli
+│   │   ├── __pycache__
+│   │   ├── fixtures
+│   │   │   ├── discovery_minimal.json
+│   │   │   └── plan_minimal.json
+│   │   ├── test_cli_discover.py
+│   │   ├── test_cli_execute.py
+│   │   ├── test_cli_plan.py
+│   │   ├── test_cli_root.py
+│   │   └── test_cli_run.py
+│   ├── discovery
+│   │   ├── __pycache__
+│   │   ├── __init__.py
+│   │   ├── test_discovery_classifiers.py
+│   │   ├── test_discovery_extractors_map_refs.py
+│   │   ├── test_discovery_extractors_topic_refs.py
+│   │   ├── test_discovery_graph.py
+│   │   ├── test_discovery_models.py
+│   │   ├── test_discovery_path_normalizer.py
+│   │   ├── test_discovery_pattern_evaluator.py
+│   │   ├── test_discovery_pattern_evaluator_fallback.py
+│   │   ├── test_discovery_patterns.py
+│   │   ├── test_discovery_relationships.py
+│   │   ├── test_discovery_report.py
+│   │   ├── test_discovery_report_contract.py
+│   │   ├── test_discovery_scanner.py
+│   │   ├── test_discovery_signatures.py
+│   │   └── test_relationship_extractor.py
+│   ├── execution
+│   │   ├── __pycache__
+│   │   ├── test_execution_dispatcher.py
+│   │   ├── test_execution_dry_run_executor.py
+│   │   ├── test_execution_executors_filesystem.py
+│   │   ├── test_execution_fs_copy_handlers.py
+│   │   ├── test_execution_fs_copy_media_handlers.py
+│   │   ├── test_execution_fs_copy_topic_handlers.py
+│   │   ├── test_execution_models.py
+│   │   ├── test_execution_registry.py
+│   │   ├── test_execution_report_contract.py
+│   │   ├── test_execution_report_writer.py
+│   │   ├── test_execution_safety_guards.py
+│   │   ├── test_execution_safety_policies.py
+│   │   └── test_execution_safety_sandbox.py
+│   ├── integration
+│   │   ├── __pycache__
+│   │   ├── simple_package.py
+│   │   ├── test_integration_cli_contract.py
+│   │   ├── test_integration_end_to_end.py
+│   │   ├── test_integration_error_conditions.py
+│   │   ├── test_integration_no_definition_map.py
+│   │   └── test_plan_execute_copy.py
+│   ├── knowledge
+│   │   ├── __pycache__
+│   │   ├── test_knoweldge_invariants.py
+│   │   └── test_knoweldge_known_patterns.py
+│   ├── materialization
+│   │   ├── __pycache__
+│   │   ├── test_materialization_collision_detection.py
+│   │   ├── test_materialization_execution_filesystem.py
+│   │   ├── test_materialization_failures.py
+│   │   ├── test_materialization_layout_rules.py
+│   │   ├── test_materialization_manifest_models.py
+│   │   ├── test_materialization_orchestrator.py
+│   │   ├── test_materialization_pipeline_integration.py
+│   │   └── test_materialization_target_builder.py
+│   ├── orchestration
+│   │   ├── __pycache__
+│   │   └── test_orchestration.py
+│   ├── pipeline
+│   │   ├── __pycache__
+│   │   └── test_pipeline.py
+│   ├── planning
+│   │   ├── __pycache__
+│   │   ├── fixtures
+│   │   │   ├── discovery_golden.json
+│   │   │   ├── plan_from_golden.json
+│   │   │   ├── plan_minimal.json
+│   │   │   ├── plan_missing_actions.json
+│   │   │   ├── plan_unknown_action.json
+│   │   │   ├── plan_with_actions.json
+│   │   │   └── plan_wrong_version.json
+│   │   ├── test_planning_action_emission.py
+│   │   ├── test_planning_contract_discovery_to_planning.py
+│   │   ├── test_planning_contract_input_contract.py
+│   │   ├── test_planning_contract_models.py
+│   │   ├── test_planning_contracts_discovery_to_planning_normalization.py
+│   │   ├── test_planning_contracts_failures.py
+│   │   ├── test_planning_dependency_closure.py
+│   │   ├── test_planning_executor.py
+│   │   ├── test_planning_graph_planner.py
+│   │   ├── test_planning_hydrator.py
+│   │   ├── test_planning_invariants.py
+│   │   ├── test_planning_layout_rules.py
+│   │   ├── test_planning_loader.py
+│   │   ├── test_planning_models.py
+│   │   ├── test_planning_plan_schema.py
+│   │   ├── test_planning_planner.py
+│   │   ├── test_planning_target_layout.py
+│   │   ├── test_planning_validation.py
+│   │   └── test_plannning_input_normalizer.py
+│   ├── .DS_Store
+│   └── conftest.py
+├── tools
+│   ├── snapshots
+│   │   ├── project_tree_2026-01-10_10-13-41.txt
+│   │   ├── project_tree_2026-01-11_10-08-02.txt
+│   │   ├── project_tree_2026-01-11_12-59-11.txt
+│   │   ├── project_tree_2026-01-15_07-01-59.txt
+│   │   ├── project_tree_2026-01-24_09-16-35.txt
+│   │   ├── project_tree_2026-01-26_07-39-48.txt
+│   │   └── project_tree_2026-01-30_10-34-23.txt
+│   ├── generate_pattern_docs.py
+│   ├── generate_schema_docs.py
+│   ├── README.generate_pattern_docs.md
+│   ├── README.generate_schema_docs.md
+│   ├── README.tree.md
+│   ├── tree.py
+│   └── tree_ignore.txt
+├── mkdocs.yml
+├── package-lock.json
+├── package.json
+├── pyproject.toml
+├── README-CLI.md
+├── README.md
+└── requirements.txt
+
+PROJECT METRICS
+============================================================
+Directories: 62
+Files:       243
+Lines of code: 36800
+Scan time:    18.66 seconds
+
+Interpretation:
+This is a structural snapshot of your repository. It reflects architecture, complexity, and surface area. If this feels large, it’s because the project is doing real work.

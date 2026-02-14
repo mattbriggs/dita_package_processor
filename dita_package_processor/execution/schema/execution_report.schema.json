@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://finalstatepress.org/schemas/execution_report.schema.json",
+  "title": "Execution Report Contract",
+  "description": "Deterministic execution report capturing the outcome of executing a validated plan. This report is authoritative, auditable, and suitable for both human review and machine analysis.",
+  "type": "object",
+  "required": [
+    "execution_id",
+    "generated_at",
+    "dry_run",
+    "results",
+    "summary"
+  ],
+  "properties": {
+    "execution_id": {
+      "type": "string",
+      "description": "Unique identifier for this execution run. Used to correlate reports, logs, and downstream artifacts."
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp indicating when the execution report was generated."
+    },
+    "dry_run": {
+      "type": "boolean",
+      "description": "Indicates whether this execution was performed in dry-run mode, meaning no filesystem mutation occurred."
+    },
+    "results": {
+      "type": "array",
+      "description": "Ordered list of per-action execution results, one entry for each action evaluated by the executor.",
+      "items": {
+        "type": "object",
+        "required": [
+          "action_id",
+          "status",
+          "handler",
+          "dry_run",
+          "message"
+        ],
+        "properties": {
+          "action_id": {
+            "type": "string",
+            "description": "Identifier of the action from the execution plan to which this result corresponds."
+          },
+          "status": {
+            "type": "string",
+            "description": "Outcome of the action execution.",
+            "enum": ["success", "failed", "skipped"]
+          },
+          "handler": {
+            "type": "string",
+            "description": "Name of the execution handler responsible for processing this action."
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Indicates whether this specific action was evaluated in dry-run mode."
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable explanation of what occurred during execution of the action."
+          },
+          "error": {
+            "type": ["string", "null"],
+            "description": "Error message if the action failed. Null if the action did not encounter an error."
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Optional structured metadata emitted by the handler for diagnostic or downstream processing purposes.",
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "summary": {
+      "type": "object",
+      "description": "Aggregate counts summarizing the execution outcomes across all actions.",
+      "required": [
+        "success",
+        "failed",
+        "skipped",
+        "total"
+      ],
+      "properties": {
+        "success": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of actions that completed successfully."
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of actions that failed during execution."
+        },
+        "skipped": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of actions that were intentionally skipped, including dry-run skips and idempotent no-ops."
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of actions evaluated during execution."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

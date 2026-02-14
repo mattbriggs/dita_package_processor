@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-01-01T00:00:00Z",
+  "package_root": "/tmp/example-package",
+  "artifacts": [
+    {
+      "path": "index.ditamap",
+      "artifact_type": "map",
+      "classification": "MAIN",
+      "confidence": 0.9,
+      "evidence": [
+        {
+          "asserted_role": "MAIN",
+          "confidence": 0.9,
+          "pattern_id": "main_map_by_index",
+          "rationale": [
+            "File is named index.ditamap"
+          ]
+        }
+      ],
+      "metadata": {
+        "root_element": "map",
+        "contains_mapref": false,
+        "contains_topicref": false
+      },
+      "notes": []
+    }
+  ]
+}

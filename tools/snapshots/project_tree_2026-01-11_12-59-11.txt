@@ -1,0 +1,226 @@
+Project Tree Report
+Generated: 2026-01-11T12:59:11.840255
+Root: /conversion-engineering/dita_package_processor
+
+ASCII TREE
+============================================================
+dita_package_processor
+├── dita_package_processor
+│   ├── __pycache__
+│   ├── discovery
+│   │   ├── __pycache__
+│   │   ├── extractors
+│   │   │   ├── __pycache__
+│   │   │   ├── __init__.py
+│   │   │   ├── map_refs.py
+│   │   │   └── topic_refs.py
+│   │   ├── schema
+│   │   │   └── discovery.schema.json
+│   │   ├── classifiers.py
+│   │   ├── graph.py
+│   │   ├── models.py
+│   │   ├── path_normalizer.py
+│   │   ├── patterns.py
+│   │   ├── report.py
+│   │   ├── scanner.py
+│   │   └── signatures.py
+│   ├── knowledge
+│   │   ├── __pycache__
+│   │   ├── __init__.py
+│   │   ├── invariants.py
+│   │   ├── known_patterns.py
+│   │   ├── known_patterns.yaml
+│   │   └── map_types.py
+│   ├── planning
+│   │   ├── __pycache__
+│   │   ├── actions
+│   │   │   ├── __init__.py
+│   │   │   └── copy_map.py
+│   │   ├── handlers
+│   │   │   ├── __pycache__
+│   │   │   ├── fs
+│   │   │   │   ├── __pycache__
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── fs_copy_map.py
+│   │   │   │   ├── fs_copy_media.py
+│   │   │   │   └── fs_copy_topic.py
+│   │   │   ├── semantic
+│   │   │   │   ├── __pycache__
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── s_copy_file.py
+│   │   │   │   ├── s_copy_map.py
+│   │   │   │   ├── s_delete_file.py
+│   │   │   │   ├── s_extract_glossary.py
+│   │   │   │   ├── s_inject_glossary.py
+│   │   │   │   ├── s_inject_topicref.py
+│   │   │   │   ├── s_inject_topicrefs.py
+│   │   │   │   ├── s_wrap_map.py
+│   │   │   │   └── s_wrap_map_topicrefs.py
+│   │   │   └── __init__.py
+│   │   ├── schema
+│   │   │   ├── execution_report.schema.json
+│   │   │   └── plan.schema.json
+│   │   ├── __init__.py
+│   │   ├── dispatch.py
+│   │   ├── executor.py
+│   │   ├── executors.py
+│   │   ├── filesystem_executor.py
+│   │   ├── graph_planner.py
+│   │   ├── hydrator.py
+│   │   ├── invariants.py
+│   │   ├── layout_rules.py
+│   │   ├── loader.py
+│   │   ├── manifest.py
+│   │   ├── models.py
+│   │   ├── noop_executor.py
+│   │   ├── planner.py
+│   │   └── validation.py
+│   ├── steps
+│   │   ├── __pycache__
+│   │   ├── __init__.py
+│   │   ├── base.py
+│   │   ├── process_maps.py
+│   │   ├── refactor_glossary.py
+│   │   ├── remove_index_map.py
+│   │   └── rename_main_map.py
+│   ├── __init__.py
+│   ├── __main__.py
+│   ├── cli.py
+│   ├── cli_discover.py
+│   ├── cli_execute.py
+│   ├── cli_plan.py
+│   ├── cli_run.py
+│   ├── config.py
+│   ├── context.py
+│   ├── discover.py
+│   ├── dita_xml.py
+│   ├── orchestration.py
+│   ├── pipeline.py
+│   ├── plan_and_execute.py
+│   └── utils.py
+├── docs
+│   ├── api-reference.md
+│   ├── blog-post.md
+│   ├── configuration.md
+│   ├── design.md
+│   ├── developing-migration-job.md
+│   ├── discovery-report.md
+│   ├── discovery.md
+│   ├── executor-arc-design.md
+│   ├── extensions-guide.md
+│   ├── extensions.md
+│   ├── getting-started.md
+│   ├── hardening.md
+│   ├── how-to-create-handlers.md
+│   ├── index.md
+│   ├── new-patterns.md
+│   ├── pattern-discovery-contract.md
+│   ├── pattern-evaluator.md
+│   ├── pattern-worked-example.md
+│   ├── pipeline-integration.md
+│   ├── pipeline.md
+│   ├── run-vs-execute.md
+│   └── testing.md
+├── reports
+│   └── discovery
+├── tests
+│   ├── __pycache__
+│   ├── cli
+│   │   ├── __pycache__
+│   │   ├── fixtures
+│   │   │   ├── discovery_minimal.json
+│   │   │   └── plan_minimal.json
+│   │   ├── test_cli_discover.py
+│   │   ├── test_cli_execute.py
+│   │   ├── test_cli_plan.py
+│   │   ├── test_cli_root.py
+│   │   └── test_cli_run.py
+│   ├── discovery
+│   │   ├── __pycache__
+│   │   ├── __init__.py
+│   │   ├── test_discovery_classifiers.py
+│   │   ├── test_discovery_extractors_map_refs.py
+│   │   ├── test_discovery_extractors_topic_refs.py
+│   │   ├── test_discovery_graph.py
+│   │   ├── test_discovery_models.py
+│   │   ├── test_discovery_path_normalizer.py
+│   │   ├── test_discovery_pattern_evaluator.py
+│   │   ├── test_discovery_pattern_evaluator_fallback.py
+│   │   ├── test_discovery_report.py
+│   │   ├── test_discovery_scanner.py
+│   │   └── test_discovery_signatures.py
+│   ├── execution
+│   │   ├── __pycache__
+│   │   ├── test_execution_fs_copy_handlers.py
+│   │   ├── test_execution_fs_copy_media_handlers.py
+│   │   └── test_execution_fs_copy_topic_handlers.py
+│   ├── integration
+│   │   ├── __pycache__
+│   │   ├── simple_package.py
+│   │   ├── test_integration_cli_contract.py
+│   │   ├── test_integration_end_to_end.py
+│   │   ├── test_integration_error_conditions.py
+│   │   ├── test_integration_no_definition_map.py
+│   │   └── test_plan_execute_copy.py
+│   ├── knowledge
+│   │   ├── __pycache__
+│   │   ├── test_knoweldge_invariants.py
+│   │   └── test_knoweldge_known_patterns.py
+│   ├── orchestration
+│   │   ├── __pycache__
+│   │   └── test_orchestration.py
+│   ├── pipeline
+│   │   ├── __pycache__
+│   │   └── test_pipeline.py
+│   ├── planning
+│   │   ├── __pycache__
+│   │   ├── fixtures
+│   │   │   ├── discovery_golden.json
+│   │   │   ├── plan_from_golden.json
+│   │   │   ├── plan_minimal.json
+│   │   │   ├── plan_missing_actions.json
+│   │   │   ├── plan_unknown_action.json
+│   │   │   ├── plan_with_actions.json
+│   │   │   └── plan_wrong_version.json
+│   │   ├── test_graph_planner.py
+│   │   ├── test_layout_rules.py
+│   │   ├── test_planning_action_emission.py
+│   │   ├── test_planning_dependency_closure.py
+│   │   ├── test_planning_dispatch.py
+│   │   ├── test_planning_executor.py
+│   │   ├── test_planning_executors.py
+│   │   ├── test_planning_filesystem_executor.py
+│   │   ├── test_planning_hydrator.py
+│   │   ├── test_planning_invariants.py
+│   │   ├── test_planning_loader.py
+│   │   ├── test_planning_manifest.py
+│   │   ├── test_planning_models.py
+│   │   ├── test_planning_noop_executor.py
+│   │   ├── test_planning_plan_schema.py
+│   │   ├── test_planning_planner.py
+│   │   ├── test_planning_target_layout.py
+│   │   └── test_planning_validation.py
+│   ├── .DS_Store
+│   └── conftest.py
+├── mkdocs.yml
+├── package-lock.json
+├── package.json
+├── project_tree_2026-01-10_10-13-41.txt
+├── project_tree_2026-01-11_10-08-02.txt
+├── pyproject.toml
+├── README-CLI.md
+├── README.md
+├── requirements.txt
+├── tree.py
+├── tree_ignore.txt
+└── tree_readme.md
+
+PROJECT METRICS
+============================================================
+Directories: 44
+Files:       165
+Lines of code: 21759
+Scan time:    13.06 seconds
+
+Interpretation:
+This is a structural snapshot of your repository. It reflects architecture, complexity, and surface area. If this feels large, it’s because the project is doing real work.

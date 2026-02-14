@@ -1,0 +1,83 @@
+site_name: DITA Package Processor
+site_description: Deterministic, modular pipeline for normalizing DITA 1.3 packages.
+site_url: ""
+
+plugins:
+  - search
+  - autorefs
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: sphinx
+            show_source: false
+            show_root_heading: true
+            show_object_full_path: false
+          paths:
+            - .
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Configuration: configuration.md
+  - Pipeline:
+    - Pipeline: pipeline.md
+    - Understanding the Pipeline: understand-the-pipeline.md
+    - Pipeline Integration Specification: pipeline-integration.md
+  - Creating Migration Jobs:
+    - Transform a DITA Package: howto-transform-a-package.md
+    - Developing a migration job: developing-migration-job.md
+    - Patterns, Actions, Handlers: patterns-actions-handlers.md
+    - Create a Handler: how-to-create-handlers.md
+  - Discovery:
+    - Discovery Phase: discovery.md
+    - Discovery Report: discovery-report.md
+  - Patterns:
+    - Documenting New Patterns: new-patterns.md
+    - Pattern Discovery Contract: pattern-discovery-contract.md
+    - Working Pattern Example: pattern-worked-example.md
+    - Evaluate Patterns: pattern-evaluator.md
+  - Plan:
+    - Plan Creation: plan-creation.md
+  - Execution:
+    - Execution Phase: execution.md
+    - Run vs Execute: run-vs-execute.md
+  - Development:
+    - Extensions: extensions.md
+    - Extensions Guide: extensions-guide.md
+    - Hardening: hardening.md
+    - Testing: testing.md
+  - Architecture and Design:
+    - Design: design.md
+    - Executor Architecture: executor-arc-design.md
+  - API Reference: 
+        - Class Reference:
+          - CLI: api-ref-cli.md
+          - Core: api-ref-core.md
+          - Discovery: api-ref-discovery.md
+          - Knowledge: api-ref-knowledge.md
+          - Materialization: api-ref-materialization.md
+          - Planning: api-ref-planning.md
+          - Execution: api-ref-execution.md
+          - Steps: api-ref-steps.md
+        - Schemas:
+          - Plan: reference/schemas/plan.schema.md
+          - Discovery: reference/schemas/discovery.schema.md
+          - Execution Report: reference/schemas/execution_report.schema.md
+          - Metaschema: reference/schemas/metaschema.md
+          - Planning Input: reference/schemas/planning_input.schema.md
+        - Patterns: reference/patterns/index.md
+
+theme:
+  name: material 
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - admonition
+  - tables
+  - def_list
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid

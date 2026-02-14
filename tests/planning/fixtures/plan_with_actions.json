@@ -1,0 +1,42 @@
+{
+  "plan_version": 1,
+  "generated_at": "2026-01-04T22:15:00Z",
+  "source_discovery": {
+    "path": "discovery.json",
+    "schema_version": 1,
+    "artifact_count": 58
+  },
+  "intent": {
+    "target": "heretto_ccms_ingestion",
+    "description": "Normalize vendor DITA package for ingestion"
+  },
+  "invariants": [
+    {
+      "id": "exactly_one_main_map",
+      "description": "Exactly one MAIN map must exist"
+    }
+  ],
+  "actions": [
+    {
+      "id": "select-main-map",
+      "type": "select_main_map",
+      "target": "index.ditamap",
+      "reason": "Highest-confidence MAIN map",
+      "derived_from_evidence": [
+        "main_map_by_index"
+      ]
+    },
+    {
+      "id": "rename-abstract-map",
+      "type": "rename_artifact",
+      "target": "abstract.ditamap",
+      "parameters": {
+        "new_name": "abstract_section.ditamap"
+      },
+      "reason": "Abstract map conflicts with reserved naming",
+      "derived_from_evidence": [
+        "unknown_map_fallback"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+# ----------------------------
+# Core runtime dependencies
+# ----------------------------
+lxml>=5.1.0
+packaging>=24.0
+
+# ----------------------------
+# Discovery / corpus analysis (read-only)
+# ----------------------------
+pydantic>=2.6.0          # Typed discovery models & reports
+pyyaml>=6.0              # Pattern catalogs (human-editable)
+rich>=13.7.0             # Optional: readable CLI discovery summaries
+
+# Optional (non-runtime): graph analysis for map relationships
+networkx>=3.2.1
+
+# Planning
+
+jsonschema>=4.21.0
+
+# ----------------------------
+# CLI / packaging
+# ----------------------------
+# (intentionally minimal; argparse-based)
+# no additions required here
+
+# ----------------------------
+# Testing
+# ----------------------------
+pytest>=8.1.0
+
+# ----------------------------
+# Documentation (MkDocs stack)
+# ----------------------------
+mkdocs>=1.6.0
+mkdocs-material>=9.5.20
+mkdocstrings[python]>=0.25.1
+mkdocs-autorefs>=1.2.0
+pymdown-extensions>=10.8

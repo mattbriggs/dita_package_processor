@@ -1,0 +1,22 @@
+{
+  "plan_version": 1,
+  "generated_at": "2026-01-01T00:00:00Z",
+  "source_discovery": {
+    "path": "discovery.json",
+    "schema_version": 1,
+    "artifact_count": 1
+  },
+  "intent": {
+    "target": "analysis_only",
+    "description": "Golden test plan"
+  },
+  "actions": [
+    {
+      "id": "select-main-map",
+      "type": "select_main_map",
+      "target": "index.ditamap",
+      "reason": "Single MAIN map detected",
+      "derived_from_evidence": ["main_map_by_index"]
+    }
+  ]
+}

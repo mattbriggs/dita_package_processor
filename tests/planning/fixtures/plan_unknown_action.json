@@ -1,0 +1,21 @@
+{
+  "plan_version": 1,
+  "generated_at": "2026-01-04T22:25:00Z",
+  "source_discovery": {
+    "path": "discovery.json",
+    "schema_version": 1,
+    "artifact_count": 58
+  },
+  "intent": {
+    "target": "heretto_ccms_ingestion",
+    "description": "Plan with unsupported action type"
+  },
+  "actions": [
+    {
+      "id": "do-something-weird",
+      "type": "summon_llm_dragon",
+      "target": "index.ditamap",
+      "reason": "This should never validate"
+    }
+  ]
+}

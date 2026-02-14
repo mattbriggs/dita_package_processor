@@ -1,0 +1,167 @@
+# ============================================================================
+# Known DITA Structural Patterns
+#
+# This file defines *recognized structural patterns* observed in real-world
+# DITA packages. Patterns are evaluated during the Discovery phase to emit
+# evidence about an artifact’s likely semantic role.
+#
+# IMPORTANT DESIGN CONSTRAINTS
+# ----------------------------
+# - Patterns DO NOT classify artifacts directly.
+# - Patterns DO NOT mutate content.
+# - Patterns emit *evidence* with confidence scores.
+# - Final classification is resolved elsewhere.
+#
+# Patterns are:
+# - declarative
+# - auditable
+# - order-independent
+# - safe to extend
+#
+# This file must remain readable by humans first.
+# ============================================================================
+
+version: 1
+
+patterns:
+
+  # --------------------------------------------------------------------------
+  # MAIN MAP IDENTIFICATION
+  #
+  # These patterns emit evidence that a map is the primary entry point
+  # for a DITA package.
+  # --------------------------------------------------------------------------
+
+  - id: main_map_by_index
+    applies_to: map
+
+    # This pattern matches the canonical DITA structure where:
+    # - index.ditamap exists
+    # - it contains a mapref to another .ditamap
+    #
+    # In this case, index.ditamap is treated as a container and the
+    # referenced map is considered the MAIN map.
+    signals:
+      filename:
+        equals: index.ditamap
+
+      contains:
+        - element: mapref
+          attribute: href
+          ends_with: .ditamap
+
+    # Evidence emitted when the signals match.
+    # Confidence is high because this pattern is explicit and common.
+    asserts:
+      role: MAIN
+      confidence: 0.9
+
+    # Human-readable explanation for audit logs and reports.
+    rationale:
+      - "File is index.ditamap"
+      - "Contains mapref to another map"
+
+
+  - id: single_root_map
+    applies_to: map
+
+    # Fallback pattern for packages that contain exactly one .ditamap.
+    #
+    # This occurs frequently in small or poorly-structured exports.
+    # Confidence is lower because intent is inferred from absence of alternatives.
+    signals:
+      package:
+        ditamap_count: 1
+
+    asserts:
+      role: MAIN
+      confidence: 0.7
+
+    rationale:
+      - "Only one ditamap exists in package"
+
+
+  # --------------------------------------------------------------------------
+  # ABSTRACT MAP IDENTIFICATION
+  #
+  # Abstract maps typically contain overview or front-matter content.
+  # --------------------------------------------------------------------------
+
+  - id: abstract_map_by_title
+    applies_to: map
+
+    # Explicit identification via map title.
+    # This is preferred over filename heuristics.
+    signals:
+      title:
+        equals_ignore_case: "abstract map"
+
+    asserts:
+      role: ABSTRACT
+      confidence: 0.8
+
+    rationale:
+      - "Map title explicitly indicates abstract"
+
+
+  # --------------------------------------------------------------------------
+  # GLOSSARY / DEFINITION TOPICS
+  #
+  # Glossary topics are often misclassified as generic concepts.
+  # These patterns identify them structurally.
+  # --------------------------------------------------------------------------
+
+  - id: glossary_topic_by_root
+    applies_to: topic
+
+    # DITA-native identification:
+    # <glossentry> is unambiguous and authoritative.
+    signals:
+      root_element:
+        equals: glossentry
+
+    asserts:
+      role: GLOSSARY
+      confidence: 1.0
+
+    rationale:
+      - "Topic root element is <glossentry>"
+
+
+  # --------------------------------------------------------------------------
+  # FALLBACK PATTERNS
+  #
+  # These patterns ensure that every artifact receives *some* evidence
+  # even when no specific pattern matches.
+  #
+  # They must always have the lowest confidence.
+  # --------------------------------------------------------------------------
+
+  - id: unknown_map_fallback
+    applies_to: map
+
+    # Fallback applies only if no other map patterns emitted evidence.
+    signals:
+      fallback: true
+
+    asserts:
+      role: UNKNOWN
+      confidence: 0.1
+
+    rationale:
+      - "No other map patterns matched"
+
+
+  - id: unknown_topic_fallback
+    applies_to: topic
+
+    # Topic-level fallback.
+    signals:
+      fallback: true
+
+    asserts:
+      role: UNKNOWN
+      confidence: 0.1
+
+    rationale:
+      - "No other topic patterns matched"

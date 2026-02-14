@@ -1,0 +1,92 @@
+# -------------------------------------------------------------------
+# Build system configuration
+# -------------------------------------------------------------------
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+
+# -------------------------------------------------------------------
+# Project metadata (PEP 621 – REQUIRED)
+# -------------------------------------------------------------------
+[project]
+name = "dita-package-processor"
+version = "0.1.0"
+description = "Deterministic, modular pipeline for normalizing DITA 1.3 packages"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+authors = [
+  { name = "Matt Briggs" }
+]
+
+
+# -------------------------------------------------------------------
+# Setuptools configuration (explicit discovery)
+# -------------------------------------------------------------------
+[tool.setuptools]
+packages = ["dita_package_processor"]
+
+[tool.setuptools.package-dir]
+"" = "."
+
+
+# -------------------------------------------------------------------
+# Runtime configuration for the DITA Package Processor
+# This defines WHAT the processor does, not how it is built.
+# -------------------------------------------------------------------
+[tool.dita_package_processor]
+
+
+# -------------------------------------------------------------------
+# Package-level configuration
+# -------------------------------------------------------------------
+[tool.dita_package_processor.package]
+
+root_dir = "/path/to/dita/package"
+docx_stem = "OutputDoc"
+
+
+# -------------------------------------------------------------------
+# Pipeline configuration
+# -------------------------------------------------------------------
+[tool.dita_package_processor.pipeline]
+
+steps = [
+  "remove-index-map",
+  "rename-main-map",
+  "process-maps",
+  "refactor-glossary",
+]
+
+
+# -------------------------------------------------------------------
+# Glossary / definition processing (optional)
+# -------------------------------------------------------------------
+[tool.dita_package_processor.definition]
+
+map = "Definitions.ditamap"
+navtitle = "Definition topic"
+
+
+# -------------------------------------------------------------------
+# Logging configuration
+# -------------------------------------------------------------------
+[tool.dita_package_processor.logging]
+
+level = "INFO"
+
+
+# -------------------------------------------------------------------
+# Extension configuration
+# -------------------------------------------------------------------
+[tool.dita_package_processor.extensions]
+
+[tool.dita_package_processor.extensions.regex_cleanup]
+
+enabled = false
+patterns = [
+  { find = "\\s+", replace = " " },
+  { find = "TODO:", replace = "" },
+]

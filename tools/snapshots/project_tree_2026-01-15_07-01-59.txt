@@ -1,0 +1,16 @@
+Project Tree Report
+Generated: 2026-01-15T07:01:59.528488
+Root: /conversion-engineering/dita_package_processor
+
+ASCII TREE
+=======================================================
+
+PROJECT METRICS
+============================================================
+Directories: 44
+Files:       167
+Lines of code: 24764
+Scan time:    9.87 seconds
+
+Interpretation:
+This is a structural snapshot of your repository. It reflects architecture, complexity, and surface area. If this feels large, it’s because the project is doing real work.
