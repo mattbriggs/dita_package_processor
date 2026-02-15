@@ -24,7 +24,9 @@ from typing import Any, Dict, List, Set
 
 import jsonschema
 
-from dita_package_processor.planning.contracts.errors import PlanningContractError
+from dita_package_processor.planning.contracts.errors import (
+    PlanningContractError,
+)
 from dita_package_processor.planning.contracts.planning_input import (
     PlanningArtifact,
     PlanningInput,
@@ -63,7 +65,7 @@ def normalize_discovery_report(discovery: Dict[str, Any]) -> PlanningInput:
 
     Parameters
     ----------
-    discovery : dict
+    discovery : Dict[str, Any]
         Raw discovery output.
 
     Returns
@@ -77,16 +79,29 @@ def normalize_discovery_report(discovery: Dict[str, Any]) -> PlanningInput:
     """
     LOGGER.info("Normalizing discovery → planning contract")
 
-    _require_keys(discovery, {"artifacts", "relationships", "summary"}, context="discovery")
+    if not isinstance(discovery, dict):
+        raise PlanningContractError(
+            "Discovery payload must be an object"
+        )
+
+    _require_keys(
+        discovery,
+        {"artifacts", "relationships", "summary"},
+        context="discovery",
+    )
 
     artifacts_raw = discovery["artifacts"]
     relationships_raw = discovery["relationships"]
 
     if not isinstance(artifacts_raw, list):
-        raise PlanningContractError("discovery.artifacts must be a list")
+        raise PlanningContractError(
+            "discovery.artifacts must be a list"
+        )
 
     if not isinstance(relationships_raw, list):
-        raise PlanningContractError("discovery.relationships must be a list")
+        raise PlanningContractError(
+            "discovery.relationships must be a list"
+        )
 
     LOGGER.debug("Artifacts discovered: %d", len(artifacts_raw))
     LOGGER.debug("Relationships discovered: %d", len(relationships_raw))
@@ -97,14 +112,22 @@ def normalize_discovery_report(discovery: Dict[str, Any]) -> PlanningInput:
     main_map = _select_main_map(artifacts)
 
     relationships = _normalize_relationships(relationships_raw)
-    _validate_relationship_endpoints(relationships, artifact_paths)
-
-    planning_input = PlanningInput(
-        contract_version=CONTRACT_VERSION,
-        main_map=main_map,
-        artifacts=artifacts,
-        relationships=relationships,
+    _validate_relationship_endpoints(
+        relationships,
+        artifact_paths,
     )
+
+    try:
+        planning_input = PlanningInput(
+            contract_version=CONTRACT_VERSION,
+            main_map=main_map,
+            artifacts=artifacts,
+            relationships=relationships,
+        )
+    except (ValueError, TypeError) as exc:
+        raise PlanningContractError(
+            f"PlanningInput construction failed: {exc}"
+        ) from exc
 
     _validate_against_schema(planning_input)
 
@@ -127,13 +150,19 @@ def _validate_against_schema(planning_input: PlanningInput) -> None:
     """
     Validate PlanningInput against JSON Schema.
     """
-    LOGGER.debug("Validating PlanningInput against schema: %s", _SCHEMA_PATH)
+    LOGGER.debug(
+        "Validating PlanningInput against schema: %s",
+        _SCHEMA_PATH,
+    )
 
     with _SCHEMA_PATH.open(encoding="utf-8") as fh:
         schema = json.load(fh)
 
     try:
-        jsonschema.validate(planning_input.to_dict(), schema)
+        jsonschema.validate(
+            planning_input.to_dict(),
+            schema,
+        )
     except jsonschema.ValidationError as exc:
         raise PlanningContractError(
             f"PlanningInput schema violation: {exc.message}"
@@ -145,31 +174,36 @@ def _validate_against_schema(planning_input: PlanningInput) -> None:
 # =============================================================================
 
 
-def _require_keys(data: Dict[str, Any], keys: Set[str], *, context: str) -> None:
+def _require_keys(
+    data: Dict[str, Any],
+    keys: Set[str],
+    *,
+    context: str,
+) -> None:
     """
     Ensure required keys exist.
     """
     missing = sorted(k for k in keys if k not in data)
     if missing:
-        raise PlanningContractError(f"{context} missing required keys: {missing}")
+        raise PlanningContractError(
+            f"{context} missing required keys: {missing}"
+        )
 
 
 # =============================================================================
-# Classification normalization (🔥 the wall)
+# Classification normalization
 # =============================================================================
 
 
 def _normalize_classification(value: Any) -> str | None:
     """
-    Coerce discovery classifications into planning semantics.
+    Collapse discovery classifications into planning semantics.
 
     Planning only understands:
         - "MAIN"
         - None
 
-    Everything else (GLOSSARY, REFERENCE, etc.) becomes None.
-
-    No rejection. No inference. Deterministic collapse.
+    Everything else deterministically becomes None.
     """
     if value in (None, "", "NONE"):
         return None
@@ -180,7 +214,6 @@ def _normalize_classification(value: Any) -> str | None:
     if value == "MAIN":
         return "MAIN"
 
-    # everything else becomes None (planning doesn't care)
     return None
 
 
@@ -189,7 +222,9 @@ def _normalize_classification(value: Any) -> str | None:
 # =============================================================================
 
 
-def _normalize_artifacts(raw: List[Dict[str, Any]]) -> List[PlanningArtifact]:
+def _normalize_artifacts(
+    raw: List[Dict[str, Any]],
+) -> List[PlanningArtifact]:
     """
     Normalize discovery artifacts into PlanningArtifact objects.
     """
@@ -199,30 +234,47 @@ def _normalize_artifacts(raw: List[Dict[str, Any]]) -> List[PlanningArtifact]:
         context = f"artifact[{idx}]"
 
         if not isinstance(record, dict):
-            raise PlanningContractError(f"{context} must be an object")
+            raise PlanningContractError(
+                f"{context} must be an object"
+            )
 
-        _require_keys(record, {"path", "artifact_type"}, context=context)
+        _require_keys(
+            record,
+            {"path", "artifact_type"},
+            context=context,
+        )
 
         path = record["path"]
         artifact_type = record["artifact_type"]
 
         if artifact_type not in ALLOWED_ARTIFACT_TYPES:
-            raise PlanningContractError(f"{context}.artifact_type invalid: {artifact_type}")
+            raise PlanningContractError(
+                f"{context}.artifact_type invalid: {artifact_type}"
+            )
 
-        classification = _normalize_classification(record.get("classification"))
+        classification = _normalize_classification(
+            record.get("classification")
+        )
 
         metadata = record.get("metadata") or {}
         if not isinstance(metadata, dict):
-            raise PlanningContractError(f"{context}.metadata must be object")
+            raise PlanningContractError(
+                f"{context}.metadata must be object"
+            )
 
-        artifacts.append(
-            PlanningArtifact(
+        try:
+            artifact = PlanningArtifact(
                 path=str(path),
                 artifact_type=str(artifact_type),
                 classification=classification,
                 metadata=metadata,
             )
-        )
+        except (ValueError, TypeError) as exc:
+            raise PlanningContractError(
+                f"{context} invalid: {exc}"
+            ) from exc
+
+        artifacts.append(artifact)
 
     return artifacts
 
@@ -232,21 +284,25 @@ def _normalize_artifacts(raw: List[Dict[str, Any]]) -> List[PlanningArtifact]:
 # =============================================================================
 
 
-def _select_main_map(artifacts: List[PlanningArtifact]) -> str:
+def _select_main_map(
+    artifacts: List[PlanningArtifact],
+) -> str:
     """
     Select exactly one MAIN map.
     """
     main_maps = [
         a.path
         for a in artifacts
-        if a.artifact_type == "map" and a.classification == "MAIN"
+        if a.artifact_type == "map"
+        and a.classification == "MAIN"
     ]
 
     LOGGER.debug("MAIN map candidates: %s", main_maps)
 
     if len(main_maps) != 1:
         raise PlanningContractError(
-            f"Exactly one artifact must be classified as MAIN map, found {len(main_maps)}"
+            "Exactly one artifact must be classified as MAIN map, "
+            f"found {len(main_maps)}"
         )
 
     return main_maps[0]
@@ -257,7 +313,9 @@ def _select_main_map(artifacts: List[PlanningArtifact]) -> str:
 # =============================================================================
 
 
-def _normalize_relationships(raw: List[Dict[str, Any]]) -> List[PlanningRelationship]:
+def _normalize_relationships(
+    raw: List[Dict[str, Any]],
+) -> List[PlanningRelationship]:
     """
     Normalize relationships with strict field enforcement.
     """
@@ -267,18 +325,29 @@ def _normalize_relationships(raw: List[Dict[str, Any]]) -> List[PlanningRelation
         context = f"relationship[{idx}]"
 
         if not isinstance(record, dict):
-            raise PlanningContractError(f"{context} must be an object")
+            raise PlanningContractError(
+                f"{context} must be an object"
+            )
 
-        _require_keys(record, {"source", "target", "type", "pattern_id"}, context=context)
+        _require_keys(
+            record,
+            {"source", "target", "type", "pattern_id"},
+            context=context,
+        )
 
-        relationships.append(
-            PlanningRelationship(
+        try:
+            relationship = PlanningRelationship(
                 source=str(record["source"]),
                 target=str(record["target"]),
                 rel_type=str(record["type"]),
                 pattern_id=str(record["pattern_id"]),
             )
-        )
+        except (ValueError, TypeError) as exc:
+            raise PlanningContractError(
+                f"{context} invalid: {exc}"
+            ) from exc
+
+        relationships.append(relationship)
 
     return relationships
 
@@ -295,15 +364,16 @@ def _validate_relationship_endpoints(
     """
     Ensure relationships reference known artifacts.
     """
-    errors: List[str] = []
+    unknown: List[str] = []
 
     for rel in relationships:
         if rel.source not in artifact_paths:
-            errors.append(rel.source)
+            unknown.append(rel.source)
         if rel.target not in artifact_paths:
-            errors.append(rel.target)
+            unknown.append(rel.target)
 
-    if errors:
+    if unknown:
         raise PlanningContractError(
-            f"Relationships reference unknown artifacts: {sorted(errors)}"
+            "Relationships reference unknown artifacts: "
+            f"{sorted(set(unknown))}"
         )

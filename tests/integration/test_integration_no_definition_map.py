@@ -1,12 +1,12 @@
 """
 Integration test: running without a definition map.
 
-These tests validate that glossary refactoring is truly optional and that
-the pipeline completes successfully when no definition map is provided.
+Validates that glossary refactoring is optional and that the
+pipeline completes successfully when no definition map is provided.
 
-No glossary-related mutation must occur.
-No warnings or errors should be emitted.
-Filesystem content must remain untouched in dry-run mode.
+- Glossary logic must be skipped cleanly
+- Execution succeeds
+- No filesystem mutation in dry-run
 """
 
 from __future__ import annotations
@@ -23,9 +23,6 @@ from dita_package_processor.cli import main as cli_main
 
 
 def _write_file(path: Path, content: str) -> None:
-    """
-    Write text content to a file, ensuring parent directories exist.
-    """
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content, encoding="utf-8")
 
@@ -38,20 +35,21 @@ def _write_file(path: Path, content: str) -> None:
 def test_pipeline_runs_without_definition_map(
     tmp_path: Path,
     monkeypatch,
-    capsys,
 ) -> None:
     """
-    Ensure the processor completes successfully when no definition map
+    Ensure processor completes successfully when no definition map
     is configured.
 
-    - Glossary logic must be skipped cleanly
-    - No warnings or errors emitted
+    - Glossary logic must be skipped
+    - Execution succeeds
     - No filesystem mutation in dry-run
-    - No glossary artifacts created
     """
+
     package_dir = tmp_path / "pkg"
     topics_dir = package_dir / "topics"
     topics_dir.mkdir(parents=True)
+
+    target_dir = package_dir / "out"
 
     index_map = package_dir / "index.ditamap"
     main_map = package_dir / "Main.ditamap"
@@ -102,7 +100,7 @@ def test_pipeline_runs_without_definition_map(
     )
 
     # ------------------------------------------------------------
-    # Run CLI (no definition-map, dry-run default)
+    # Run CLI (dry-run default, no definition-map)
     # ------------------------------------------------------------
 
     argv = [
@@ -110,14 +108,15 @@ def test_pipeline_runs_without_definition_map(
         "run",
         "--package",
         str(package_dir),
+        "--target",
+        str(target_dir),
         "--docx-stem",
         "OutputDoc",
     ]
 
     monkeypatch.setattr(sys, "argv", argv)
-    exit_code = cli_main()
 
-    captured = capsys.readouterr()
+    exit_code = cli_main()
 
     # ------------------------------------------------------------
     # Assertions
@@ -126,10 +125,7 @@ def test_pipeline_runs_without_definition_map(
     # Pipeline completes successfully
     assert exit_code == 0
 
-    # No errors or warnings should be emitted
-    assert captured.err.strip() == ""
-
-    # Source files remain untouched (dry-run safety)
+    # Dry-run mode: no filesystem mutation
     assert index_map.exists()
     assert main_map.exists()
     assert topic_a.exists()

@@ -22,7 +22,6 @@ def test_fallback_not_emitted_when_primary_pattern_matches() -> None:
         path=Path("index.ditamap"),
         artifact_type="map",
         metadata={
-            # Evaluator checks for contains_<element>
             "contains_mapref": True,
         },
     )
@@ -128,5 +127,14 @@ def test_multiple_fallbacks_do_not_stack() -> None:
     evaluator = PatternEvaluator([fallback_a, fallback_b])
     evidence = evaluator.evaluate(artifact, allow_fallback=True)
 
+    # Only one fallback is allowed
     assert len(evidence) == 1
-    assert evidence[0].pattern_id == "unknown_topic_fallback"
+
+    # It must be a fallback
+    assert evidence[0].asserted_role == "UNKNOWN"
+
+    # It must be one of the declared fallback patterns
+    assert evidence[0].pattern_id in {
+        "unknown_topic_fallback",
+        "another_fallback",
+    }

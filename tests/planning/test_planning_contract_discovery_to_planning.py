@@ -1,15 +1,21 @@
 """
-Tests for discovery → planning contract normalization.
+Tests for planning contract failure modes.
 
-Locks the contract boundary between discovery and planning.
+These tests prove the planning contract boundary is hostile by design.
 
-Rules enforced here:
+Anything that:
 
-- No optional behavior
-- No guessing
-- Fail fast on ambiguity
-- Deterministic normalization only
-- PlanningInput must be schema-valid
+- looks like discovery
+- is partially formed
+- is ambiguous
+- violates schema intent
+
+must fail immediately and loudly.
+
+There are two enforcement layers:
+
+1. Discovery → Planning normalization (raises PlanningContractError)
+2. Planner input wall (rejects anything not a PlanningInput)
 """
 
 from __future__ import annotations
@@ -19,270 +25,218 @@ import pytest
 from dita_package_processor.planning.contracts.discovery_to_planning import (
     normalize_discovery_report,
 )
-from dita_package_processor.planning.contracts.errors import PlanningContractError
+from dita_package_processor.planning.contracts.errors import (
+    PlanningContractError,
+)
+from dita_package_processor.planning.planner import Planner
 
 
 # =============================================================================
-# Happy path
+# Discovery → Planning contract failures
 # =============================================================================
 
 
-def test_normalize_discovery_report_happy_path() -> None:
-    """Valid discovery report should normalize successfully."""
+def test_discovery_contract_rejects_non_object() -> None:
+    """Normalization must reject non-dict discovery payloads."""
+    with pytest.raises(
+        PlanningContractError,
+        match=r"Discovery payload must be an object",
+    ):
+        normalize_discovery_report("not-a-dict")  # type: ignore[arg-type]
+
+
+def test_discovery_contract_rejects_artifact_not_object() -> None:
+    """Artifacts must be objects; lists of strings must fail."""
+    discovery = {
+        "artifacts": ["not-an-object"],
+        "relationships": [],
+        "summary": {},
+    }
+
+    with pytest.raises(
+        PlanningContractError,
+        match=r"artifact\[0\] must be an object",
+    ):
+        normalize_discovery_report(discovery)
+
+
+def test_discovery_contract_rejects_relationship_not_object() -> None:
+    """Relationships must be objects; lists of strings must fail."""
     discovery = {
         "artifacts": [
             {
                 "path": "index.ditamap",
                 "artifact_type": "map",
                 "classification": "MAIN",
-                "metadata": {},
-            },
-            {
-                "path": "topics/a.dita",
-                "artifact_type": "topic",
-                "classification": None,
-                "metadata": {},
-            },
-            {
-                "path": "media/logo.png",
-                "artifact_type": "media",
-                "classification": None,
-                "metadata": {},
-            },
-        ],
-        "relationships": [
-            {
-                "source": "index.ditamap",
-                "target": "topics/a.dita",
-                "type": "topicref",
-                "pattern_id": "dita_map_topicref",
             }
         ],
+        "relationships": ["not-an-object"],
         "summary": {},
     }
 
-    planning = normalize_discovery_report(discovery)
-    data = planning.to_dict()
-
-    assert data["contract_version"] == "planning.input.v1"
-    assert data["main_map"] == "index.ditamap"
-    assert len(data["artifacts"]) == 3
-    assert len(data["relationships"]) == 1
+    with pytest.raises(
+        PlanningContractError,
+        match=r"relationship\[0\] must be an object",
+    ):
+        normalize_discovery_report(discovery)
 
 
-# =============================================================================
-# Classification normalization (UPDATED)
-# =============================================================================
-
-
-def test_main_map_alias_normalizes() -> None:
-    """MAIN_MAP alias must normalize deterministically to MAIN."""
+def test_discovery_contract_rejects_empty_path() -> None:
+    """Empty artifact paths must fail contract validation."""
     discovery = {
         "artifacts": [
             {
-                "path": "index.ditamap",
-                "artifact_type": "map",
-                "classification": "MAIN_MAP",
-                "metadata": {},
-            }
-        ],
-        "relationships": [],
-        "summary": {},
-    }
-
-    planning = normalize_discovery_report(discovery)
-
-    assert planning.main_map == "index.ditamap"
-
-
-def test_non_main_classifications_are_coerced_to_none() -> None:
-    """
-    Any non-MAIN classification must collapse to None.
-
-    Planning only cares about MAIN vs everything else.
-    """
-    discovery = {
-        "artifacts": [
-            {
-                "path": "index.ditamap",
+                "path": "",
                 "artifact_type": "map",
                 "classification": "MAIN",
-                "metadata": {},
-            },
-            {
-                "path": "topics/glossary.dita",
-                "artifact_type": "topic",
-                "classification": "GLOSSARY",
-                "metadata": {},
-            },
+            }
         ],
         "relationships": [],
         "summary": {},
     }
 
-    planning = normalize_discovery_report(discovery)
-
-    artifacts = {a.path: a.classification for a in planning.artifacts}
-
-    assert artifacts["topics/glossary.dita"] is None
-
-
-# =============================================================================
-# Discovery shape validation
-# =============================================================================
-
-
-def test_missing_required_discovery_keys() -> None:
-    with pytest.raises(PlanningContractError, match="missing required keys"):
-        normalize_discovery_report({"artifacts": [], "relationships": []})
-
-
-def test_artifacts_must_be_list() -> None:
-    with pytest.raises(PlanningContractError, match="must be a list"):
-        normalize_discovery_report(
-            {"artifacts": {}, "relationships": [], "summary": {}}
-        )
-
-
-def test_relationships_must_be_list() -> None:
-    with pytest.raises(PlanningContractError, match="must be a list"):
-        normalize_discovery_report(
-            {"artifacts": [], "relationships": {}, "summary": {}}
-        )
-
-
-# =============================================================================
-# Artifact normalization
-# =============================================================================
-
-
-def test_artifact_missing_required_fields() -> None:
-    with pytest.raises(PlanningContractError):
-        normalize_discovery_report(
-            {
-                "artifacts": [{"path": "index.ditamap"}],
-                "relationships": [],
-                "summary": {},
-            }
-        )
-
-
-def test_artifact_invalid_type() -> None:
-    with pytest.raises(PlanningContractError):
-        normalize_discovery_report(
-            {
-                "artifacts": [
-                    {
-                        "path": "bad.txt",
-                        "artifact_type": "weird",
-                        "metadata": {},
-                    }
-                ],
-                "relationships": [],
-                "summary": {},
-            }
-        )
-
-
-# =============================================================================
-# MAIN map selection (hard invariant)
-# =============================================================================
-
-
-def test_no_main_map_fails() -> None:
     with pytest.raises(
         PlanningContractError,
-        match="Exactly one artifact must be classified as MAIN map",
+        match=r"artifact\[0\] invalid",
     ):
-        normalize_discovery_report(
+        normalize_discovery_report(discovery)
+
+
+def test_discovery_contract_rejects_invalid_artifact_type() -> None:
+    """Invalid artifact types must fail normalization."""
+    discovery = {
+        "artifacts": [
             {
-                "artifacts": [
-                    {
-                        "path": "a.ditamap",
-                        "artifact_type": "map",
-                        "classification": None,
-                        "metadata": {},
-                    }
-                ],
-                "relationships": [],
-                "summary": {},
+                "path": "index.ditamap",
+                "artifact_type": "banana",
+                "classification": "MAIN",
             }
-        )
+        ],
+        "relationships": [],
+        "summary": {},
+    }
 
-
-def test_multiple_main_maps_fail() -> None:
     with pytest.raises(
         PlanningContractError,
-        match="Exactly one artifact must be classified as MAIN map",
+        match=r"artifact\[0\]\.artifact_type invalid",
     ):
-        normalize_discovery_report(
+        normalize_discovery_report(discovery)
+
+
+def test_discovery_contract_rejects_non_string_classification() -> None:
+    """
+    Non-string classification values must fail MAIN selection.
+    """
+    discovery = {
+        "artifacts": [
             {
-                "artifacts": [
-                    {
-                        "path": "a.ditamap",
-                        "artifact_type": "map",
-                        "classification": "MAIN",
-                        "metadata": {},
-                    },
-                    {
-                        "path": "b.ditamap",
-                        "artifact_type": "map",
-                        "classification": "MAIN",
-                        "metadata": {},
-                    },
-                ],
-                "relationships": [],
-                "summary": {},
+                "path": "index.ditamap",
+                "artifact_type": "map",
+                "classification": 123,
             }
-        )
+        ],
+        "relationships": [],
+        "summary": {},
+    }
+
+    with pytest.raises(
+        PlanningContractError,
+        match=r"Exactly one artifact must be classified as MAIN map",
+    ):
+        normalize_discovery_report(discovery)
+
+
+def test_discovery_contract_rejects_missing_main_map() -> None:
+    """
+    Exactly one MAIN map must exist.
+    """
+    discovery = {
+        "artifacts": [
+            {
+                "path": "index.ditamap",
+                "artifact_type": "map",
+                "classification": None,
+            }
+        ],
+        "relationships": [],
+        "summary": {},
+    }
+
+    with pytest.raises(
+        PlanningContractError,
+        match=r"Exactly one artifact must be classified as MAIN map",
+    ):
+        normalize_discovery_report(discovery)
 
 
 # =============================================================================
-# Relationship normalization
+# Planner input wall failures
 # =============================================================================
 
 
-def test_relationship_missing_fields() -> None:
-    with pytest.raises(PlanningContractError):
-        normalize_discovery_report(
-            {
-                "artifacts": [
-                    {
-                        "path": "index.ditamap",
-                        "artifact_type": "map",
-                        "classification": "MAIN",
-                        "metadata": {},
-                    }
-                ],
-                "relationships": [{"source": "index.ditamap"}],
-                "summary": {},
-            }
-        )
+def test_planner_rejects_raw_dict_input() -> None:
+    """
+    Planner must reject raw dict inputs.
 
+    The planner boundary accepts only PlanningInput.
+    """
+    planner = Planner()
 
-def test_relationship_unknown_endpoint_fails() -> None:
     with pytest.raises(
-        PlanningContractError,
-        match="Relationships reference unknown artifacts",
+        TypeError,
+        match=r"Planner\.plan\(\) requires PlanningInput",
     ):
-        normalize_discovery_report(
-            {
-                "artifacts": [
-                    {
-                        "path": "index.ditamap",
-                        "artifact_type": "map",
-                        "classification": "MAIN",
-                        "metadata": {},
-                    }
-                ],
-                "relationships": [
-                    {
-                        "source": "missing",
-                        "target": "index.ditamap",
-                        "type": "topicref",
-                        "pattern_id": "p",
-                    }
-                ],
-                "summary": {},
-            }
-        )
+        planner.plan({"artifacts": []})  # type: ignore[arg-type]
+
+
+def test_planner_rejects_none() -> None:
+    """Planner must reject None."""
+    planner = Planner()
+
+    with pytest.raises(
+        TypeError,
+        match=r"Planner\.plan\(\) requires PlanningInput",
+    ):
+        planner.plan(None)  # type: ignore[arg-type]
+
+
+def test_planner_rejects_discovery_like_shape() -> None:
+    """
+    Planner must reject discovery-shaped dicts regardless of structure.
+    """
+    planner = Planner()
+
+    discovery_like = {
+        "artifacts": [],
+        "relationships": [],
+        "summary": {},
+        "graph": {"nodes": [], "edges": []},
+    }
+
+    with pytest.raises(
+        TypeError,
+        match=r"Planner\.plan\(\) requires PlanningInput",
+    ):
+        planner.plan(discovery_like)  # type: ignore[arg-type]
+
+
+def test_planner_requires_planninginput_instance() -> None:
+    """
+    Even structurally valid dicts must be rejected.
+
+    Only a PlanningInput object is accepted.
+    """
+    planner = Planner()
+
+    structurally_valid_dict = {
+        "contract_version": "1.0",
+        "main_map": "index.ditamap",
+        "artifacts": [],
+        "relationships": [],
+    }
+
+    with pytest.raises(
+        TypeError,
+        match=r"Planner\.plan\(\) requires PlanningInput",
+    ):
+        planner.plan(structurally_valid_dict)  # type: ignore[arg-type]

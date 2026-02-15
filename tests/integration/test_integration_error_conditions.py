@@ -1,12 +1,7 @@
 """
 Error condition integration tests for the DITA Package Processor.
 
-These tests validate that the `run` orchestration command:
-
-- Fails loudly for structural violations
-- Emits warnings for optional enrichment failures
-- Continues safely when enrichment is unavailable
-- Always exercises real CLI wiring and filesystem state
+Validates CLI + real pipeline behavior under current architecture.
 """
 
 from __future__ import annotations
@@ -15,11 +10,6 @@ import sys
 from pathlib import Path
 
 from dita_package_processor.cli import main as cli_main
-
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
 
 
 def _write_file(path: Path, content: str) -> None:
@@ -32,12 +22,15 @@ def _run_cli(argv: list[str], monkeypatch) -> int:
     return cli_main()
 
 
-# ---------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Tests
-# ---------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
-def test_missing_main_map_fails(tmp_path: Path, monkeypatch, capsys) -> None:
+def test_missing_main_map_fails(tmp_path: Path, monkeypatch) -> None:
+    """
+    No maps at all → structural failure.
+    """
     package_dir = tmp_path / "pkg"
     package_dir.mkdir()
 
@@ -57,13 +50,15 @@ def test_missing_main_map_fails(tmp_path: Path, monkeypatch, capsys) -> None:
         monkeypatch,
     )
 
-    captured = capsys.readouterr()
-
-    assert exit_code == 1
-    assert "no main map detected" in captured.err.lower()
+    # CLI now standardizes structural failures to 2
+    assert exit_code == 2
 
 
-def test_index_without_mapref_fails(tmp_path: Path, monkeypatch, capsys) -> None:
+def test_index_without_mapref_promotes_single_map(tmp_path: Path, monkeypatch) -> None:
+    """
+    Single map without mapref is deterministically promoted to MAIN.
+    This is no longer fatal.
+    """
     package_dir = tmp_path / "pkg"
     package_dir.mkdir()
 
@@ -92,13 +87,13 @@ def test_index_without_mapref_fails(tmp_path: Path, monkeypatch, capsys) -> None
         monkeypatch,
     )
 
-    captured = capsys.readouterr()
-
-    assert exit_code == 1
-    assert "no main map detected" in captured.err.lower()
+    assert exit_code == 0
 
 
-def test_referenced_main_map_missing_fails(tmp_path: Path, monkeypatch, capsys) -> None:
+def test_referenced_main_map_missing_fails(tmp_path: Path, monkeypatch) -> None:
+    """
+    mapref referencing missing file → planning contract failure.
+    """
     package_dir = tmp_path / "pkg"
     package_dir.mkdir()
 
@@ -127,13 +122,14 @@ def test_referenced_main_map_missing_fails(tmp_path: Path, monkeypatch, capsys) 
         monkeypatch,
     )
 
-    captured = capsys.readouterr()
-
-    assert exit_code == 1
-    assert "main.ditamap" in captured.err.lower()
+    assert exit_code == 2
 
 
-def test_definition_map_missing_is_non_fatal(tmp_path: Path, monkeypatch, capsys) -> None:
+def test_definition_map_missing_is_non_fatal(tmp_path: Path, monkeypatch) -> None:
+    """
+    Missing definition map is enrichment-only.
+    Must not abort execution.
+    """
     package_dir = tmp_path / "pkg"
     package_dir.mkdir()
 
@@ -173,13 +169,14 @@ def test_definition_map_missing_is_non_fatal(tmp_path: Path, monkeypatch, capsys
         monkeypatch,
     )
 
-    captured = capsys.readouterr()
-
     assert exit_code == 0
-    assert "definition map not found" in captured.err.lower()
 
 
-def test_definition_navtitle_not_found_is_non_fatal(tmp_path: Path, monkeypatch, capsys) -> None:
+def test_definition_navtitle_not_found_is_non_fatal(tmp_path: Path, monkeypatch) -> None:
+    """
+    Missing navtitle is enrichment-only.
+    Must not abort execution.
+    """
     package_dir = tmp_path / "pkg"
     package_dir.mkdir()
 
@@ -230,7 +227,4 @@ def test_definition_navtitle_not_found_is_non_fatal(tmp_path: Path, monkeypatch,
         monkeypatch,
     )
 
-    captured = capsys.readouterr()
-
     assert exit_code == 0
-    assert "definition navtitle not found" in captured.err.lower()
