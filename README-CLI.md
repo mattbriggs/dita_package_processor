@@ -1,26 +1,27 @@
 # DITA Package Processor CLI  
-Deterministic Discovery, Normalization, Planning, and Execution for DITA Packages
+Deterministic Pipeline Execution for DITA Packages
 
-The **DITA Package Processor CLI** is a strict, contract-driven execution interface.
+The **DITA Package Processor CLI** is a strict, contract-driven interface to a deterministic processing engine.
 
 It exists for environments where:
 
-- package structure cannot be trusted
-- assumptions must be proven before action
-- transformations must be explicit and reviewable
-- safety matters more than convenience
+- package structure cannot be trusted  
+- assumptions must be proven before action  
+- transformations must be explicit and reviewable  
+- mutation must be auditable  
 
-This CLI does not optimize for speed or ergonomics.  
-It optimizes for **correctness, determinism, and auditability**.
+This CLI does not optimize for convenience.  
+It optimizes for **correctness, determinism, and safety**.
 
 Observe first. Decide explicitly. Then act.
 
-It is not a wrapper.  
-It is a transactional interface to a deterministic engine.
 
 
 
-## How to Run
+
+# How to Run
+
+From source:
 
 ```bash
 python -m dita_package_processor <command> [options]
@@ -37,325 +38,291 @@ Behavior is identical.
 
 
 
-## Mental Model
 
-The CLI implements a **strict, linear pipeline**:
+
+# Mental Model
+
+The CLI exposes a **deterministic processing pipeline**:
 
 ```
-discover → normalize → plan → execute
+Discovery → Planning → Execution → Materialization
 ```
+
+For most users, this is invoked through a single command:
+
+```
+run
+```
+
+You may also execute a previously generated plan.
 
 Each phase:
 
-- runs independently
-- produces a durable artifact
-- consumes only the previous artifact
-- refuses invalid input
-- is deterministic
-- is schema-validated
-
-Artifacts are **not interchangeable**.
-
-If you pass the wrong artifact to a phase, it fails immediately.
-
-This is intentional.
+- is deterministic  
+- is schema-validated  
+- fails loudly on ambiguity  
+- never guesses  
+- never mutates implicitly  
 
 
 
-## Reality Check (Important)
 
-**Current behavior:**
 
-All four phases are implemented and meaningful:
+# Primary Command: `run`
+
+The `run` command executes the full pipeline:
 
 ```
 discover → normalize → plan → execute
 ```
 
-### Execution behavior
-
-Execution now supports **two explicit modes**:
-
-- **dry-run (default)** – no filesystem mutation
-- **apply** – real filesystem mutation via sandboxed execution
-
-There is **no implicit execution**.
-
-Mutation only occurs when you explicitly opt in.
-
-
-
-## Contract Boundaries
-
-| Phase | Input | Output |
-|------|------|--------|
-| discover | package directory | discovery.json |
-| normalize | discovery.json | planning_input.json |
-| plan | planning_input.json | plan.json |
-| execute | plan.json | execution report |
-
-Artifacts are **not interchangeable**.
-
-Examples:
-
-```
-plan discovery.json           → fails
-execute planning_input.json  → fails
-normalize plan.json          → fails
-```
-
-The CLI never guesses.
-
-
-
-## Discovery Contract
-
-Discovery emits:
-
-- artifacts
-- relationships
-- summary metadata
-
-Relationships use fixed, schema-locked fields:
-
-```
-source
-target
-type
-pattern_id
-```
-
-These names are stable.
-
-
-
-## Workflow
-
-### 1. Discover
+## Minimal Example (Dry-Run)
 
 ```bash
-python -m dita_package_processor discover \
-  --package /path/to/dita \
-  --output discovery.json
+dita_package_processor run \
+  --package /path/to/package \
+  --docx-stem OutputDoc
 ```
 
 Behavior:
 
-- scans files
-- builds an inventory
-- extracts relationships
-- **read-only**
+- performs read-only discovery  
+- generates a deterministic plan  
+- executes in **dry-run mode**  
+- produces an ExecutionReport  
+
+No filesystem mutation occurs.
 
 
 
-### 2. Normalize
-
-```bash
-python -m dita_package_processor normalize \
-  --input discovery.json \
-  --output planning_input.json
-```
-
-Behavior:
-
-- validates structure
-- enforces exactly one MAIN map
-- validates relationships
-- locks schema
-
-Output:
-
-```
-planning_input.json
-```
-
-This is the **only valid input** for planning.
-
-
-
-### 3. Plan
+## Real Execution (Mutation Enabled)
 
 ```bash
-python -m dita_package_processor plan \
-  --input planning_input.json \
-  --output plan.json
-```
-
-Behavior:
-
-- hydrates a planning contract
-- generates deterministic actions
-- validates plan schema
-- **read-only**
-
-
-
-### 4. Execute
-
-Execution consumes a validated plan and produces an **ExecutionReport**.
-
-It requires **explicit path contracts**.
-
-#### Required arguments
-
-- `--plan` – path to plan.json
-- `--source-root` – root directory containing source package files
-- `--output` – sandbox/output directory
-
-#### Optional arguments
-
-- `--apply` – allow real filesystem mutation  
-  (absence = dry-run)
-- `--report FILE` – write ExecutionReport JSON
-- `--json` – emit execution report to stdout
-
-#### Dry-run (default)
-
-```bash
-python -m dita_package_processor execute \
-  --plan plan.json \
-  --source-root /path/to/package \
-  --output build
-```
-
-Behavior:
-
-- simulates action dispatch
-- **does not mutate the filesystem**
-- may create the output directory
-- produces a deterministic execution report
-
-#### Real execution (filesystem mutation)
-
-```bash
-python -m dita_package_processor execute \
-  --plan plan.json \
-  --source-root /path/to/package \
-  --output build \
+dita_package_processor run \
+  --package /path/to/package \
+  --target /path/to/output \
+  --docx-stem OutputDoc \
   --apply
 ```
 
 Behavior:
 
-- executes actions via filesystem executor
-- enforces sandbox boundaries
-- enforces mutation policy
-- records all results in ExecutionReport
+- performs discovery and planning  
+- executes via filesystem executor  
+- mutates only inside `--target`  
+- enforces sandbox boundaries  
+- produces an ExecutionReport  
 
-There is **no `--dry-run` flag**.
+Mutation requires both:
 
-Dry-run is the default.  
-Mutation requires `--apply`.
+- `--apply`
+- `--target`
+
+There is no implicit mutation.
 
 
 
-## run — Full Pipeline
 
-Runs the full pipeline:
 
-```
-discover → normalize → plan → execute
-```
+# Executing an Existing Plan
 
-Example:
+You may execute a previously generated plan.
 
 ```bash
-python -m dita_package_processor run \
-  --package /path/to/dita \
-  --output build
+dita_package_processor execute \
+  --plan plan.json \
+  --target /path/to/output
+```
+
+Dry-run is default.
+
+To allow mutation:
+
+```bash
+dita_package_processor execute \
+  --plan plan.json \
+  --target /path/to/output \
+  --apply
 ```
 
 Behavior:
 
-- performs discovery, normalization, planning
-- executes in **dry-run mode by default**
-- requires `--apply` for real filesystem mutation
-- produces the same artifacts as running each phase manually
+- skips discovery  
+- skips planning  
+- loads and validates the plan  
+- executes deterministically  
 
 
 
-## Command Reference
 
-### discover
-```
-dita_package_processor discover --package PATH --output discovery.json
-```
 
-### normalize
-```
-dita_package_processor normalize --input discovery.json --output planning_input.json
-```
+# Execution Modes
 
-### plan
-```
-dita_package_processor plan --input planning_input.json --output plan.json
-```
+| Mode | Default | Filesystem Mutation |
+|------|--------|--------------------|
+| Dry-run | Yes | No |
+| Apply | No | Yes |
 
-### execute
-```
-dita_package_processor execute \
-  --plan plan.json \
-  --source-root PATH \
-  --output DIR \
-  [--apply] \
-  [--report FILE] \
-  [--json]
-```
+There is no `--dry-run` flag.  
+Dry-run is the default behavior.
 
-### run
-```
-dita_package_processor run --package PATH --output DIR [--apply]
-```
+Real mutation requires `--apply`.
 
 
 
-## Flags
-
-Flags are **per-command**, not global.
-
-Common ones:
-
-| Flag | Meaning |
-|------|--------|
-| --json | emit JSON output |
-| --report | write ExecutionReport to file |
-| --apply | allow filesystem mutation |
-| --help | help text |
 
 
+# Required Arguments
 
-## Guarantees
+## run
+
+| Argument | Required | Description |
+|----------|----------|------------|
+| `--package` | Yes | Path to DITA package directory |
+| `--docx-stem` | Yes | Base name for generated artifacts |
+| `--target` | Required with `--apply` | Output directory |
+| `--apply` | Optional | Enable filesystem mutation |
+| `--report FILE` | Optional | Write ExecutionReport JSON |
+
+## execute
+
+| Argument | Required | Description |
+|----------|----------|------------|
+| `--plan` | Yes | Path to plan.json |
+| `--target` | Yes | Output directory |
+| `--apply` | Optional | Enable filesystem mutation |
+| `--report FILE` | Optional | Write ExecutionReport JSON |
+| `--json` | Optional | Emit report to stdout |
+
+
+
+
+
+# What Happens Internally During `run`
+
+1. **Discovery**
+   - Scans package
+   - Extracts artifacts
+   - Extracts relationships
+   - Classifies maps and topics
+   - Read-only
+
+2. **Normalization**
+   - Converts discovery output into PlanningInput
+   - Enforces exactly one MAIN map
+   - Validates relationships
+   - Schema-validates contract
+
+3. **Planning**
+   - Generates deterministic plan actions
+   - Sorts artifacts
+   - Validates plan schema
+   - No filesystem interaction
+
+4. **Execution**
+   - Dispatches actions
+   - Uses noop executor (dry-run) or filesystem executor
+   - Preserves order
+   - Produces ExecutionReport
+
+5. **Materialization**
+   - Finalizes output artifacts
+   - Writes report if requested
+
+
+
+
+
+# Execution Report
+
+Every execution produces an `ExecutionReport`.
+
+The report includes:
+
+- execution_id  
+- dry_run flag  
+- per-action results  
+- status summary  
+- handler information  
+
+It is the authoritative record of what occurred.
+
+Logs are not the contract.  
+The report is.
+
+
+
+
+
+# Contract Guarantees
 
 Across all commands:
 
-- no implicit mutation
-- no guessing
-- no cwd-relative paths
-- no silent fixes
-- explicit source root required for execution
-- sandboxed filesystem writes only
-- every step auditable
-- failures are explicit and fatal
+- No implicit mutation  
+- No heuristic inference  
+- No silent fixes  
+- No cwd-relative guessing  
+- No execution without explicit path contracts  
+- Sandbox-only filesystem writes  
+- Deterministic action ordering  
+- Schema-validated boundaries  
+- Fail-fast behavior  
 
 
 
-## TL;DR
 
-Today:
 
+# Common Examples
+
+## Dry-run full pipeline
+
+```bash
+dita_package_processor run \
+  --package ./package \
+  --docx-stem OutputDoc
 ```
-discover → normalize → plan → execute
+
+## Real execution
+
+```bash
+dita_package_processor run \
+  --package ./package \
+  --target ./out \
+  --docx-stem OutputDoc \
+  --apply
 ```
 
-Execution is:
+## Execute existing plan safely
 
-- dry-run by default
-- real mutation only with `--apply`
-- fully sandboxed
-- path-explicit
-- policy-enforced
+```bash
+dita_package_processor execute \
+  --plan plan.json \
+  --target ./out
+```
 
-You can now **run the full pipeline on a real DITA package** and either:
+## Execute existing plan with mutation
 
-- simulate the transformation safely, or
-- apply it deliberately, with receipts.
+```bash
+dita_package_processor execute \
+  --plan plan.json \
+  --target ./out \
+  --apply
+```
+
+
+
+
+
+# What This CLI Is Not
+
+It is not:
+
+- interactive  
+- adaptive  
+- heuristic  
+- self-healing  
+- forgiving  
+
+If input is invalid, it fails.
+
+That is intentional.

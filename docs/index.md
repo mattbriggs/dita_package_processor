@@ -2,25 +2,26 @@
 
 The **DITA Package Processor** deterministically analyzes, plans, and transforms **DITA 1.3 packages** into a controlled, publication-ready structure.
 
-It operates as a **strict, multi-phase batch pipeline** with explicit boundaries between:
+It operates as a strict, multi-phase batch pipeline with explicit boundaries between:
 
 - **Discovery** – observe and describe what exists  
 - **Planning** – derive a validated, auditable execution plan  
-- **Execution** – apply or simulate changes using a bounded executor  
+- **Execution** – dispatch deterministic actions  
+- **Materialization** – finalize and persist execution results  
 
 Every run is explicit, repeatable, and explainable.
 
 There is no inference.  
 There is no runtime guessing.  
-Nothing mutates unless an explicit executor is invoked with permission.
+Nothing mutates unless explicitly permitted.
 
----
+
 
 ## What It Does
 
-Given a bulk-generated DITA package, the processor performs a **three-stage workflow**.
+Given a bulk-generated DITA package, the processor executes a deterministic workflow.
 
-Each stage:
+Each phase:
 
 - has a single responsibility  
 - produces a durable, machine-readable artifact  
@@ -29,241 +30,268 @@ Each stage:
 
 The system is designed so that **structure is proven before behavior is allowed**.
 
----
 
-## Phase 1: Discovery (Read-only)
+
+# Phase 1: Discovery (Read-only)
 
 Discovery scans the input package without mutating any files.
 
 It:
 
 - Locates maps, topics, and media  
-- Classifies artifacts by observable structure  
+- Classifies artifacts using declared patterns  
 - Builds a dependency graph  
 - Records structural relationships  
-- Identifies known patterns and unsafe conditions  
+- Detects ambiguous or unsupported conditions  
 
-Discovery produces a **Discovery Contract** that describes:
+Discovery produces a **Discovery Inventory**, describing:
 
-- artifacts and their roles  
+- artifacts and their observable roles  
 - dependency edges between artifacts  
 - structural invariants  
-- ambiguous or unsupported constructs  
+- evidence used for classification  
 
-Discovery exists to answer exactly one question:
+Discovery answers one question:
 
-> *What is actually in this package?*
+> What is actually in this package?
 
 If something cannot be observed safely, it is not acted upon later.
 
----
+Discovery never mutates the filesystem.
 
-## Phase 2: Planning (Deterministic, Non-destructive)
 
-Planning converts discovery output into an **explicit execution plan**.
+
+# Phase 2: Planning (Deterministic, Non-destructive)
+
+Planning converts discovery output into an explicit **Plan**.
 
 The plan:
 
-- Contains **no executable logic**  
-- Describes **what actions would be taken and why**  
-- Is schema-validated and serializable  
-- Is deterministic and repeatable  
-- Can be inspected, reviewed, versioned, and tested  
+- contains no executable logic  
+- describes what actions would be taken  
+- preserves deterministic ordering  
+- is schema-validated  
+- is serializable and reviewable  
 
-A plan may include actions such as:
+Planning does not touch the filesystem.
 
-- Selecting the true main map  
-- Copying maps, topics, and media into a new structure  
-- Renaming the main map based on a DOCX stem  
-- Reparenting `topicref` elements deterministically  
-- Wrapping or restructuring maps  
-- Injecting or refactoring glossary content when configured  
+It does not infer new structure.  
+It does not “fix” ambiguity.
 
-Planning is considered *green* when:
-
-- Actions are non-empty (unless analysis-only)  
-- Ordering is deterministic  
-- Output conforms to the plan schema  
-
-If planning cannot prove an action is safe, **the action is not planned**.
+If planning cannot prove that an action is structurally valid, it refuses to produce a plan.
 
 Planning answers a different question:
 
-> *What would we do if execution were allowed?*
+> What would we do if execution were allowed?
 
----
 
-## Phase 3: Execution (Explicit and Bounded)
 
-Execution consumes a validated plan and applies it using a concrete **executor**.
+# Phase 3: Execution (Explicit and Bounded)
 
-Key properties:
+Execution consumes a validated plan and dispatches actions using a concrete executor.
 
-- Executors are **named, explicit implementations**  
-- Execution is **dry-run by default**  
-- Filesystem mutation requires explicit opt-in (`--apply`)  
-- All paths are resolved via a declared `source-root` and sandbox  
-- Each action is executed exactly once, in order  
+Execution properties:
+
+- Dry-run is the default  
+- Filesystem mutation requires explicit `--apply`  
+- All writes are sandboxed to a declared target directory  
+- Actions execute exactly once, in order  
 - Results are captured as structured data  
 
-Two executors exist today:
+Two executors exist:
 
-- **DryRunExecutor (`noop`)**  
-  - Always simulates  
-  - Never mutates  
-  - Used when `--apply` is not provided  
+### DryRunExecutor (`noop`)
+- Simulates execution  
+- Performs no mutation  
+- Used when `--apply` is absent  
 
-- **FilesystemExecutor (`filesystem`)**  
-  - Performs real filesystem operations  
-  - Enforces sandbox and mutation policies  
-  - Requires explicit `--apply`  
+### FilesystemExecutor (`filesystem`)
+- Performs real filesystem operations  
+- Enforces sandbox boundaries  
+- Requires explicit `--apply`  
 
-Execution produces an **Execution Report** that:
+Execution produces an immutable **ExecutionReport** containing:
 
-- records execution identity and mode  
-- records every action result  
-- records failures, skips, and successes  
-- is schema-defined and immutable  
+- execution identity  
+- mode (dry-run or apply)  
+- ordered action results  
+- success, skip, and failure states  
 
-Execution may also emit an **Execution Manifest**, recording *what actions occurred*, not an inferred filesystem state.
+Logs are not the contract.  
+The ExecutionReport is.
 
----
 
-## Quick Start
 
-### Run the full pipeline (safe by default)
+# Phase 4: Materialization
+
+Materialization operates strictly on execution results.
+
+It:
+
+- performs preflight validation  
+- ensures target directory safety  
+- finalizes output artifacts  
+- writes execution reports when requested  
+
+Materialization never performs discovery or planning logic.
+
+It is the final boundary before persistence.
+
+
+
+# Quick Start
+
+## Run the full pipeline (safe by default)
 
 ```bash
 dita_package_processor run \
   --package /path/to/dita/package \
-  --output build
+  --docx-stem OutputDoc
 ```
 
-This performs discovery, planning, and **dry-run execution**.  
+This performs:
+
+- Discovery  
+- Planning  
+- Dry-run execution  
+
 No filesystem mutation occurs.
 
----
 
-### Apply changes explicitly
+
+## Apply changes explicitly
 
 ```bash
 dita_package_processor run \
   --package /path/to/dita/package \
-  --output build \
+  --target build \
+  --docx-stem OutputDoc \
   --apply
 ```
 
-Mutation is **explicit, intentional, and bounded**.
+Mutation is:
 
----
+- explicit  
+- bounded  
+- sandboxed  
 
-### Execute a plan directly
+`--apply` requires `--target`.
+
+
+
+## Execute an existing plan
 
 ```bash
 dita_package_processor execute \
   --plan plan.json \
-  --source-root /path/to/original/package \
-  --output build \
+  --target build \
   --apply
 ```
 
-Execution requires an explicit `source-root` so that relative paths in the plan can be resolved safely.
+This:
 
----
+- skips discovery  
+- skips planning  
+- executes the validated plan  
 
-## Configuration Model
 
-Runtime behavior can be influenced via **`pyproject.toml`** under:
+
+# Configuration Model
+
+Runtime behavior may be influenced via `pyproject.toml`:
 
 ```toml
 [tool.dita_package_processor]
 ```
 
-Configuration controls:
+Configuration may control:
 
-- which planning steps are enabled  
-- optional behaviors (e.g., glossary handling)  
+- optional planning behaviors  
 - naming conventions  
+- feature enablement  
 
-Precedence order:
+Precedence:
 
 ```
 CLI arguments > pyproject.toml > defaults
 ```
 
 Configuration never overrides structural validation.  
-It only enables or disables *safe, predefined behaviors*.
+It only enables predefined, safe behaviors.
 
----
 
-## Execution Model
 
-- Linear, ordered pipeline  
-- Discovery → Planning → Execution  
-- One responsibility per phase  
-- No implicit branching or retries  
-- Shared state via explicit models  
-- Fail fast on structural violations  
+# Execution Model
 
-There is no hidden control flow.  
-There is no “smart” behavior at runtime.
+The pipeline is linear and explicit:
 
----
+```
+Discovery → Planning → Execution → Materialization
+```
 
-## Why This Exists
+There is:
 
-This tool exists to address a recurring failure mode in real systems:
+- no implicit branching  
+- no hidden retries  
+- no heuristic repair  
+- no runtime inference  
 
-- Bulk DITA exports are inconsistent  
-- Assumptions fail silently  
+Each boundary is enforced by schema and contract validation.
+
+
+
+# Why This Exists
+
+This tool exists because real DITA corpora are inconsistent.
+
+In practice:
+
+- Bulk exports contain structural ambiguity  
 - Scripts mutate content without proof  
+- Assumptions fail silently  
 - Errors surface too late  
 
 The DITA Package Processor favors:
 
 - Observation before action  
 - Plans before mutation  
-- Explicit structure over cleverness  
-- Boring logic you can audit  
-- Systems that survive real corpora  
+- Determinism over cleverness  
+- Explicit boundaries over implicit behavior  
+- Systems that survive hostile corpora  
 
 If you want deterministic batch processing over real DITA packages, this tool exists for you.
 
 If you want inference, auto-repair, or magic, it does not.
 
----
 
-## Documentation Map
 
-- **Getting Started** – Installation and first run  
-- **CLI** – Commands, flags, and contracts  
-- **Discovery** – Scanning, classification, and graph construction  
-- **Planning** – Steps, actions, and invariants  
-- **Execution** – Executors, safety, reports, and manifests  
-- **Configuration** – `pyproject.toml` reference  
-- **Design** – Architectural constraints and rationale  
-- **Extensions** – Adding steps and handlers safely  
-- **Testing** – Validation at unit, integration, and system levels  
+# Documentation Map
+
+- Getting Started  
+- CLI Reference  
+- Discovery Architecture  
+- Planning Contracts  
+- Execution Model  
+- Materialization  
+- Configuration (`pyproject.toml`)  
+- Design Rationale  
+- Extension Guide  
+- Testing Strategy  
 
 Each document is intentionally narrow and non-overlapping.
 
----
 
-## Summary
+
+# Summary
 
 The DITA Package Processor is conservative by design:
 
 - Discovery before planning  
 - Planning before execution  
 - Dry-run before mutation  
-- Explicit permissions  
+- Explicit permission required  
 - Deterministic ordering  
 - Schema-validated artifacts  
 - No hidden behavior  
 
-This is a system designed to **survive reality**, not pretend it does not exist.
-
-If you want, the next logical step is:
-- a **“User vs Developer mental model” page**, or  
-- a **“How to add a new transformation safely” guide**, or  
-- a **worked end-to-end example with real artifacts**.
+This system is built to survive real-world DITA packages, not ideal ones.

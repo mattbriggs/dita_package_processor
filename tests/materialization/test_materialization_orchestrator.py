@@ -1,19 +1,20 @@
 """
-Unit tests for materialization orchestrator.
+Unit tests for MaterializationOrchestrator.
 
 These tests validate orchestration behavior:
 
 - preflight runs builder -> validator -> collision detector -> manifest writer
-- preflight aborts on failure
-- finalize calls manifest writer
+- preflight aborts on failure and wraps errors
+- finalize calls manifest writer final hook
 - lifecycle logging occurs
 
-All collaborators are injected so the tests remain deterministic and
+All collaborators are injected so tests remain deterministic and
 independent of filesystem or builder signature changes.
 """
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import MagicMock
 
@@ -23,25 +24,29 @@ from dita_package_processor.materialization.orchestrator import (
     MaterializationOrchestrator,
     MaterializationOrchestrationError,
 )
-from dita_package_processor.planning.models import Plan, PlanAction, ActionType
+from dita_package_processor.planning.models import (
+    Plan,
+    PlanAction,
+    ActionType,
+)
 
 
-# ---------------------------------------------------------------------------
+# =============================================================================
 # Helpers
-# ---------------------------------------------------------------------------
+# =============================================================================
 
 
 def _minimal_plan(tmp_path: Path) -> Plan:
     """
     Create a minimal realistic Plan.
 
-    NOTE:
-    Orchestrator now derives artifacts from action targets,
-    so we include one trivial action.
+    Plan now requires:
+    - generated_at: datetime (UTC-aware)
+    - valid action list
     """
     return Plan(
         plan_version=1,
-        generated_at="2026-01-30T00:00:00+00:00",
+        generated_at=datetime.now(timezone.utc),
         source_discovery={},
         intent={},
         actions=[
@@ -57,14 +62,20 @@ def _minimal_plan(tmp_path: Path) -> Plan:
     )
 
 
-# ---------------------------------------------------------------------------
+# =============================================================================
 # Tests
-# ---------------------------------------------------------------------------
+# =============================================================================
 
 
-def test_orchestrator_preflight_runs_all_steps(tmp_path: Path) -> None:
+def test_preflight_runs_all_collaborators(tmp_path: Path) -> None:
     """
-    Preflight should invoke builder → validator → collision → manifest.
+    Preflight must invoke collaborators.
+
+    Expected:
+        builder.build()
+        validator.validate_preflight(...)
+        collision_detector.detect(...)
+        manifest_writer.write_preflight(...)
     """
     builder = MagicMock()
     validator = MagicMock()
@@ -88,9 +99,9 @@ def test_orchestrator_preflight_runs_all_steps(tmp_path: Path) -> None:
     manifest_writer.write_preflight.assert_called_once()
 
 
-def test_orchestrator_preflight_stops_on_failure(tmp_path: Path) -> None:
+def test_preflight_aborts_and_wraps_failure(tmp_path: Path) -> None:
     """
-    Any collaborator failure must abort preflight and bubble up as
+    Any collaborator failure must abort preflight and raise
     MaterializationOrchestrationError.
     """
     builder = MagicMock()
@@ -113,9 +124,9 @@ def test_orchestrator_preflight_stops_on_failure(tmp_path: Path) -> None:
     validator.validate_preflight.assert_called_once()
 
 
-def test_orchestrator_finalize_calls_manifest_writer(tmp_path: Path) -> None:
+def test_finalize_calls_manifest_writer(tmp_path: Path) -> None:
     """
-    Finalize must call manifest writer final hook exactly once.
+    Finalize must call manifest_writer.write_final exactly once.
     """
     manifest_writer = MagicMock()
 
@@ -129,6 +140,7 @@ def test_orchestrator_finalize_calls_manifest_writer(tmp_path: Path) -> None:
     )
 
     fake_report = MagicMock()
+
     orchestrator.finalize(execution_report=fake_report)
 
     manifest_writer.write_final.assert_called_once_with(
@@ -136,9 +148,9 @@ def test_orchestrator_finalize_calls_manifest_writer(tmp_path: Path) -> None:
     )
 
 
-def test_orchestrator_emits_lifecycle_logs(caplog, tmp_path: Path) -> None:
+def test_preflight_emits_lifecycle_logs(caplog, tmp_path: Path) -> None:
     """
-    Preflight should emit start/complete lifecycle logs for observability.
+    Preflight must emit lifecycle observability logs.
     """
     orchestrator = MaterializationOrchestrator(
         plan=_minimal_plan(tmp_path),
@@ -152,7 +164,7 @@ def test_orchestrator_emits_lifecycle_logs(caplog, tmp_path: Path) -> None:
     with caplog.at_level("INFO"):
         orchestrator.preflight()
 
-    messages = [r.message.lower() for r in caplog.records]
+    messages = [record.message.lower() for record in caplog.records]
 
-    assert any("materialization preflight start" in m for m in messages)
-    assert any("materialization preflight complete" in m for m in messages)
+    assert any("preflight start" in m for m in messages)
+    assert any("preflight complete" in m for m in messages)

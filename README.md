@@ -3,7 +3,7 @@
 The **DITA Package Processor** is a deterministic execution platform for  
 analyzing, planning, and applying transformations to **DITA 1.3** packages.
 
-It is designed for hostile, vendor-generated, and legacy corpora where  
+It is designed for unpredictable, vendor-generated, or legacy corpora where  
 ambiguity, implicit behavior, and hidden side effects are unacceptable.
 
 This is **not** an interactive tool.  
@@ -13,8 +13,67 @@ This is **not** a self-healing pipeline.
 It does exactly what you tell it to do, in the order you tell it to do it,  
 and it records everything it does as structured, auditable data.
 
-If something is ambiguous, invalid, or underspecified, it fails loudly  
-rather than guessing.
+If something is ambiguous, invalid, or underspecified, it fails rather than guessing.
+
+
+
+
+
+## When to Use This Tool
+
+Use this processor when:
+
+- You need deterministic restructuring of DITA packages  
+- You require auditable filesystem mutation  
+- You operate in regulated or high-risk environments  
+- You cannot tolerate heuristic classification or implicit inference  
+
+Do not use this processor when:
+
+- You want adaptive or “best guess” behavior  
+- You expect automatic repair of malformed content  
+- You need interactive editing workflows  
+
+
+
+
+
+## System Guarantee
+
+Given the same DITA package and the same execution parameters, the processor guarantees:
+
+- Identical planning output  
+- Identical execution artifacts  
+- Identical execution reports  
+
+No hidden state.  
+No implicit mutation.  
+No heuristic branching.  
+
+
+
+
+
+## Quick Start (Minimal Example)
+
+```bash
+dita_package_processor run \
+  --package ./package \
+  --target ./out \
+  --docx-stem OutputDoc
+```
+
+This performs:
+
+1. **Discovery** (read-only analysis)  
+2. **Planning** (explicit plan generation)  
+3. **Execution** (deterministic action dispatch)  
+4. **Materialization** (artifact finalization)  
+
+Mutation requires `--apply`.  
+Dry-run is the default.
+
+
 
 
 
@@ -33,16 +92,19 @@ Or if installed editable:
 dita_package_processor -h
 ```
 
-Full CLI documentation lives in  
-**[README-CLI.md](README-CLI.md)**.
+Full CLI documentation lives in:
+
+**[README-CLI.md](README-CLI.md)**
+
+
+
+
 
 ## Setup
 
-Create a virtual environment, install the package in editable mode, and verify the installation. Run the test suite to ensure the system behaves correctly.
+Create a virtual environment, install the package in editable mode, and verify the installation.
 
 ### Installation (From Source)
-
-You’ve cloned the repo. Good. Now make it runnable without turning your system Python into a landfill.
 
 #### 1. Create and activate a virtual environment
 
@@ -53,11 +115,9 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-If `python3` isn’t 3.10+, fix that first. This project assumes a modern interpreter.
+Ensure Python 3.10+.
 
 #### 2. Install in editable mode
-
-Install dependencies and register the package in editable mode:
 
 ```bash
 pip install -r requirements.txt
@@ -66,99 +126,69 @@ pip install -e .
 
 Editable mode (`-e`) means:
 
-- The CLI is available immediately
-- Code changes are reflected without reinstalling
-- You’re working against the source tree, not a wheel
+- The CLI is available immediately  
+- Code changes reflect without reinstalling  
+- You are working directly against the source tree  
 
-This is the correct way to develop or extend the tool.
-
-#### 3. Verify the installation
-
-Confirm the CLI resolves:
+#### 3. Verify installation
 
 ```bash
 dita_package_processor --help
 ```
 
-If that prints usage information instead of a stack trace, you’re in business.
+If usage information prints without error, installation is successful.
 
 
-### Run the Test Suite
 
-Before trusting the system with real content, make sure it behaves.
 
-From the project root:
+
+## Run the Test Suite
+
+Before trusting the system with real content:
 
 ```bash
 pytest -q
 ```
 
-You should see a clean pass. If not:
-
-- Check Python version
-- Confirm your virtual environment is active
-- Ensure dependencies installed correctly
-
 The test suite covers:
 
-- discovery contracts  
-- planning invariants  
-- plan validation  
-- execution behavior  
-- end-to-end integration  
+- Discovery contracts  
+- Planning invariants  
+- Plan validation  
+- Execution behavior  
+- End-to-end integration  
 
-If the tests pass, the pipeline is structurally sound.
+A clean pass indicates structural integrity.
+
+
+
 
 
 ## Design Philosophy
 
-The processor is built on non-negotiable constraints:
+The processor is built on strict constraints:
 
 - **Determinism over cleverness**  
   The same input always produces the same output.
 
 - **Explicit structure over heuristics**  
-  All behavior is encoded in rules, schemas, and plans.
+  Behavior is encoded in rules, schemas, and plans.
 
 - **Read-only analysis before mutation**  
   Discovery and planning never touch the filesystem.
 
 - **Auditable plans before execution**  
-  All filesystem mutation must originate from an explicit, serialized plan.
+  All mutation originates from an explicit, serialized plan.
 
 - **Execution is observable through data, not logs**  
   Results are captured in immutable execution reports.
 
 - **Idempotence everywhere**  
-  Re-running the same plan never causes accidental duplication or damage.
+  Re-running the same plan does not cause duplication or damage.
 
-If you want inference, adaptive behavior, or “best guess” fixes, this is the  
-wrong tool.
-
+If you want adaptive behavior or inference-driven processing, this is the wrong tool.
 
 
-## System Status
-
-The planning, execution, and materialization subsystems are now **infrastructure-grade**.
-
-The following contracts are stable and enforced by tests:
-
-- Planning, execution, and materialization are fully separated
-- Plans are JSON-schema validated artifacts
-- Plans are side-effect free
-- Executors preserve action ordering
-- Execution produces structured **ExecutionReport** objects
-- Materialization operates only on execution artifacts
-- Reports are complete forensic records, not log output
-- Dry-run is the default; mutation requires explicit consent
-- All handlers are:
-  - deterministic  
-  - idempotent  
-  - dry-run safe  
-  - auditable  
-
-Execution is no longer “script-like.”  
-It is a transaction layer.
 
 
 
@@ -172,52 +202,69 @@ Discovery → Planning → Execution → Materialization
 
 Each layer is independently invocable and independently testable.
 
-No layer leaks into the next.  
-No layer performs work outside its responsibility.
+No layer performs work outside its responsibility.  
+No layer implicitly mutates upstream state.
+
+
+
+
+
+## System Status
+
+Planning, execution, and materialization are contract-validated and test-enforced.
+
+The following guarantees are stable:
+
+- Discovery, planning, execution, and materialization are fully separated  
+- Plans are JSON Schema validated  
+- Plans are side-effect free  
+- Executors preserve action ordering  
+- Execution produces structured `ExecutionReport` objects  
+- Dry-run is default; mutation requires explicit consent  
+- All handlers are:
+  - deterministic  
+  - idempotent  
+  - dry-run safe  
+  - auditable  
+
+Execution is a transaction boundary, not a script.
+
+
 
 
 
 ## Documentation
 
-Documentation is treated as a **first-class build artifact**, not prose.
+Documentation is treated as a build artifact.
 
 The documentation site is generated from:
 
-- Python docstrings (via `mkdocstrings`)
-- JSON Schemas (auto-generated)
-- Declarative YAML knowledge files (auto-generated)
-- Markdown architecture guides
+- Python docstrings (via `mkdocstrings`)  
+- JSON Schemas (auto-generated)  
+- Declarative YAML knowledge files (auto-generated)  
+- Markdown architecture guides  
 
 ### Documentation Toolchain
 
-- **MkDocs** for site generation
-- **mkdocstrings** for API reference
-- Custom generators for schema and knowledge documentation
+- **MkDocs** for site generation  
+- **mkdocstrings** for API reference  
+- Custom generators for schema and knowledge documentation  
 
 
 
 ### 1. Generate JSON Schema Documentation
 
-All JSON Schemas in the repository are documented automatically.
-
-Run:
-
 ```bash
 python tools/generate_schema_docs.py
 ```
 
-This will:
-
-- scan the repository for `*.schema.json`
-- generate Markdown documentation per schema
-- write output to:
+This scans for `*.schema.json` files and generates documentation into:
 
 ```
 docs/reference/schemas/
 ```
 
-These files are **inputs** to MkDocs.  
-They are not hand-edited.
+These files are generated artifacts and must not be manually edited.
 
 
 
@@ -229,35 +276,27 @@ Declarative discovery knowledge lives in:
 dita_package_processor/knowledge/known_patterns.yaml
 ```
 
-To generate documentation for this file, run:
+Generate documentation:
 
 ```bash
 python tools/generate_known_patterns_docs.py
 ```
 
-This will:
-
-- parse `known_patterns.yaml`
-- produce human-readable, auditable documentation
-- write output to:
+Output is written to:
 
 ```
 docs/reference/knowledge/known-patterns.md
 ```
 
-This ensures that **pattern logic is reviewable without reading code**.
 
 
-
-### 3. Serve the Documentation Locally
-
-Once generated artifacts are up to date:
+### 3. Serve Documentation Locally
 
 ```bash
 mkdocs serve
 ```
 
-Then open:
+Open:
 
 ```
 http://127.0.0.1:8000/
@@ -265,27 +304,29 @@ http://127.0.0.1:8000/
 
 
 
-### Documentation Update Workflow (Canonical)
+### Documentation Update Workflow
 
-When making architectural or behavioral changes, the expected workflow is:
+When making behavioral changes:
 
 ```bash
 # 1. Update code / schemas / patterns
-# 2. Regenerate derived documentation
+# 2. Regenerate documentation
 python tools/generate_schema_docs.py
 python tools/generate_known_patterns_docs.py
 
-# 3. Validate documentation build
+# 3. Validate site build
 mkdocs serve
 ```
 
-If generated documentation is out of date, that is considered a **build failure**, not a cosmetic issue.
+Out-of-date generated documentation is considered a build failure.
+
+
 
 
 
 ## Tests
 
-Tests use **pytest** and operate on real filesystem fixtures.
+Run all tests:
 
 ```bash
 pytest
@@ -303,39 +344,44 @@ pytest tests/pipeline
 pytest tests/integration
 ```
 
-Tests assert **behavioral contracts**, not implementation details:
+Tests assert behavioral contracts:
 
-- Deterministic planning
-- Schema validity
-- Execution observability
-- Order preservation
-- Dry-run guarantees
-- Idempotence
-- Mutation safety
-- Forensic reporting
-- Media discovery correctness
-- Media planning exclusion guarantees
-
-
-
-## What This README Explains
-
-This README defines the **architecture contract**:
-
-- what the system guarantees
-- what each layer is allowed to do
-- how mutation is controlled
-- how execution and materialization are observed
-- how documentation is generated and kept in sync
+- Deterministic planning  
+- Schema validity  
+- Execution observability  
+- Order preservation  
+- Dry-run guarantees  
+- Idempotence  
+- Mutation safety  
+- Forensic reporting  
+- Media exclusion guarantees  
 
 
 
-## What This README Does Not Explain
 
-- CLI workflows  
-- Subcommands and flags  
+
+## What This README Defines
+
+This document establishes the architectural contract:
+
+- What the system guarantees  
+- How mutation is controlled  
+- How execution is observed  
+- How documentation is generated and validated  
+
+
+
+## What This README Does Not Define
+
+- CLI flag details  
 - Individual JSON schema fields  
-- Execution plan contents  
-- Discovery invariants  
+- Execution plan structure  
+- Discovery rule specifics  
 
-Those live in the **[CLI Usage README](README-CLI.md)**.
+Those are documented in:
+
+**[README-CLI.md](README-CLI.md)**
+
+
+
+This version keeps your spine. It just breathes a little easier and onboards faster.
