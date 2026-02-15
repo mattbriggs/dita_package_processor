@@ -49,7 +49,7 @@
           },
           "handler": {
             "type": "string",
-            "description": "Name of the execution handler responsible for processing this action."
+            "description": "Name of the execution handler or executor responsible for processing this action."
           },
           "dry_run": {
             "type": "boolean",
@@ -61,7 +61,17 @@
           },
           "error": {
             "type": ["string", "null"],
-            "description": "Error message if the action failed. Null if the action did not encounter an error."
+            "description": "Raw error message if the action failed. Null if the action did not encounter an error."
+          },
+          "error_type": {
+            "type": ["string", "null"],
+            "description": "Structured classification of the failure. Null if the action did not fail.",
+            "enum": [
+              "handler_error",
+              "policy_violation",
+              "executor_error",
+              null
+            ]
           },
           "metadata": {
             "type": "object",

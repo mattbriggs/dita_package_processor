@@ -36,6 +36,78 @@ dita_package_processor -h
 Full CLI documentation lives in  
 **[README-CLI.md](README-CLI.md)**.
 
+## Setup
+
+Create a virtual environment, install the package in editable mode, and verify the installation. Run the test suite to ensure the system behaves correctly.
+
+### Installation (From Source)
+
+You’ve cloned the repo. Good. Now make it runnable without turning your system Python into a landfill.
+
+#### 1. Create and activate a virtual environment
+
+From the project root:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+If `python3` isn’t 3.10+, fix that first. This project assumes a modern interpreter.
+
+#### 2. Install in editable mode
+
+Install dependencies and register the package in editable mode:
+
+```bash
+pip install -r requirements.txt
+pip install -e .
+```
+
+Editable mode (`-e`) means:
+
+- The CLI is available immediately
+- Code changes are reflected without reinstalling
+- You’re working against the source tree, not a wheel
+
+This is the correct way to develop or extend the tool.
+
+#### 3. Verify the installation
+
+Confirm the CLI resolves:
+
+```bash
+dita_package_processor --help
+```
+
+If that prints usage information instead of a stack trace, you’re in business.
+
+
+### Run the Test Suite
+
+Before trusting the system with real content, make sure it behaves.
+
+From the project root:
+
+```bash
+pytest -q
+```
+
+You should see a clean pass. If not:
+
+- Check Python version
+- Confirm your virtual environment is active
+- Ensure dependencies installed correctly
+
+The test suite covers:
+
+- discovery contracts  
+- planning invariants  
+- plan validation  
+- execution behavior  
+- end-to-end integration  
+
+If the tests pass, the pipeline is structurally sound.
 
 
 ## Design Philosophy

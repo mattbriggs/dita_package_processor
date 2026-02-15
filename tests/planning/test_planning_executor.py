@@ -1,16 +1,16 @@
 """
-Shared execution contract tests.
+Shared action-executor contract tests.
 
-These tests define the execution contract that ALL executors must obey,
-including DryRunExecutor and any future real filesystem executors.
+These tests define the execution contract that ALL action executors must obey.
 
-Execution rules:
+Execution rules
+---------------
 
-- Executors must accept raw plan dictionaries.
-- Executors must emit an ExecutionReport.
-- Executors must preserve action order.
-- Executors must never mutate the input plan.
-- Executors must be observable via ExecutionReport, not logs.
+- Executors must accept a single action dictionary.
+- Executors must return an ExecutionActionResult.
+- Executors must not mutate the input action.
+- Observability must come from ExecutionActionResult, not logging.
+- Result surface must remain stable.
 """
 
 from __future__ import annotations
@@ -21,12 +21,12 @@ from typing import Type
 import pytest
 
 from dita_package_processor.execution.dry_run_executor import DryRunExecutor
-from dita_package_processor.execution.models import ExecutionReport
+from dita_package_processor.execution.models import ExecutionActionResult
 
 
-# ---------------------------------------------------------------------------
+# =============================================================================
 # Executor implementations under test
-# ---------------------------------------------------------------------------
+# =============================================================================
 
 
 @pytest.fixture(params=[DryRunExecutor])
@@ -34,126 +34,119 @@ def executor_cls(request: pytest.FixtureRequest) -> Type[DryRunExecutor]:
     """
     Yield executor classes that must satisfy the shared execution contract.
 
-    Every executor implementation MUST be added here.
+    Any new executor implementation must be added here.
     """
     return request.param
 
 
-# ---------------------------------------------------------------------------
-# Plan fixture (raw dictionary, not model objects)
-# ---------------------------------------------------------------------------
+# =============================================================================
+# Action fixture
+# =============================================================================
 
 
 @pytest.fixture
-def sample_plan() -> dict:
+def sample_action() -> dict:
     """
-    Minimal valid plan structure for execution.
+    Minimal valid action structure.
+
+    The executor contract does not validate planning semantics —
+    it only executes what it is given.
     """
     return {
-        "actions": [
-            {
-                "id": "action-001",
-                "type": "noop",
-                "target": "index.ditamap",
-                "reason": "Dry run only",
-            },
-            {
-                "id": "action-002",
-                "type": "noop",
-                "target": "topics/a.dita",
-                "reason": "Dry run only",
-            },
-        ]
+        "id": "action-001",
+        "type": "noop",
+        "target": "index.ditamap",
+        "reason": "Dry run only",
     }
 
 
-# ---------------------------------------------------------------------------
+# =============================================================================
 # Shared execution contract tests
-# ---------------------------------------------------------------------------
+# =============================================================================
 
 
-def test_executor_executes_without_error(
+def test_executor_returns_execution_action_result(
     executor_cls: Type[DryRunExecutor],
-    sample_plan: dict,
+    sample_action: dict,
 ) -> None:
+    """
+    Executor must return an ExecutionActionResult without raising.
+    """
     executor = executor_cls()
-    report = executor.execute(
-        plan=sample_plan,
-        execution_id="exec-001",
-    )
+    result = executor.execute(sample_action)
 
-    assert isinstance(report, ExecutionReport)
+    assert isinstance(result, ExecutionActionResult)
 
 
-def test_executor_returns_execution_report(
+def test_executor_preserves_action_id(
     executor_cls: Type[DryRunExecutor],
-    sample_plan: dict,
+    sample_action: dict,
 ) -> None:
+    """
+    Result must reference the original action ID.
+    """
     executor = executor_cls()
-    report = executor.execute(
-        plan=sample_plan,
-        execution_id="exec-002",
-    )
+    result = executor.execute(sample_action)
 
-    assert report.execution_id == "exec-002"
-    assert report.summary["total"] == len(sample_plan["actions"])
+    assert result.action_id == sample_action["id"]
 
 
-def test_executor_preserves_action_order(
+def test_executor_does_not_mutate_action(
     executor_cls: Type[DryRunExecutor],
-    sample_plan: dict,
+    sample_action: dict,
 ) -> None:
-    executor = executor_cls()
-    report = executor.execute(
-        plan=sample_plan,
-        execution_id="exec-003",
-    )
-
-    ids = [r.action_id for r in report.results]
-    assert ids == ["action-001", "action-002"]
-
-
-def test_executor_records_all_actions(
-    executor_cls: Type[DryRunExecutor],
-    sample_plan: dict,
-) -> None:
-    executor = executor_cls()
-    report = executor.execute(
-        plan=sample_plan,
-        execution_id="exec-004",
-    )
-
-    assert len(report.results) == len(sample_plan["actions"])
-
-
-def test_executor_does_not_mutate_plan(
-    executor_cls: Type[DryRunExecutor],
-    sample_plan: dict,
-) -> None:
-    original = {
-        "actions": [dict(a) for a in sample_plan["actions"]]
-    }
+    """
+    Executors must not mutate the input action dictionary.
+    """
+    original = dict(sample_action)
 
     executor = executor_cls()
-    executor.execute(
-        plan=sample_plan,
-        execution_id="exec-005",
-    )
+    executor.execute(sample_action)
 
-    assert sample_plan == original
+    assert sample_action == original
 
 
-def test_executor_is_observable_via_report_not_logs(
+def test_executor_result_surface_is_explicit(
+    executor_cls: Type[DryRunExecutor],
+    sample_action: dict,
+) -> None:
+    """
+    The result surface must remain stable and explicit.
+
+    This locks the public execution contract.
+    """
+    executor = executor_cls()
+    result = executor.execute(sample_action)
+
+    # Required fields
+    assert result.action_id == "action-001"
+    assert result.handler == executor.__class__.__name__
+    assert result.dry_run is True
+    assert result.status in {"success", "failed", "skipped"}
+
+    # Structured error classification must exist on surface
+    assert hasattr(result, "error")
+    assert hasattr(result, "error_type")
+
+    # Dry-run semantics
+    if isinstance(executor, DryRunExecutor):
+        assert result.status == "skipped"
+        assert result.error is None
+        assert result.error_type is None
+
+
+def test_executor_is_observable_via_result_not_logs(
     caplog: pytest.LogCaptureFixture,
     executor_cls: Type[DryRunExecutor],
-    sample_plan: dict,
+    sample_action: dict,
 ) -> None:
+    """
+    Observability must come from ExecutionActionResult,
+    not logging side effects.
+    """
     caplog.set_level(logging.INFO)
 
     executor = executor_cls()
-    report = executor.execute(
-        plan=sample_plan,
-        execution_id="exec-006",
-    )
+    result = executor.execute(sample_action)
 
-    assert report.summary["total"] == len(sample_plan["actions"])
+    assert result.action_id == sample_action["id"]

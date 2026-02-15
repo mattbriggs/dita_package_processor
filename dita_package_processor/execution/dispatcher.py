@@ -3,24 +3,28 @@ Execution dispatcher.
 
 The dispatcher is responsible for:
 
-- Receiving a validated plan
-- Executing actions in order through an Executor
+- Receiving a validated plan dictionary
+- Executing actions in deterministic order via an Executor
 - Collecting ExecutionActionResult objects
 - Emitting an ExecutionReport
 
 It performs:
-    NO planning
-    NO handler resolution
-    NO filesystem logic
-    NO registry inspection
+    - NO planning
+    - NO handler resolution
+    - NO filesystem logic
+    - NO registry inspection
 
-It is intentionally dumb.
+The dispatcher owns plan iteration and structural validation.
+
+The executor owns single-action execution.
+
+This module is intentionally minimal and deterministic.
 """
 
 from __future__ import annotations
 
 import logging
-from typing import List, Dict, Any, Protocol
+from typing import Any, Dict, List, Protocol
 
 from dita_package_processor.execution.models import (
     ExecutionActionResult,
@@ -35,49 +39,52 @@ __all__ = [
 ]
 
 
-# ============================================================================
+# =============================================================================
 # Exceptions
-# ============================================================================
+# =============================================================================
 
 
 class ExecutionDispatchError(RuntimeError):
-    """Raised when execution dispatch fails structurally."""
+    """
+    Raised when the execution plan is structurally invalid.
+
+    This indicates a contract violation between planning and execution.
+    """
 
 
-# ============================================================================
-# Protocol
-# ============================================================================
+# =============================================================================
+# Executor Protocol
+# =============================================================================
 
 
 class ExecutorProtocol(Protocol):
     """
     Minimal protocol for executors consumed by ExecutionDispatcher.
+
+    Executors must implement:
+
+        execute(action: Dict[str, Any]) -> ExecutionActionResult
     """
 
     def execute(self, action: Dict[str, Any]) -> ExecutionActionResult:
         ...
 
 
-# ============================================================================
+# =============================================================================
 # Dispatcher
-# ============================================================================
+# =============================================================================
 
 
 class ExecutionDispatcher:
     """
-    Deterministic action sequencer.
-
-    Responsibilities
-    ----------------
-    - Call executor.execute(action)
-    - Collect results
-    - Produce ExecutionReport
-
-    That is literally all it does.
+    Deterministic plan dispatcher.
     """
 
     def __init__(self, executor: ExecutorProtocol) -> None:
-        if not hasattr(executor, "execute"):
+        """
+        Initialize dispatcher with executor.
+        """
+        if not callable(getattr(executor, "execute", None)):
             raise TypeError(
                 "executor must implement execute(action: dict)"
             )
@@ -89,10 +96,6 @@ class ExecutionDispatcher:
             executor.__class__.__name__,
         )
 
-    # ------------------------------------------------------------------
-    # Dispatch
-    # ------------------------------------------------------------------
-
     def dispatch(
         self,
         *,
@@ -102,52 +105,50 @@ class ExecutionDispatcher:
     ) -> ExecutionReport:
         """
         Execute all actions sequentially.
-
-        Parameters
-        ----------
-        execution_id : str
-        plan : dict
-        dry_run : bool
-
-        Returns
-        -------
-        ExecutionReport
         """
         LOGGER.info(
-            "Starting execution dispatch execution_id=%s dry_run=%s",
+            "Dispatch start execution_id=%s dry_run=%s",
             execution_id,
             dry_run,
         )
 
         actions = plan.get("actions")
+
         if not isinstance(actions, list):
+            LOGGER.error("Plan missing 'actions' list")
             raise ExecutionDispatchError(
                 "Plan must contain an 'actions' list"
             )
 
         results: List[ExecutionActionResult] = []
 
-        for idx, action in enumerate(actions):
+        for index, action in enumerate(actions):
             if not isinstance(action, dict):
+                LOGGER.error("Action[%d] is not a dictionary", index)
                 raise ExecutionDispatchError(
-                    f"Action[{idx}] must be a dictionary"
+                    f"Action[{index}] must be a dictionary"
                 )
 
-            action_id = action.get("id", "<unknown>")
-            action_type = action.get("type")
+            action_id = str(action.get("id", "<unknown>"))
 
-            LOGGER.info(
-                "Dispatching action id=%s type=%s",
+            LOGGER.debug(
+                "Dispatching action index=%d id=%s",
+                index,
                 action_id,
-                action_type,
             )
 
             try:
                 result = self._executor.execute(action)
 
+                if not isinstance(result, ExecutionActionResult):
+                    raise ExecutionDispatchError(
+                        f"Executor returned invalid result type "
+                        f"for action_id={action_id}"
+                    )
+
             except Exception as exc:  # noqa: BLE001
                 LOGGER.exception(
-                    "Executor crashed id=%s",
+                    "Executor failure id=%s",
                     action_id,
                 )
 
@@ -156,9 +157,9 @@ class ExecutionDispatcher:
                     status="failed",
                     handler=self._executor.__class__.__name__,
                     dry_run=dry_run,
-                    message="Executor crashed",
+                    message="Executor crashed during action execution",
                     error=str(exc),
-                    metadata={"failure_type": "executor_crash"},
+                    error_type="executor_error",
                 )
 
                 results.append(result)
@@ -173,7 +174,7 @@ class ExecutionDispatcher:
         )
 
         LOGGER.info(
-            "Execution dispatch complete execution_id=%s actions=%d",
+            "Dispatch complete execution_id=%s total=%d",
             execution_id,
             len(results),
         )

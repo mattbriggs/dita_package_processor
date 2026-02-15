@@ -30,7 +30,7 @@ from __future__ import annotations
 import inspect
 import logging
 from pathlib import Path
-from typing import Any, Callable, Dict, Protocol, Tuple
+from typing import Any, Callable, Dict, Protocol
 
 from dita_package_processor.execution.bootstrap import get_registry
 from dita_package_processor.execution.dispatcher import ExecutionDispatcher
@@ -41,7 +41,7 @@ from dita_package_processor.execution.models import (
 from dita_package_processor.execution.safety.policies import (
     MutationPolicy,
     PolicyViolationError,
-    OverwritePolicy
+    OverwritePolicy,
 )
 from dita_package_processor.execution.safety.sandbox import Sandbox
 
@@ -50,9 +50,9 @@ LOGGER = logging.getLogger(__name__)
 __all__ = ["FilesystemExecutor"]
 
 
-# ============================================================================
+# =============================================================================
 # Registry protocol
-# ============================================================================
+# =============================================================================
 
 
 class RegistryProtocol(Protocol):
@@ -62,9 +62,9 @@ class RegistryProtocol(Protocol):
         ...
 
 
-# ============================================================================
+# =============================================================================
 # Executor
-# ============================================================================
+# =============================================================================
 
 
 class FilesystemExecutor:
@@ -97,7 +97,9 @@ class FilesystemExecutor:
         self.apply = apply
 
         self.policy = MutationPolicy(
-            overwrite=OverwritePolicy.REPLACE if apply else OverwritePolicy.DENY
+            overwrite=OverwritePolicy.REPLACE
+            if apply
+            else OverwritePolicy.DENY
         )
 
         self._registry: RegistryProtocol = get_registry()
@@ -166,11 +168,16 @@ class FilesystemExecutor:
         1. resolves handler
         2. injects source_root + sandbox + policy
         3. delegates work
+        4. normalizes result to execution context
         """
         action_id = str(action.get("id", "<unknown>"))
         action_type = action.get("type")
 
-        LOGGER.debug("Executing action id=%s type=%s", action_id, action_type)
+        LOGGER.debug(
+            "Executing action id=%s type=%s",
+            action_id,
+            action_type,
+        )
 
         try:
             handler = self._resolve_handler(action_type)
@@ -179,7 +186,7 @@ class FilesystemExecutor:
                 handler() if inspect.isclass(handler) else handler
             )
 
-            return self._invoke_handler(
+            result = self._invoke_handler(
                 handler=handler_instance,
                 action=action,
             )
@@ -187,26 +194,51 @@ class FilesystemExecutor:
         except PolicyViolationError as exc:
             LOGGER.error("Policy violation id=%s: %s", action_id, exc)
 
-            return ExecutionActionResult(
+            result = ExecutionActionResult(
                 action_id=action_id,
                 status="failed",
                 handler=self.__class__.__name__,
                 dry_run=not self.apply,
                 message=str(exc),
                 error=str(exc),
+                error_type="policy_violation",
             )
 
         except Exception as exc:  # noqa: BLE001
             LOGGER.exception("Executor crash id=%s", action_id)
 
-            return ExecutionActionResult(
+            result = ExecutionActionResult(
                 action_id=action_id,
                 status="failed",
                 handler=self.__class__.__name__,
                 dry_run=not self.apply,
                 message="Executor crash",
                 error=str(exc),
+                error_type="executor_error",
             )
+
+        # ------------------------------------------------------------------
+        # Normalize dry-run semantics
+        # ------------------------------------------------------------------
+
+        if not self.apply and result.dry_run is False:
+            LOGGER.debug(
+                "Normalizing dry-run for action id=%s",
+                action_id,
+            )
+
+            result = ExecutionActionResult(
+                action_id=result.action_id,
+                status=result.status,
+                handler=result.handler,
+                dry_run=True,
+                message=result.message,
+                error=result.error,
+                error_type=result.error_type,
+                metadata=result.metadata,
+            )
+
+        return result
 
     # =========================================================================
     # handler plumbing
@@ -214,8 +246,7 @@ class FilesystemExecutor:
 
     def _resolve_handler(self, action_type: str) -> Any:
         """Resolve handler from registry."""
-        registry = self._registry
-        return registry.get_handler(action_type)
+        return self._registry.get_handler(action_type)
 
     # ------------------------------------------------------------------
 
@@ -256,7 +287,15 @@ class FilesystemExecutor:
             sorted(kwargs.keys()),
         )
 
-        return fn(**kwargs)
+        result = fn(**kwargs)
+
+        if not isinstance(result, ExecutionActionResult):
+            raise TypeError(
+                f"{handler.__class__.__name__} "
+                "must return ExecutionActionResult"
+            )
+
+        return result
 
     # ------------------------------------------------------------------
 

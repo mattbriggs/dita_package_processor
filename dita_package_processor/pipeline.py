@@ -29,7 +29,6 @@ from dita_package_processor.orchestration import (
     run_planning,
 )
 from dita_package_processor.planning.loader import load_plan
-from dita_package_processor.planning.models import Plan, PlanAction
 
 LOGGER = logging.getLogger(__name__)
 
@@ -102,7 +101,8 @@ class Pipeline:
 
         LOGGER.info("PLANNING START")
 
-        plan: Plan = run_planning(
+        # Planner now returns a dict plan, not a Plan model
+        plan: Dict[str, Any] = run_planning(
             discovery=inventory,
             package_path=self.package_path,
             definition_map=self.definition_map,
@@ -113,14 +113,12 @@ class Pipeline:
         return self._execute_plan_object(plan)
 
     # =========================================================================
-    # NEW: EXECUTE ONLY (plan already exists)
+    # EXECUTE ONLY (plan already exists)
     # =========================================================================
 
     def execute_plan(self, *, plan_path: Path, apply: Optional[bool] = None):
         """
         Execute an already-generated plan.
-
-        Used by CLI `execute`.
 
         Skips discovery + planning.
 
@@ -134,7 +132,7 @@ class Pipeline:
 
         LOGGER.info("Loading plan for execution: %s", plan_path)
 
-        plan: Plan = load_plan(plan_path)
+        plan: Dict[str, Any] = load_plan(plan_path)
 
         return self._execute_plan_object(plan)
 
@@ -142,7 +140,7 @@ class Pipeline:
     # INTERNAL EXECUTION (shared by both paths)
     # =========================================================================
 
-    def _execute_plan_object(self, plan: Plan):
+    def _execute_plan_object(self, plan: Dict[str, Any]):
         """
         Shared execution logic.
 
@@ -178,11 +176,12 @@ class Pipeline:
         executor = get_executor(
             executor_name,
             apply=self.apply,
-            sandbox_root=self.package_path or self.target_path,
+            source_root=self.package_path or self.target_path,
+            sandbox_root=self.target_path,
         )
 
         execution_plan: Dict[str, Any] = {
-            "actions": [self._translate_action(a) for a in plan.actions]
+            "actions": plan.get("actions", [])
         }
 
         report = executor.run(
@@ -195,20 +194,6 @@ class Pipeline:
         LOGGER.info("EXECUTION COMPLETE")
 
         return report
-
-    # ------------------------------------------------------------------
-    # Helpers
-    # ------------------------------------------------------------------
-
-    @staticmethod
-    def _translate_action(action: PlanAction) -> Dict[str, Any]:
-        return {
-            "id": action.id,
-            "type": action.type,
-            "target": action.target,
-            "parameters": dict(action.parameters),
-            "reason": action.reason,
-        }
 
     # ------------------------------------------------------------------
     # Validation

@@ -2,13 +2,17 @@
 Tests for execution domain models.
 
 These tests ensure execution models:
+
 - represent forensic reality
 - serialize deterministically
 - compute summaries correctly
 - classify failures explicitly
+- enforce canonical failure taxonomy
 """
 
 from __future__ import annotations
+
+import pytest
 
 from dita_package_processor.execution.models import (
     ExecutionActionResult,
@@ -16,7 +20,15 @@ from dita_package_processor.execution.models import (
 )
 
 
+# =============================================================================
+# ExecutionActionResult
+# =============================================================================
+
+
 def test_execution_action_result_serialization() -> None:
+    """
+    Action results must serialize deterministically and preserve fields.
+    """
     result = ExecutionActionResult(
         action_id="copy-0001",
         status="success",
@@ -24,7 +36,7 @@ def test_execution_action_result_serialization() -> None:
         dry_run=False,
         message="Copied file successfully",
         error=None,
-        failure_type=None,
+        error_type=None,
         metadata={"bytes": 1024},
     )
 
@@ -35,12 +47,18 @@ def test_execution_action_result_serialization() -> None:
     assert data["handler"] == "FsCopyMapHandler"
     assert data["dry_run"] is False
     assert data["message"] == "Copied file successfully"
+
+    # Success must not carry error metadata
     assert data["error"] is None
-    assert data["failure_type"] is None
+    assert data["error_type"] is None
+
     assert data["metadata"]["bytes"] == 1024
 
 
 def test_execution_action_result_with_failure_classification() -> None:
+    """
+    Failed actions must carry structured error classification.
+    """
     result = ExecutionActionResult(
         action_id="copy-0002",
         status="failed",
@@ -48,17 +66,25 @@ def test_execution_action_result_with_failure_classification() -> None:
         dry_run=False,
         message="Write blocked by policy",
         error="Overwrite denied",
-        failure_type="policy_violation",
+        error_type="policy_violation",
     )
 
     data = result.to_dict()
 
     assert data["status"] == "failed"
     assert data["error"] == "Overwrite denied"
-    assert data["failure_type"] == "policy_violation"
+    assert data["error_type"] == "policy_violation"
+
+
+# =============================================================================
+# ExecutionReport
+# =============================================================================
 
 
 def test_execution_report_summary_computation() -> None:
+    """
+    ExecutionReport.create must compute summary counts correctly.
+    """
     results = [
         ExecutionActionResult(
             action_id="a1",
@@ -74,7 +100,7 @@ def test_execution_report_summary_computation() -> None:
             dry_run=False,
             message="failed",
             error="Permission denied",
-            failure_type="policy_violation",
+            error_type="policy_violation",
         ),
         ExecutionActionResult(
             action_id="a3",
@@ -98,6 +124,9 @@ def test_execution_report_summary_computation() -> None:
 
 
 def test_execution_report_serialization() -> None:
+    """
+    ExecutionReport serialization must be JSON-safe and deterministic.
+    """
     results = [
         ExecutionActionResult(
             action_id="copy-0001",
@@ -121,18 +150,22 @@ def test_execution_report_serialization() -> None:
     assert len(data["results"]) == 1
     assert data["summary"]["total"] == 1
     assert data["summary"]["success"] == 1
+    assert data["results"][0]["error_type"] is None
 
 
-def test_execution_report_with_failed_action_contains_failure_type() -> None:
+def test_execution_report_with_failed_action_contains_error_type() -> None:
+    """
+    Failed actions must preserve error_type in serialized output.
+    """
     results = [
         ExecutionActionResult(
             action_id="bad-0001",
             status="failed",
             handler="FsDeleteHandler",
             dry_run=False,
-            message="Target path outside sandbox",
-            error="Sandbox violation",
-            failure_type="sandbox_violation",
+            message="Policy denied mutation",
+            error="Overwrite denied",
+            error_type="policy_violation",
         )
     ]
 
@@ -143,8 +176,30 @@ def test_execution_report_with_failed_action_contains_failure_type() -> None:
     )
 
     data = report.to_dict()
-
     action = data["results"][0]
+
     assert action["status"] == "failed"
-    assert action["failure_type"] == "sandbox_violation"
-    assert action["error"] == "Sandbox violation"
+    assert action["error_type"] == "policy_violation"
+    assert action["error"] == "Overwrite denied"
+
+
+def test_execution_report_rejects_invalid_status() -> None:
+    """
+    ExecutionReport must reject invalid execution statuses.
+    """
+    results = [
+        ExecutionActionResult(
+            action_id="bad",
+            status="exploded",  # type: ignore[arg-type]
+            handler="H",
+            dry_run=False,
+            message="invalid",
+        )
+    ]
+
+    with pytest.raises(ValueError):
+        ExecutionReport.create(
+            execution_id="exec-invalid",
+            dry_run=False,
+            results=results,
+        )

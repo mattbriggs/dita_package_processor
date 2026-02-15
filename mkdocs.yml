@@ -49,6 +49,7 @@ nav:
     - Testing: testing.md
   - Architecture and Design:
     - Design: design.md
+    - Execution Contract: execution-contract.md
     - Executor Architecture: executor-arc-design.md
   - API Reference: 
         - Class Reference:

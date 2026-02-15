@@ -1,8 +1,9 @@
 """
 Planning input contract.
 
-This module defines the schema-locked input that the planning subsystem is
-allowed to consume. Planning MUST NOT consume discovery output directly.
+Defines the schema-locked boundary between discovery and planning.
+
+Planning MUST NOT consume discovery output directly.
 
 Contract goals
 --------------
@@ -13,12 +14,13 @@ Contract goals
 - No forgiveness
 - No optional behavior
 
-PlanningInput is the hard boundary object between discovery and planning.
+``PlanningInput`` is the hard boundary object between discovery and planning.
 Anything not represented here is not permitted to influence planning.
 """
 
 from __future__ import annotations
 
+import copy
 import logging
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Literal, Optional
@@ -26,6 +28,8 @@ from typing import Any, Dict, List, Literal, Optional
 LOGGER = logging.getLogger(__name__)
 
 ArtifactType = Literal["map", "topic", "media"]
+
+_ALLOWED_ARTIFACT_TYPES = {"map", "topic", "media"}
 
 
 # =============================================================================
@@ -41,22 +45,10 @@ class PlanningArtifact:
     This is the strict, contract-safe representation of a discovery artifact.
 
     Planning is intentionally restricted to this minimal view to prevent:
-        - re-discovery
-        - semantic inference
-        - filesystem logic
 
-    Parameters
-    ----------
-    path:
-        Relative artifact path in the package.
-    artifact_type:
-        One of: ``map``, ``topic``, ``media``.
-    classification:
-        Optional classification string (e.g., ``MAIN``).
-        Planning may ONLY use this for selecting ``main_map``.
-    metadata:
-        Opaque metadata preserved from discovery. Planning MUST NOT interpret
-        unless explicitly declared by downstream rules.
+    - Re-discovery
+    - Semantic inference
+    - Filesystem logic
     """
 
     path: str
@@ -65,34 +57,47 @@ class PlanningArtifact:
     metadata: Dict[str, Any] = field(default_factory=dict)
 
     # -------------------------------------------------------------------------
-    # Serialization
+    # Validation
     # -------------------------------------------------------------------------
 
-    def to_dict(self) -> Dict[str, Any]:
-        """
-        Serialize artifact to contract JSON.
+    def __post_init__(self) -> None:
+        if not isinstance(self.path, str) or not self.path:
+            raise ValueError("PlanningArtifact.path must be non-empty string")
 
-        No coercion or mutation occurs here. The contract layer guarantees
-        type correctness upstream. This method must remain a pure projection.
+        if self.artifact_type not in _ALLOWED_ARTIFACT_TYPES:
+            raise ValueError(
+                f"Invalid artifact_type: {self.artifact_type}"
+            )
 
-        Returns
-        -------
-        Dict[str, Any]
-            Schema-compatible artifact representation.
-        """
+        if self.classification is not None and not isinstance(
+            self.classification, str
+        ):
+            raise ValueError(
+                "PlanningArtifact.classification must be string or None"
+            )
+
+        if not isinstance(self.metadata, dict):
+            raise ValueError(
+                "PlanningArtifact.metadata must be a dictionary"
+            )
+
         LOGGER.debug(
-            "Serialize PlanningArtifact path=%s type=%s classification=%s",
+            "PlanningArtifact validated path=%s type=%s classification=%s",
             self.path,
             self.artifact_type,
             self.classification,
         )
 
+    # -------------------------------------------------------------------------
+    # Serialization
+    # -------------------------------------------------------------------------
+
+    def to_dict(self) -> Dict[str, Any]:
         return {
             "path": self.path,
             "artifact_type": self.artifact_type,
             "classification": self.classification,
-            # 🔒 DO NOT COERCE
-            "metadata": self.metadata,
+            "metadata": copy.deepcopy(self.metadata),
         }
 
 
@@ -104,23 +109,7 @@ class PlanningArtifact:
 @dataclass(frozen=True)
 class PlanningRelationship:
     """
-    Planning relationship edge.
-
-    Stable, normalized edge representation used by planning.
-
-    This mirrors the discovery relationship contract but hides the discovery
-    graph implementation details.
-
-    Parameters
-    ----------
-    source:
-        Source artifact path.
-    target:
-        Target artifact path.
-    rel_type:
-        Semantic relationship type (e.g., ``topicref``).
-    pattern_id:
-        Discovery pattern identifier for traceability.
+    Stable relationship edge used by planning.
     """
 
     source: str
@@ -129,26 +118,34 @@ class PlanningRelationship:
     pattern_id: str
 
     # -------------------------------------------------------------------------
+    # Validation
+    # -------------------------------------------------------------------------
+
+    def __post_init__(self) -> None:
+        if not self.source:
+            raise ValueError("PlanningRelationship.source must be non-empty")
+
+        if not self.target:
+            raise ValueError("PlanningRelationship.target must be non-empty")
+
+        if not self.rel_type:
+            raise ValueError("PlanningRelationship.rel_type required")
+
+        if not self.pattern_id:
+            raise ValueError("PlanningRelationship.pattern_id required")
+
+        LOGGER.debug(
+            "PlanningRelationship validated %s -> %s type=%s",
+            self.source,
+            self.target,
+            self.rel_type,
+        )
+
+    # -------------------------------------------------------------------------
     # Serialization
     # -------------------------------------------------------------------------
 
     def to_dict(self) -> Dict[str, Any]:
-        """
-        Serialize relationship to contract JSON.
-
-        Returns
-        -------
-        Dict[str, Any]
-            Schema-compatible relationship representation.
-        """
-        LOGGER.debug(
-            "Serialize PlanningRelationship %s -> %s type=%s pattern=%s",
-            self.source,
-            self.target,
-            self.rel_type,
-            self.pattern_id,
-        )
-
         return {
             "source": self.source,
             "target": self.target,
@@ -168,17 +165,6 @@ class PlanningInput:
     Planning input contract root.
 
     This is the ONLY structure planning is allowed to consume.
-
-    Parameters
-    ----------
-    contract_version:
-        Fixed version string identifying the schema contract.
-    main_map:
-        Path of the unique MAIN map.
-    artifacts:
-        All artifacts participating in planning.
-    relationships:
-        All relationships planning may reason about.
     """
 
     contract_version: str
@@ -187,31 +173,48 @@ class PlanningInput:
     relationships: List[PlanningRelationship]
 
     # -------------------------------------------------------------------------
-    # Serialization
+    # Validation
     # -------------------------------------------------------------------------
 
-    def to_dict(self) -> Dict[str, Any]:
-        """
-        Serialize PlanningInput to contract JSON.
+    def __post_init__(self) -> None:
+        if not self.contract_version:
+            raise ValueError("PlanningInput.contract_version required")
 
-        This is the canonical wire format between discovery and planning.
+        if not isinstance(self.main_map, str) or not self.main_map:
+            raise ValueError("PlanningInput.main_map must be non-empty string")
 
-        Returns
-        -------
-        Dict[str, Any]
-            Schema-compatible planning_input.json representation.
-        """
+        if not isinstance(self.artifacts, list):
+            raise ValueError("PlanningInput.artifacts must be list")
+
+        if not isinstance(self.relationships, list):
+            raise ValueError("PlanningInput.relationships must be list")
+
+        if not self.artifacts:
+            raise ValueError("PlanningInput.artifacts cannot be empty")
+
+        # NOTE:
+        # We intentionally DO NOT enforce that main_map must appear in artifacts.
+        # That invariant belongs to discovery.
+        # Planner must remain agnostic and deterministic.
+
         LOGGER.debug(
-            "Serialize PlanningInput version=%s main_map=%s artifacts=%d relationships=%d",
+            "PlanningInput validated version=%s main_map=%s artifacts=%d relationships=%d",
             self.contract_version,
             self.main_map,
             len(self.artifacts),
             len(self.relationships),
         )
 
+    # -------------------------------------------------------------------------
+    # Serialization
+    # -------------------------------------------------------------------------
+
+    def to_dict(self) -> Dict[str, Any]:
         return {
             "contract_version": self.contract_version,
             "main_map": self.main_map,
             "artifacts": [a.to_dict() for a in self.artifacts],
-            "relationships": [r.to_dict() for r in self.relationships],
+            "relationships": [
+                r.to_dict() for r in self.relationships
+            ],
         }

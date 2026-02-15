@@ -1,8 +1,11 @@
 """
 Planning execution adapter.
 
-Planning never executes actions.
+Planning never performs execution directly.
 It delegates execution to the execution layer.
+
+This adapter exists for backward compatibility with callers that still
+invoke execution through the planning namespace.
 """
 
 from __future__ import annotations
@@ -15,61 +18,130 @@ from dita_package_processor.execution.models import ExecutionReport
 
 LOGGER = logging.getLogger(__name__)
 
+__all__ = ["PlanningExecutor"]
+
+
+# =============================================================================
+# Helpers
+# =============================================================================
+
 
 def _normalize_plan_object(plan_obj: Any) -> Dict[str, Any]:
     """
-    Normalize a loaded plan object into a pure dictionary.
+    Normalize a plan object into a dictionary.
 
-    The execution layer only accepts raw dictionaries.
+    The execution layer requires a raw dictionary containing
+    an ``actions`` list.
+
+    Supported inputs:
+    - dict
+    - object exposing ``to_dict()``
+    - object exposing ``model_dump()``
+
+    Parameters
+    ----------
+    plan_obj : Any
+        Plan object or dictionary.
+
+    Returns
+    -------
+    Dict[str, Any]
+        Normalized plan dictionary.
+
+    Raises
+    ------
+    TypeError
+        If the object cannot be normalized.
     """
-    # Native dict
     if isinstance(plan_obj, dict):
-        LOGGER.debug("Plan already a dictionary")
+        LOGGER.debug("Plan normalization: already dictionary")
         return plan_obj
 
-    # Explicit adapter methods
-    for attr in ("to_dict", "dict", "model_dump"):
+    for attr in ("to_dict", "model_dump"):
         method = getattr(plan_obj, attr, None)
         if callable(method):
-            LOGGER.debug("Normalizing plan via %s()", attr)
-            return method()
-
-    # Fallback: attribute extraction
-    if hasattr(plan_obj, "__dict__"):
-        LOGGER.debug("Normalizing plan via __dict__")
-        return dict(plan_obj.__dict__)
+            LOGGER.debug("Plan normalization via %s()", attr)
+            result = method()
+            if not isinstance(result, dict):
+                raise TypeError(
+                    f"{attr}() did not return a dictionary"
+                )
+            return result
 
     raise TypeError(
         f"Unsupported plan object type: {type(plan_obj).__name__}. "
-        "Expected dict or object with to_dict(), dict(), model_dump(), or __dict__."
+        "Expected dict or object exposing to_dict() or model_dump()."
     )
+
+
+# =============================================================================
+# Adapter
+# =============================================================================
 
 
 class PlanningExecutor:
     """
-    Adapter that hands execution off to the execution layer.
+    Backwards-compatible execution adapter.
 
-    This class exists only for backwards compatibility with code
-    that still calls into the planning namespace expecting execution.
+    This class does not perform execution itself. It delegates
+    to ``DryRunExecutor`` in accordance with the execution contract.
+
+    Responsibilities
+    ----------------
+    - Normalize incoming plan objects
+    - Delegate to execution layer
+    - Emit ExecutionReport
     """
 
-    def execute(self, plan: Any, *, execution_id: str) -> ExecutionReport:
-        """
-        Delegate execution to the execution layer.
+    # ------------------------------------------------------------------
+    # Execution entrypoint
+    # ------------------------------------------------------------------
 
-        :param plan: Plan object or dictionary.
-        :param execution_id: Unique execution identifier.
-        :return: ExecutionReport
+    def execute(
+        self,
+        plan: Any,
+        *,
+        execution_id: str,
+    ) -> ExecutionReport:
+        """
+        Execute a plan in dry-run mode.
+
+        Parameters
+        ----------
+        plan : Any
+            Plan object or dictionary.
+        execution_id : str
+            Unique execution identifier.
+
+        Returns
+        -------
+        ExecutionReport
         """
         LOGGER.info(
-            "PlanningExecutor delegating execution execution_id=%s",
+            "PlanningExecutor delegating to DryRunExecutor "
+            "execution_id=%s",
             execution_id,
         )
 
         normalized_plan = _normalize_plan_object(plan)
 
-        executor = DryRunExecutor()
-        return executor.execute(
-            plan=normalized_plan,
-            execution_id=execution_id,
+        LOGGER.debug(
+            "Normalized plan contains %d actions",
+            len(normalized_plan.get("actions", [])),
         )
+
+        executor = DryRunExecutor()
+
+        report = executor.run(
+            execution_id=execution_id,
+            plan=normalized_plan,
+        )
+
+        LOGGER.info(
+            "PlanningExecutor completed delegation "
+            "execution_id=%s total=%d",
+            execution_id,
+            report.summary.get("total", 0),
+        )
+
+        return report

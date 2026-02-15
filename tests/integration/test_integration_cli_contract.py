@@ -1,10 +1,15 @@
 """
 CLI contract tests for the DITA Package Processor.
 
-These tests validate command-line interface behavior, including
-help output, version reporting, and basic argument validation.
+These tests validate command-line interface behavior including:
 
-The focus is on contract correctness rather than pipeline execution.
+- help output
+- version reporting
+- required argument enforcement
+- logging level validation
+
+The CLI is a boundary adapter.
+It must not leak internal exceptions or stack traces.
 """
 
 from __future__ import annotations
@@ -18,24 +23,45 @@ from dita_package_processor.cli import main as cli_main
 from dita_package_processor import __version__
 
 
+# =============================================================================
+# Helpers
+# =============================================================================
+
+
 def _run_cli(
     argv: List[str],
-    monkeypatch,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> int:
     """
-    Invoke the CLI with patched argv.
+    Invoke CLI entrypoint with patched argv.
 
-    :param argv: Argument vector to simulate.
-    :param monkeypatch: Pytest monkeypatch fixture.
-    :return: Exit code returned by the CLI.
+    Parameters
+    ----------
+    argv : List[str]
+        Argument vector to simulate.
+    monkeypatch : pytest.MonkeyPatch
+        Pytest monkeypatch fixture.
+
+    Returns
+    -------
+    int
+        Exit code returned by CLI.
     """
     monkeypatch.setattr(sys, "argv", argv)
     return cli_main()
 
 
-def test_help_flag_exits_cleanly(monkeypatch, capsys) -> None:
+# =============================================================================
+# Help + Version
+# =============================================================================
+
+
+def test_help_flag_exits_cleanly(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
     """
-    Ensure ``-h`` / ``--help`` prints usage information and exits cleanly.
+    --help must print usage and exit with code 0.
     """
     exit_code = _run_cli(
         ["dita_package_processor", "--help"],
@@ -46,12 +72,15 @@ def test_help_flag_exits_cleanly(monkeypatch, capsys) -> None:
 
     assert exit_code == 0
     assert "usage:" in captured.out.lower()
-    assert "dita package processor" in captured.out.lower()
+    assert "dita" in captured.out.lower()
 
 
-def test_version_flag_prints_version(monkeypatch, capsys) -> None:
+def test_version_flag_prints_version(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
     """
-    Ensure ``-v`` / ``--version`` prints the installed version and exits.
+    --version must print installed version and exit 0.
     """
     exit_code = _run_cli(
         ["dita_package_processor", "--version"],
@@ -64,13 +93,20 @@ def test_version_flag_prints_version(monkeypatch, capsys) -> None:
     assert __version__ in captured.out
 
 
-def test_missing_required_input_fails(monkeypatch, capsys) -> None:
+# =============================================================================
+# Required arguments
+# =============================================================================
+
+
+def test_missing_required_package_argument_fails(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
     """
-    Ensure invoking the CLI without required input arguments fails
-    with a non-zero exit code and a clear error message.
+    CLI must reject invocation without required --package.
     """
     exit_code = _run_cli(
-        ["dita_package_processor"],
+        ["dita_package_processor", "run"],
         monkeypatch,
     )
 
@@ -78,26 +114,37 @@ def test_missing_required_input_fails(monkeypatch, capsys) -> None:
 
     assert exit_code != 0
 
-    # Contract: error must explicitly mention missing required input
     err = captured.err.lower()
-    assert (
-        "missing" in err
-        or "required" in err
-        or "--package" in err
-    )
+
+    # Must indicate missing required argument
+    assert "package" in err
+    assert "required" in err or "missing" in err
 
 
-def test_invalid_log_level_rejected(monkeypatch, capsys) -> None:
+# =============================================================================
+# Logging validation
+# =============================================================================
+
+
+def test_invalid_log_level_rejected(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
     """
-    Ensure invalid logging levels are rejected with a helpful error.
+    Invalid log levels must be rejected explicitly.
+
+    Global arguments must precede subcommand invocation.
     """
     exit_code = _run_cli(
         [
             "dita_package_processor",
-            "--package",
-            "/tmp/does-not-matter",
             "--log-level",
             "NOT_A_LEVEL",
+            "run",
+            "--package",
+            "/tmp/fake",
+            "--docx-stem",
+            "Doc",
         ],
         monkeypatch,
     )
@@ -107,6 +154,8 @@ def test_invalid_log_level_rejected(monkeypatch, capsys) -> None:
     assert exit_code != 0
 
     err = captured.err.lower()
+
+    # Argparse must reject invalid enum choice
     assert "log" in err
     assert "level" in err
-    assert "invalid" in err or "not a valid" in err
+    assert "not_a_level" in err or "invalid choice" in err

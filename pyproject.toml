@@ -21,15 +21,32 @@ authors = [
   { name = "Matt Briggs" }
 ]
 
+# ---- Runtime dependencies (moved from requirements.txt conceptually) ----
+dependencies = [
+  "lxml>=5.1.0",
+  "packaging>=24.0",
+  "pydantic>=2.6.0",
+  "pyyaml>=6.0",
+  "rich>=13.7.0",
+  "networkx>=3.2.1",
+  "jsonschema>=4.21.0"
+]
+
+# ---- Console script entry point (THIS FIXES YOUR CLI) ----
+[project.scripts]
+dita_package_processor = "dita_package_processor.cli:main"
+
 
 # -------------------------------------------------------------------
-# Setuptools configuration (explicit discovery)
+# Setuptools configuration
 # -------------------------------------------------------------------
 [tool.setuptools]
-packages = ["dita_package_processor"]
+package-dir = { "" = "." }
 
-[tool.setuptools.package-dir]
-"" = "."
+# Automatically include all subpackages (important for your size)
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["dita_package_processor*"]
 
 
 # -------------------------------------------------------------------
@@ -44,7 +61,7 @@ packages = ["dita_package_processor"]
 # -------------------------------------------------------------------
 [tool.dita_package_processor.package]
 
-root_dir = "/path/to/dita/package"
+root_dir = "dita_package_processor"
 docx_stem = "OutputDoc"
 
 

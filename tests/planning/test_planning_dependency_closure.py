@@ -1,42 +1,48 @@
 """
 Tests for dependency closure behavior in planning.
 
-These tests ensure that:
+These tests verify that the :class:`GraphPlanner`:
 
-- The planner walks the full dependency graph starting from the root.
-- All reachable artifacts are included.
-- No unreachable artifacts are included.
-- Nodes are not duplicated.
-- Traversal order is deterministic.
+- Walks the full dependency graph starting from the root node.
+- Includes all reachable artifacts.
+- Excludes unreachable artifacts.
+- Does not duplicate nodes.
+- Produces deterministic traversal order.
 
-These tests operate strictly through the public graph construction API
-(DependencyGraph.from_dict). No mutation is allowed.
+Tests operate strictly through the public graph construction API
+(:meth:`DependencyGraph.from_dict`). No internal mutation is permitted.
 """
 
 from __future__ import annotations
+
+from typing import Iterable, Tuple
 
 from dita_package_processor.discovery.graph import DependencyGraph
 from dita_package_processor.planning.graph_planner import GraphPlanner
 
 
-# ---------------------------------------------------------------------------
+# =============================================================================
 # Helpers
-# ---------------------------------------------------------------------------
+# =============================================================================
 
 
-def make_graph(edges: list[tuple[str, str]]) -> DependencyGraph:
+def make_graph(edges: Iterable[Tuple[str, str]]) -> DependencyGraph:
     """
-    Build a DependencyGraph using the real serialized schema.
+    Construct a :class:`DependencyGraph` using the serialized schema format.
 
-    Every edge requires:
-      - source
-      - target
-      - type
-      - pattern_id
+    Parameters
+    ----------
+    edges:
+        Iterable of (source, target) tuples.
+
+    Returns
+    -------
+    DependencyGraph
+        Fully constructed graph instance.
     """
     return DependencyGraph.from_dict(
         {
-            "nodes": sorted({n for e in edges for n in e}),
+            "nodes": sorted({node for edge in edges for node in edge}),
             "edges": [
                 {
                     "source": src,
@@ -50,21 +56,35 @@ def make_graph(edges: list[tuple[str, str]]) -> DependencyGraph:
     )
 
 
-# ---------------------------------------------------------------------------
+def make_planner(graph: DependencyGraph) -> GraphPlanner:
+    """
+    Construct :class:`GraphPlanner` using serialized relationship dictionaries.
+
+    The planner layer must not depend on discovery model classes.
+    """
+    return GraphPlanner(
+        nodes=graph.nodes,
+        relationships=[edge.to_dict() for edge in graph.edges],
+    )
+
+
+# =============================================================================
 # Tests
-# ---------------------------------------------------------------------------
+# =============================================================================
 
 
 def test_dependency_closure_simple_chain() -> None:
     """
-    A → B → C should include all three in order.
+    A → B → C must include all three nodes in order.
     """
-    graph = make_graph([
-        ("A", "B"),
-        ("B", "C"),
-    ])
+    graph = make_graph(
+        [
+            ("A", "B"),
+            ("B", "C"),
+        ]
+    )
 
-    planner = GraphPlanner(graph)
+    planner = make_planner(graph)
     result = planner.plan()
 
     assert result == ["A", "B", "C"]
@@ -72,22 +92,29 @@ def test_dependency_closure_simple_chain() -> None:
 
 def test_dependency_closure_branching_graph() -> None:
     """
-    A → B
-    A → C
-    B → D
-    C → E
+    Branching graph must produce deterministic depth-first traversal.
 
-    Deterministic depth-first:
-    A → B → D → C → E
+    Graph:
+
+        A → B
+        A → C
+        B → D
+        C → E
+
+    Expected:
+
+        A → B → D → C → E
     """
-    graph = make_graph([
-        ("A", "B"),
-        ("A", "C"),
-        ("B", "D"),
-        ("C", "E"),
-    ])
+    graph = make_graph(
+        [
+            ("A", "B"),
+            ("A", "C"),
+            ("B", "D"),
+            ("C", "E"),
+        ]
+    )
 
-    planner = GraphPlanner(graph)
+    planner = make_planner(graph)
     result = planner.plan()
 
     assert result == ["A", "B", "D", "C", "E"]
@@ -95,19 +122,23 @@ def test_dependency_closure_branching_graph() -> None:
 
 def test_dependency_closure_deduplicates_nodes() -> None:
     """
-    Multiple paths to the same node must not cause duplicates.
+    Multiple paths to the same node must not produce duplicates.
 
-    A → B
-    A → C
-    B → C
+    Graph:
+
+        A → B
+        A → C
+        B → C
     """
-    graph = make_graph([
-        ("A", "B"),
-        ("A", "C"),
-        ("B", "C"),
-    ])
+    graph = make_graph(
+        [
+            ("A", "B"),
+            ("A", "C"),
+            ("B", "C"),
+        ]
+    )
 
-    planner = GraphPlanner(graph)
+    planner = make_planner(graph)
     result = planner.plan()
 
     assert result == ["A", "B", "C"]
@@ -116,20 +147,21 @@ def test_dependency_closure_deduplicates_nodes() -> None:
 
 def test_dependency_closure_excludes_unreachable_nodes() -> None:
     """
-    Nodes not reachable from the root must not appear.
+    Nodes not reachable from the root must be excluded.
 
-    Rooted graph:
+    Graph:
+
         A → B
-
-    Disconnected subgraph:
-        X → Y
+        X → Y   (disconnected)
     """
-    graph = make_graph([
-        ("A", "B"),
-        ("X", "Y"),
-    ])
+    graph = make_graph(
+        [
+            ("A", "B"),
+            ("X", "Y"),
+        ]
+    )
 
-    planner = GraphPlanner(graph)
+    planner = make_planner(graph)
     result = planner.plan()
 
     assert result == ["A", "B"]
@@ -139,16 +171,18 @@ def test_dependency_closure_excludes_unreachable_nodes() -> None:
 
 def test_dependency_closure_order_is_stable() -> None:
     """
-    Order must not change between runs for the same graph.
+    Traversal order must be stable across multiple invocations.
     """
-    graph = make_graph([
-        ("Root", "b"),
-        ("Root", "a"),
-        ("a", "c"),
-        ("b", "d"),
-    ])
+    graph = make_graph(
+        [
+            ("Root", "b"),
+            ("Root", "a"),
+            ("a", "c"),
+            ("b", "d"),
+        ]
+    )
 
-    planner = GraphPlanner(graph)
+    planner = make_planner(graph)
 
     first = planner.plan()
     second = planner.plan()

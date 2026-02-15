@@ -15,7 +15,7 @@ If this test passes:
     ✔ execution report is correct
 
 If this test fails:
-    something structural is still broken.
+    something structural is broken.
 """
 
 from __future__ import annotations
@@ -24,10 +24,6 @@ from pathlib import Path
 
 from dita_package_processor.execution.executors.filesystem import (
     FilesystemExecutor,
-)
-from dita_package_processor.execution.safety.policies import (
-    MutationPolicy,
-    OverwritePolicy,
 )
 
 
@@ -44,7 +40,7 @@ def _make_copy_plan(source: Path, target: Path) -> dict:
         "actions": [
             {
                 "id": "copy-test",
-                "type": "copy_file",  # semantic handler
+                "type": "copy_file",
                 "target": str(target),
                 "parameters": {
                     "source_path": str(source),
@@ -68,17 +64,21 @@ def test_filesystem_executor_copies_file(tmp_path: Path) -> None:
     This verifies:
         registry → handler → filesystem mutation
     """
-    sandbox = tmp_path / "sandbox"
-    sandbox.mkdir()
+    source_root = tmp_path / "src"
+    sandbox_root = tmp_path / "out"
 
-    source = sandbox / "source.txt"
-    target = sandbox / "out" / "target.txt"
+    source_root.mkdir()
+    sandbox_root.mkdir()
+
+    source = source_root / "source.txt"
+    target = sandbox_root / "target.txt"
 
     source.write_text("hello world", encoding="utf-8")
 
     executor = FilesystemExecutor(
-        sandbox_root=sandbox,
-        policy=MutationPolicy(OverwritePolicy.REPLACE),
+        source_root=source_root,
+        sandbox_root=sandbox_root,
+        apply=True,  # allow mutation
     )
 
     plan = _make_copy_plan(source, target)
@@ -106,3 +106,4 @@ def test_filesystem_executor_copies_file(tmp_path: Path) -> None:
     assert result.status == "success"
     assert result.action_id == "copy-test"
     assert result.handler is not None
+    assert report.dry_run is False

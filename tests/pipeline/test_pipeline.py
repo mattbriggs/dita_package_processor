@@ -5,17 +5,19 @@ These tests validate:
 
 - run() performs discovery → planning → materialization → execution
 - execute_plan() skips discovery/planning
-- Dry-run uses noop executor
-- No implicit filesystem mutation
+- Dry-run selects noop executor
+- Apply mode selects filesystem executor
 - Materialization preflight failure aborts execution
+- Pipeline does not perform execution logic itself
 
-Pipeline only orchestrates. All phases are mocked.
+All phases are mocked. Pipeline is orchestration only.
 """
 
 from __future__ import annotations
 
 from pathlib import Path
 from unittest.mock import MagicMock
+from typing import Any, Dict
 
 import pytest
 
@@ -33,7 +35,7 @@ from dita_package_processor.discovery.models import (
     DiscoveryArtifact,
 )
 from dita_package_processor.discovery.graph import DependencyGraph
-from dita_package_processor.planning.models import Plan
+from dita_package_processor.knowledge.map_types import MapType
 
 
 # =============================================================================
@@ -52,7 +54,7 @@ def _minimal_inventory() -> DiscoveryInventory:
         DiscoveryArtifact(
             path=Path("Main.ditamap"),
             artifact_type="map",
-            classification="MAIN_MAP",
+            classification=MapType.MAIN,
             confidence=1.0,
         )
     )
@@ -61,41 +63,49 @@ def _minimal_inventory() -> DiscoveryInventory:
     return inv
 
 
-def _minimal_plan() -> Plan:
-    return Plan(
-        plan_version=1,
-        generated_at="2026-01-30T00:00:00+00:00",
-        source_discovery={},
-        intent={},
-        actions=[],
-    )
+def _minimal_plan() -> Dict[str, Any]:
+    """
+    Return minimal plan dict matching planner contract.
+    """
+    return {
+        "plan_version": 1,
+        "generated_at": "2026-01-30T00:00:00+00:00",
+        "source_discovery": {
+            "path": "discovery.json",
+            "schema_version": 1,
+            "artifact_count": 1,
+        },
+        "intent": {},
+        "actions": [],
+        "invariants": [],
+    }
 
 
 def _fake_report(*, dry_run: bool) -> ExecutionReport:
-    results = [
-        ExecutionActionResult(
-            action_id="a1",
-            status="skipped" if dry_run else "success",
-            handler="NoOp" if dry_run else "Filesystem",
-            dry_run=dry_run,
-            message="simulated",
-        )
-    ]
+    result = ExecutionActionResult(
+        action_id="a1",
+        status="skipped" if dry_run else "success",
+        handler="DryRunExecutor" if dry_run else "FilesystemExecutor",
+        dry_run=dry_run,
+        message="simulated",
+    )
 
     return ExecutionReport.create(
-        execution_id="pipeline-run",
+        execution_id="pipeline-execution",
         dry_run=dry_run,
-        results=results,
+        results=[result],
     )
 
 
 # =============================================================================
-# run() tests (full pipeline)
+# run() tests
 # =============================================================================
 
 
-def test_pipeline_run_full_dry_run(tmp_path: Path, monkeypatch) -> None:
-    """run() should orchestrate discovery → plan → execute."""
+def test_pipeline_run_full_dry_run(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     _write_minimal_package(tmp_path)
 
     monkeypatch.setattr(
@@ -130,18 +140,74 @@ def test_pipeline_run_full_dry_run(tmp_path: Path, monkeypatch) -> None:
         package_path=tmp_path,
         docx_stem="Doc",
         target_path=tmp_path / "out",
+        apply=False,
     )
 
     report = pipeline.run()
 
+    assert isinstance(report, ExecutionReport)
     assert report.dry_run is True
+
     orchestrator.preflight.assert_called_once()
     executor.run.assert_called_once()
     orchestrator.finalize.assert_called_once()
 
 
-def test_pipeline_preflight_failure_aborts(tmp_path: Path, monkeypatch) -> None:
-    """Execution must not run if preflight fails."""
+def test_pipeline_run_apply_mode_selects_filesystem_executor(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _write_minimal_package(tmp_path)
+
+    monkeypatch.setattr(
+        pipeline_module,
+        "run_discovery",
+        lambda **_: _minimal_inventory(),
+    )
+
+    monkeypatch.setattr(
+        pipeline_module,
+        "run_planning",
+        lambda **_: _minimal_plan(),
+    )
+
+    monkeypatch.setattr(
+        pipeline_module,
+        "MaterializationOrchestrator",
+        lambda **_: MagicMock(),
+    )
+
+    executor = MagicMock()
+    executor.run.return_value = _fake_report(dry_run=False)
+
+    selected_modes: list[str] = []
+
+    def fake_get_executor(name: str, **_: Any):
+        selected_modes.append(name)
+        return executor
+
+    monkeypatch.setattr(
+        pipeline_module,
+        "get_executor",
+        fake_get_executor,
+    )
+
+    pipeline = Pipeline(
+        package_path=tmp_path,
+        docx_stem="Doc",
+        target_path=tmp_path / "out",
+        apply=True,
+    )
+
+    pipeline.run()
+
+    assert selected_modes == ["filesystem"]
+
+
+def test_pipeline_preflight_failure_aborts_execution(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     _write_minimal_package(tmp_path)
 
     monkeypatch.setattr(
@@ -157,7 +223,9 @@ def test_pipeline_preflight_failure_aborts(tmp_path: Path, monkeypatch) -> None:
     )
 
     orchestrator = MagicMock()
-    orchestrator.preflight.side_effect = MaterializationOrchestrationError("boom")
+    orchestrator.preflight.side_effect = (
+        MaterializationOrchestrationError("boom")
+    )
 
     monkeypatch.setattr(
         pipeline_module,
@@ -186,12 +254,14 @@ def test_pipeline_preflight_failure_aborts(tmp_path: Path, monkeypatch) -> None:
 
 
 # =============================================================================
-# execute_plan() tests (execution-only path)
+# execute_plan() tests
 # =============================================================================
 
 
-def test_execute_plan_skips_discovery_and_planning(tmp_path: Path, monkeypatch) -> None:
-    """execute_plan() must not call discovery or planning."""
+def test_execute_plan_skips_discovery_and_planning(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     plan_path = tmp_path / "plan.json"
     plan_path.write_text("{}")
 
@@ -204,13 +274,13 @@ def test_execute_plan_skips_discovery_and_planning(tmp_path: Path, monkeypatch) 
     monkeypatch.setattr(
         pipeline_module,
         "run_discovery",
-        lambda **_: pytest.fail("discovery should not run"),
+        lambda **_: pytest.fail("discovery must not run"),
     )
 
     monkeypatch.setattr(
         pipeline_module,
         "run_planning",
-        lambda **_: pytest.fail("planning should not run"),
+        lambda **_: pytest.fail("planning must not run"),
     )
 
     orchestrator = MagicMock()
@@ -237,22 +307,17 @@ def test_execute_plan_skips_discovery_and_planning(tmp_path: Path, monkeypatch) 
 
     report = pipeline.execute_plan(plan_path=plan_path)
 
+    assert isinstance(report, ExecutionReport)
     assert report.dry_run is True
+
     orchestrator.preflight.assert_called_once()
     executor.run.assert_called_once()
     orchestrator.finalize.assert_called_once()
 
 
-def test_execute_plan_requires_target(tmp_path: Path, monkeypatch) -> None:
-    """execute_plan() should fail without target path."""
+def test_execute_plan_requires_target_path(tmp_path: Path) -> None:
     plan_path = tmp_path / "plan.json"
     plan_path.write_text("{}")
-
-    monkeypatch.setattr(
-        pipeline_module,
-        "load_plan",
-        lambda _: _minimal_plan(),
-    )
 
     pipeline = Pipeline(
         package_path=None,

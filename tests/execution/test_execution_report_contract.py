@@ -7,6 +7,7 @@ These tests lock the execution report schema and validate that:
 - The schema rejects malformed payloads.
 - The execution report is a strict forensic artifact.
 - The report is internally self-consistent.
+- error_type follows canonical taxonomy.
 
 This is the final contract surface of the execution layer.
 Nothing downstream is allowed to reinterpret it.
@@ -26,9 +27,10 @@ from dita_package_processor.execution.models import (
     ExecutionReport,
 )
 
-# ---------------------------------------------------------------------------
+
+# =============================================================================
 # Helpers
-# ---------------------------------------------------------------------------
+# =============================================================================
 
 
 def _load_schema() -> Dict[str, Any]:
@@ -43,14 +45,16 @@ def _load_schema() -> Dict[str, Any]:
         / "execution_report.schema.json"
     )
 
-    assert schema_path.exists(), f"Missing execution report schema: {schema_path}"
+    assert schema_path.exists(), (
+        f"Missing execution report schema: {schema_path}"
+    )
 
     return json.loads(schema_path.read_text(encoding="utf-8"))
 
 
-# ---------------------------------------------------------------------------
+# =============================================================================
 # Fixtures
-# ---------------------------------------------------------------------------
+# =============================================================================
 
 
 @pytest.fixture
@@ -58,8 +62,7 @@ def golden_execution_report_dict() -> Dict[str, Any]:
     """
     Golden execution report payload.
 
-    This payload represents a canonical, minimal valid execution report.
-    It must remain stable unless the execution contract is intentionally changed.
+    Canonical minimal valid execution report.
     """
     results = [
         ExecutionActionResult(
@@ -68,6 +71,8 @@ def golden_execution_report_dict() -> Dict[str, Any]:
             handler="FsCopyMapHandler",
             dry_run=False,
             message="Map copied successfully",
+            error=None,
+            error_type=None,
         ),
         ExecutionActionResult(
             action_id="copy-0002",
@@ -75,6 +80,8 @@ def golden_execution_report_dict() -> Dict[str, Any]:
             handler="FsCopyMediaHandler",
             dry_run=True,
             message="Dry-run: media copy skipped",
+            error=None,
+            error_type=None,
         ),
     ]
 
@@ -89,15 +96,13 @@ def golden_execution_report_dict() -> Dict[str, Any]:
 
 @pytest.fixture
 def execution_report_schema() -> Dict[str, Any]:
-    """
-    Load the execution report JSON schema.
-    """
+    """Load execution report JSON schema."""
     return _load_schema()
 
 
-# ---------------------------------------------------------------------------
+# =============================================================================
 # Contract tests
-# ---------------------------------------------------------------------------
+# =============================================================================
 
 
 def test_golden_execution_report_matches_schema(
@@ -105,8 +110,7 @@ def test_golden_execution_report_matches_schema(
     execution_report_schema: Dict[str, Any],
 ) -> None:
     """
-    The golden execution report must validate against the schema.
-    This is the primary contract lock.
+    Golden execution report must validate against schema.
     """
     jsonschema.validate(
         instance=golden_execution_report_dict,
@@ -118,7 +122,7 @@ def test_execution_report_summary_is_consistent(
     golden_execution_report_dict: Dict[str, Any],
 ) -> None:
     """
-    Summary counters must match the contents of results.
+    Summary counters must match results.
     """
     summary = golden_execution_report_dict["summary"]
     results = golden_execution_report_dict["results"]
@@ -134,13 +138,16 @@ def test_schema_rejects_missing_required_fields(
     execution_report_schema: Dict[str, Any],
 ) -> None:
     """
-    The schema must reject reports missing required top-level fields.
+    Schema must reject reports missing required top-level fields.
     """
     broken = dict(golden_execution_report_dict)
     broken.pop("results")
 
     with pytest.raises(jsonschema.ValidationError):
-        jsonschema.validate(instance=broken, schema=execution_report_schema)
+        jsonschema.validate(
+            instance=broken,
+            schema=execution_report_schema,
+        )
 
 
 def test_schema_rejects_invalid_action_status(
@@ -148,7 +155,7 @@ def test_schema_rejects_invalid_action_status(
     execution_report_schema: Dict[str, Any],
 ) -> None:
     """
-    The schema must reject invalid execution statuses.
+    Schema must reject invalid execution status values.
     """
     broken = dict(golden_execution_report_dict)
     broken["results"] = list(broken["results"])
@@ -156,7 +163,29 @@ def test_schema_rejects_invalid_action_status(
     broken["results"][0]["status"] = "maybe"  # invalid
 
     with pytest.raises(jsonschema.ValidationError):
-        jsonschema.validate(instance=broken, schema=execution_report_schema)
+        jsonschema.validate(
+            instance=broken,
+            schema=execution_report_schema,
+        )
+
+
+def test_schema_rejects_invalid_error_type(
+    golden_execution_report_dict: Dict[str, Any],
+    execution_report_schema: Dict[str, Any],
+) -> None:
+    """
+    Schema must reject invalid error_type taxonomy values.
+    """
+    broken = dict(golden_execution_report_dict)
+    broken["results"] = list(broken["results"])
+    broken["results"][0] = dict(broken["results"][0])
+    broken["results"][0]["error_type"] = "cosmic_failure"
+
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.validate(
+            instance=broken,
+            schema=execution_report_schema,
+        )
 
 
 def test_schema_rejects_missing_summary_fields(
@@ -164,13 +193,16 @@ def test_schema_rejects_missing_summary_fields(
     execution_report_schema: Dict[str, Any],
 ) -> None:
     """
-    Summary must contain the required counters.
+    Summary must contain required counters.
     """
     broken = dict(golden_execution_report_dict)
     broken["summary"] = {"success": 2}
 
     with pytest.raises(jsonschema.ValidationError):
-        jsonschema.validate(instance=broken, schema=execution_report_schema)
+        jsonschema.validate(
+            instance=broken,
+            schema=execution_report_schema,
+        )
 
 
 def test_schema_rejects_non_array_results(
@@ -184,7 +216,10 @@ def test_schema_rejects_non_array_results(
     broken["results"] = "not-a-list"
 
     with pytest.raises(jsonschema.ValidationError):
-        jsonschema.validate(instance=broken, schema=execution_report_schema)
+        jsonschema.validate(
+            instance=broken,
+            schema=execution_report_schema,
+        )
 
 
 def test_schema_rejects_additional_top_level_fields(
@@ -192,13 +227,16 @@ def test_schema_rejects_additional_top_level_fields(
     execution_report_schema: Dict[str, Any],
 ) -> None:
     """
-    The schema must reject unexpected top-level fields.
+    Schema must reject unexpected top-level fields.
     """
     broken = dict(golden_execution_report_dict)
     broken["hacked"] = True
 
     with pytest.raises(jsonschema.ValidationError):
-        jsonschema.validate(instance=broken, schema=execution_report_schema)
+        jsonschema.validate(
+            instance=broken,
+            schema=execution_report_schema,
+        )
 
 
 def test_schema_rejects_additional_action_fields(
@@ -214,4 +252,7 @@ def test_schema_rejects_additional_action_fields(
     broken["results"][0]["extra"] = "illegal"
 
     with pytest.raises(jsonschema.ValidationError):
-        jsonschema.validate(instance=broken, schema=execution_report_schema)
+        jsonschema.validate(
+            instance=broken,
+            schema=execution_report_schema,
+        )

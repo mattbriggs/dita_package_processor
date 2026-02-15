@@ -2,18 +2,23 @@
 Tests for planner action emission.
 
 These tests validate that the Planner emits explicit, schema-aligned
-copy actions from a dependency-ordered graph. The planner must:
+copy actions from a dependency-ordered contract input. The planner must:
 
 - Emit deterministic action order
 - Use correct action types
 - Store operational fields inside parameters
 - Avoid inference or transformation logic
-- Accept only discovery payloads that satisfy the graph contract
+- Accept only PlanningInput contract objects
 """
 
 from pathlib import Path
 
 from dita_package_processor.planning.planner import Planner
+from dita_package_processor.planning.contracts import (
+    PlanningInput,
+    PlanningArtifact,
+    PlanningRelationship,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -21,46 +26,41 @@ from dita_package_processor.planning.planner import Planner
 # ---------------------------------------------------------------------------
 
 
-def _minimal_discovery() -> dict:
+def _minimal_planning_input() -> PlanningInput:
     """
-    Construct a minimal discovery payload containing:
+    Construct a minimal PlanningInput:
 
-        A → B
-
-    Where:
-    - A is a map
-    - B is a topic
-
-    This fixture MUST obey the DependencyGraph schema contract.
-    Every edge requires:
-        - source
-        - target
-        - type
-        - pattern_id
+        A.ditamap (MAIN)
+            └── topics/B.dita
     """
-    return {
-        "artifacts": [
-            {
-                "path": "A.ditamap",
-                "artifact_type": "map",
-            },
-            {
-                "path": "topics/B.dita",
-                "artifact_type": "topic",
-            },
-        ],
-        "graph": {
-            "nodes": ["A.ditamap", "topics/B.dita"],
-            "edges": [
-                {
-                    "source": "A.ditamap",
-                    "target": "topics/B.dita",
-                    "type": "contains",  # REQUIRED by DependencyEdge.from_dict
-                    "pattern_id": "map_contains_topicref",
-                }
-            ],
-        },
-    }
+
+    artifacts = [
+        PlanningArtifact(
+            path="A.ditamap",
+            artifact_type="map",
+            classification="MAIN",
+        ),
+        PlanningArtifact(
+            path="topics/B.dita",
+            artifact_type="topic",
+        ),
+    ]
+
+    relationships = [
+        PlanningRelationship(
+            source="A.ditamap",
+            target="topics/B.dita",
+            rel_type="contains",
+            pattern_id="map_contains_topicref",
+        )
+    ]
+
+    return PlanningInput(
+        contract_version="1.0",
+        main_map="A.ditamap",
+        artifacts=artifacts,
+        relationships=relationships,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -69,11 +69,8 @@ def _minimal_discovery() -> dict:
 
 
 def test_planner_emits_copy_actions() -> None:
-    """
-    Planner must emit one copy action per artifact in graph order.
-    """
     planner = Planner()
-    plan = planner.plan(_minimal_discovery())
+    plan = planner.plan(_minimal_planning_input())
 
     actions = plan["actions"]
 
@@ -83,12 +80,8 @@ def test_planner_emits_copy_actions() -> None:
 
 
 def test_planner_emits_parameters_with_paths() -> None:
-    """
-    Each action must contain a parameters object with
-    explicit source_path and target_path fields.
-    """
     planner = Planner()
-    plan = planner.plan(_minimal_discovery())
+    plan = planner.plan(_minimal_planning_input())
 
     for action in plan["actions"]:
         assert "parameters" in action
@@ -105,12 +98,8 @@ def test_planner_emits_parameters_with_paths() -> None:
 
 
 def test_planner_uses_layout_rules_for_target_paths() -> None:
-    """
-    Target paths should be derived from layout rules and must differ
-    from source paths unless explicitly mapped otherwise.
-    """
     planner = Planner()
-    plan = planner.plan(_minimal_discovery())
+    plan = planner.plan(_minimal_planning_input())
 
     for action in plan["actions"]:
         params = action["parameters"]
@@ -121,13 +110,10 @@ def test_planner_uses_layout_rules_for_target_paths() -> None:
 
 
 def test_planner_emits_deterministic_action_ids() -> None:
-    """
-    Action IDs must be stable and deterministic across runs.
-    """
     planner = Planner()
 
-    plan1 = planner.plan(_minimal_discovery())
-    plan2 = planner.plan(_minimal_discovery())
+    plan1 = planner.plan(_minimal_planning_input())
+    plan2 = planner.plan(_minimal_planning_input())
 
     ids1 = [a["id"] for a in plan1["actions"]]
     ids2 = [a["id"] for a in plan2["actions"]]
@@ -136,11 +122,8 @@ def test_planner_emits_deterministic_action_ids() -> None:
 
 
 def test_planner_includes_reason_field() -> None:
-    """
-    All actions must include a human-readable reason.
-    """
     planner = Planner()
-    plan = planner.plan(_minimal_discovery())
+    plan = planner.plan(_minimal_planning_input())
 
     for action in plan["actions"]:
         assert "reason" in action
@@ -149,17 +132,8 @@ def test_planner_includes_reason_field() -> None:
 
 
 def test_planner_outputs_dispatchable_actions_only() -> None:
-    """
-    Planning must not emit execution state.
-
-    No:
-    - status
-    - dry_run
-    - handler
-    - result fields
-    """
     planner = Planner()
-    plan = planner.plan(_minimal_discovery())
+    plan = planner.plan(_minimal_planning_input())
 
     forbidden = {
         "status",

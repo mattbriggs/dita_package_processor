@@ -1,15 +1,20 @@
 """
 Tests for planning contract failure modes.
 
-These tests exist to prove the planning contract boundary is *hostile by design*.
+These tests exist to prove the planning contract boundary is *hostile by
+design*. Anything that:
 
-Anything that:
 - looks like discovery
 - is partially formed
 - is ambiguous
 - violates schema intent
 
 must fail immediately and loudly.
+
+There are two enforcement layers:
+
+1. Discovery → Planning normalization (raises :class:`PlanningContractError`)
+2. Planner input wall (rejects anything not a :class:`PlanningInput`)
 """
 
 from __future__ import annotations
@@ -23,28 +28,40 @@ from dita_package_processor.planning.contracts.errors import PlanningContractErr
 from dita_package_processor.planning.planner import Planner
 
 
-# ---------------------------------------------------------------------------
+# =============================================================================
 # Discovery → Planning contract failures
-# ---------------------------------------------------------------------------
+# =============================================================================
 
 
 def test_discovery_contract_rejects_non_object() -> None:
+    """
+    Normalization must reject non-dict discovery payloads.
+    """
     with pytest.raises(PlanningContractError):
         normalize_discovery_report("not-a-dict")  # type: ignore[arg-type]
 
 
 def test_discovery_contract_rejects_artifact_not_object() -> None:
+    """
+    Artifacts must be objects; lists of strings must fail.
+    """
     discovery = {
         "artifacts": ["not-an-object"],
         "relationships": [],
         "summary": {},
     }
 
-    with pytest.raises(PlanningContractError, match="artifact\\[0\\] must be an object"):
+    with pytest.raises(
+        PlanningContractError,
+        match=r"artifact\[0\] must be an object",
+    ):
         normalize_discovery_report(discovery)
 
 
 def test_discovery_contract_rejects_relationship_not_object() -> None:
+    """
+    Relationships must be objects; lists of strings must fail.
+    """
     discovery = {
         "artifacts": [
             {
@@ -65,6 +82,13 @@ def test_discovery_contract_rejects_relationship_not_object() -> None:
 
 
 def test_discovery_contract_rejects_empty_path() -> None:
+    """
+    Empty artifact paths must fail contract validation.
+
+    Current behavior:
+    - The MAIN map selection will use the empty string as ``main_map``.
+    - JSON Schema validation rejects ``main_map`` due to ``minLength``.
+    """
     discovery = {
         "artifacts": [
             {
@@ -77,11 +101,17 @@ def test_discovery_contract_rejects_empty_path() -> None:
         "summary": {},
     }
 
-    with pytest.raises(PlanningContractError, match="path must be a non-empty string"):
+    with pytest.raises(
+        PlanningContractError,
+        match=r"PlanningInput schema violation: .*non-empty",
+    ):
         normalize_discovery_report(discovery)
 
 
 def test_discovery_contract_rejects_invalid_artifact_type() -> None:
+    """
+    Invalid artifact types must fail normalization.
+    """
     discovery = {
         "artifacts": [
             {
@@ -94,11 +124,18 @@ def test_discovery_contract_rejects_invalid_artifact_type() -> None:
         "summary": {},
     }
 
-    with pytest.raises(PlanningContractError, match="artifact_type invalid"):
+    with pytest.raises(PlanningContractError, match=r"artifact_type invalid"):
         normalize_discovery_report(discovery)
 
 
 def test_discovery_contract_rejects_non_string_classification() -> None:
+    """
+    Non-string classification values must fail normalization.
+
+    Current behavior:
+    - A non-string classification prevents MAIN map selection.
+    - The normalizer fails with MAIN map selection error.
+    """
     discovery = {
         "artifacts": [
             {
@@ -113,20 +150,21 @@ def test_discovery_contract_rejects_non_string_classification() -> None:
 
     with pytest.raises(
         PlanningContractError,
-        match="classification must be string|null",
+        match=r"Exactly one artifact must be classified as MAIN map",
     ):
         normalize_discovery_report(discovery)
 
 
-# ---------------------------------------------------------------------------
+# =============================================================================
 # Planner input wall failures
-# ---------------------------------------------------------------------------
+# =============================================================================
 
 
 def test_planner_rejects_discovery_shaped_input() -> None:
     """
-    Raw discovery has 'relationships' and 'summary', not 'graph'.
-    Planner must reject this.
+    Planner must reject raw discovery-like dict inputs.
+
+    The planner boundary accepts only :class:`PlanningInput`.
     """
     planner = Planner()
 
@@ -136,33 +174,51 @@ def test_planner_rejects_discovery_shaped_input() -> None:
         "summary": {},
     }
 
-    with pytest.raises(ValueError, match="missing required keys"):
-        planner.plan(discovery_like)
+    with pytest.raises(
+        TypeError,
+        match=r"Planner\.plan\(\) requires PlanningInput, not raw dict",
+    ):
+        planner.plan(discovery_like)  # type: ignore[arg-type]
 
 
 def test_planner_rejects_missing_graph_key() -> None:
+    """
+    Planner must reject dict inputs regardless of internal shape.
+    """
     planner = Planner()
 
     bad = {
         "artifacts": [],
     }
 
-    with pytest.raises(ValueError, match="missing required keys"):
-        planner.plan(bad)
+    with pytest.raises(
+        TypeError,
+        match=r"Planner\.plan\(\) requires PlanningInput, not raw dict",
+    ):
+        planner.plan(bad)  # type: ignore[arg-type]
 
 
 def test_planner_rejects_missing_artifacts_key() -> None:
+    """
+    Planner must reject dict inputs regardless of internal shape.
+    """
     planner = Planner()
 
     bad = {
         "graph": {"nodes": [], "edges": []},
     }
 
-    with pytest.raises(ValueError, match="missing required keys"):
-        planner.plan(bad)
+    with pytest.raises(
+        TypeError,
+        match=r"Planner\.plan\(\) requires PlanningInput, not raw dict",
+    ):
+        planner.plan(bad)  # type: ignore[arg-type]
 
 
 def test_planner_rejects_graph_without_nodes_and_edges() -> None:
+    """
+    Planner must reject dict inputs regardless of internal shape.
+    """
     planner = Planner()
 
     bad = {
@@ -170,11 +226,17 @@ def test_planner_rejects_graph_without_nodes_and_edges() -> None:
         "graph": {},
     }
 
-    with pytest.raises(ValueError, match="must contain 'nodes' and 'edges'"):
-        planner.plan(bad)
+    with pytest.raises(
+        TypeError,
+        match=r"Planner\.plan\(\) requires PlanningInput, not raw dict",
+    ):
+        planner.plan(bad)  # type: ignore[arg-type]
 
 
 def test_planner_rejects_non_list_nodes() -> None:
+    """
+    Planner must reject dict inputs regardless of internal shape.
+    """
     planner = Planner()
 
     bad = {
@@ -185,11 +247,17 @@ def test_planner_rejects_non_list_nodes() -> None:
         },
     }
 
-    with pytest.raises(ValueError, match="graph.nodes must be a list"):
-        planner.plan(bad)
+    with pytest.raises(
+        TypeError,
+        match=r"Planner\.plan\(\) requires PlanningInput, not raw dict",
+    ):
+        planner.plan(bad)  # type: ignore[arg-type]
 
 
 def test_planner_rejects_non_list_edges() -> None:
+    """
+    Planner must reject dict inputs regardless of internal shape.
+    """
     planner = Planner()
 
     bad = {
@@ -200,5 +268,8 @@ def test_planner_rejects_non_list_edges() -> None:
         },
     }
 
-    with pytest.raises(ValueError, match="graph.edges must be a list"):
-        planner.plan(bad)
+    with pytest.raises(
+        TypeError,
+        match=r"Planner\.plan\(\) requires PlanningInput, not raw dict",
+    ):
+        planner.plan(bad)  # type: ignore[arg-type]

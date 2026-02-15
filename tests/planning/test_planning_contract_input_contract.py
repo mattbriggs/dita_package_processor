@@ -2,28 +2,36 @@
 Unit tests for the planning input contract models.
 
 These tests verify that:
-- PlanningArtifact serializes deterministically
-- PlanningRelationship serializes deterministically
-- PlanningInput serializes deterministically
-- No implicit behavior, guessing, or mutation occurs
-- The contract surface is schema-stable and explicit
+
+- ``PlanningArtifact`` serializes deterministically.
+- ``PlanningRelationship`` serializes deterministically.
+- ``PlanningInput`` serializes deterministically.
+- No implicit behavior, guessing, or mutation occurs.
+- The public contract surface is minimal, explicit, and stable.
+
+The contract layer represents a hard architectural boundary between
+discovery and planning. These tests intentionally lock that boundary.
 """
 
 from __future__ import annotations
 
-from dita_package_processor.planning.contracts.planning_input import (
+from dita_package_processor.planning.contracts import (
     PlanningArtifact,
     PlanningRelationship,
     PlanningInput,
 )
 
 
-# ---------------------------------------------------------------------------
+# =============================================================================
 # PlanningArtifact
-# ---------------------------------------------------------------------------
+# =============================================================================
 
 
 def test_planning_artifact_to_dict_basic() -> None:
+    """
+    ``PlanningArtifact.to_dict()`` must serialize deterministically and
+    preserve explicit fields without coercion.
+    """
     artifact = PlanningArtifact(
         path="maps/index.ditamap",
         artifact_type="map",
@@ -42,7 +50,13 @@ def test_planning_artifact_to_dict_basic() -> None:
 
 
 def test_planning_artifact_metadata_is_copied() -> None:
+    """
+    Metadata must be copied during serialization.
+
+    The returned dictionary must not expose internal mutable state.
+    """
     metadata = {"a": 1, "b": 2}
+
     artifact = PlanningArtifact(
         path="topics/a.dita",
         artifact_type="topic",
@@ -52,17 +66,20 @@ def test_planning_artifact_metadata_is_copied() -> None:
 
     data = artifact.to_dict()
 
-    # Must be a shallow copy, not the same object
     assert data["metadata"] == metadata
     assert data["metadata"] is not metadata
 
 
-# ---------------------------------------------------------------------------
+# =============================================================================
 # PlanningRelationship
-# ---------------------------------------------------------------------------
+# =============================================================================
 
 
 def test_planning_relationship_to_dict() -> None:
+    """
+    ``PlanningRelationship.to_dict()`` must serialize deterministically
+    and use schema-aligned field names.
+    """
     relationship = PlanningRelationship(
         source="maps/index.ditamap",
         target="topics/a.dita",
@@ -80,12 +97,17 @@ def test_planning_relationship_to_dict() -> None:
     }
 
 
-# ---------------------------------------------------------------------------
+# =============================================================================
 # PlanningInput
-# ---------------------------------------------------------------------------
+# =============================================================================
 
 
 def test_planning_input_to_dict() -> None:
+    """
+    ``PlanningInput.to_dict()`` must produce the canonical wire format.
+
+    The serialized structure must exactly match the contract schema.
+    """
     artifacts = [
         PlanningArtifact(
             path="maps/index.ditamap",
@@ -148,6 +170,12 @@ def test_planning_input_to_dict() -> None:
 
 
 def test_planning_input_does_not_mutate_inputs() -> None:
+    """
+    Serializing ``PlanningInput`` must not mutate original contract objects.
+
+    Mutating the serialized output must not alter the original artifact
+    metadata stored in the contract object.
+    """
     artifacts = [
         PlanningArtifact(
             path="maps/index.ditamap",
@@ -175,17 +203,18 @@ def test_planning_input_does_not_mutate_inputs() -> None:
 
     data = planning_input.to_dict()
 
-    # Mutate output
+    # Mutate serialized output
     data["artifacts"][0]["metadata"]["x"] = 999
 
-    # Original must remain untouched
+    # Original contract object must remain unchanged
     assert artifacts[0].metadata["x"] == 1
 
 
 def test_contract_surface_is_minimal_and_explicit() -> None:
     """
-    This test locks the public contract surface. If this fails,
-    a breaking contract change was introduced.
+    Lock the public contract surface.
+
+    If this test fails, a breaking contract change was introduced.
     """
     artifact = PlanningArtifact(
         path="file.dita",

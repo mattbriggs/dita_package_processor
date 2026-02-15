@@ -7,33 +7,27 @@ Deterministic execution planner.
 Responsibilities
 ----------------
 - Accept ONLY a PlanningInput contract
-- Produce a deterministic Plan
+- Produce a deterministic Plan dictionary
 - Perform NO discovery
 - Perform NO normalization
 - Perform NO schema forgiveness
 
-Design rules
-------------
-If discovery violates the contract, fail fast.
-Planner must be boring and predictable.
-
-Flow
-----
-PlanningInput → ordered artifacts → PlanActions → Plan
+Planner is intentionally boring.
 """
 
 from __future__ import annotations
 
 import json
 import logging
-from dataclasses import asdict
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
 import jsonschema
 
-from dita_package_processor.planning.contracts.planning_input import PlanningInput
+from dita_package_processor.planning.contracts.planning_input import (
+    PlanningInput,
+)
 from dita_package_processor.planning.invariants import validate_invariants
 from dita_package_processor.planning.layout_rules import resolve_target_path
 
@@ -49,17 +43,8 @@ class Planner:
     """
     Deterministic planner.
 
-    Consumes only :class:`PlanningInput`.
-
-    Notes
-    -----
-    This class intentionally does NOT:
-        - normalize relationships
-        - accept discovery output
-        - build DependencyGraph
-        - mutate inputs
-
-    All contract enforcement happens upstream.
+    Consumes only PlanningInput.
+    Emits stable copy actions.
     """
 
     # =========================================================================
@@ -67,23 +52,20 @@ class Planner:
     # =========================================================================
 
     def __init__(self, *, schema_path: Path | None = None) -> None:
-        """
-        Initialize planner.
-
-        Parameters
-        ----------
-        schema_path:
-            Optional custom plan schema path.
-        """
         self.schema_path = (
             schema_path
             or Path(__file__).parent / "schema" / "plan.schema.json"
-        )
+        ).resolve()
+
+        if not self.schema_path.exists():
+            raise FileNotFoundError(
+                f"Missing plan schema: {self.schema_path}"
+            )
 
         with self.schema_path.open(encoding="utf-8") as fh:
             self._schema: Dict[str, Any] = json.load(fh)
 
-        LOGGER.info("Planner initialized with schema: %s", self.schema_path)
+        LOGGER.debug("Planner initialized with schema=%s", self.schema_path)
 
     # =========================================================================
     # Public API
@@ -92,22 +74,13 @@ class Planner:
     def plan(self, planning_input: PlanningInput) -> Dict[str, Any]:
         """
         Generate deterministic execution plan.
-
-        Parameters
-        ----------
-        planning_input:
-            Schema-validated PlanningInput contract.
-
-        Returns
-        -------
-        Dict[str, Any]
-            Plan dictionary compliant with plan.schema.json.
         """
+
         LOGGER.info("Starting plan generation")
 
         if not isinstance(planning_input, PlanningInput):
             raise TypeError(
-                "Planner.plan() requires PlanningInput, not raw dict"
+                "Planner.plan() requires PlanningInput instance"
             )
 
         artifacts = planning_input.artifacts
@@ -117,14 +90,12 @@ class Planner:
         # ---------------------------------------------------------------------
         # Deterministic ordering
         # ---------------------------------------------------------------------
-        # Keep it simple and predictable.
-        # Sort by path so output is stable across runs.
-        # ---------------------------------------------------------------------
 
         ordered = sorted(artifacts, key=lambda a: a.path)
 
         actions: List[Dict[str, Any]] = []
-        target_root = Path("target")
+
+        logical_target_root = Path("target")
 
         for index, artifact in enumerate(ordered, start=1):
             source_path = Path(artifact.path)
@@ -132,10 +103,10 @@ class Planner:
             target_path = resolve_target_path(
                 artifact_type=artifact.artifact_type,
                 source_path=source_path,
-                target_root=target_root,
+                target_root=logical_target_root,
             )
 
-            action = {
+            action: Dict[str, Any] = {
                 "id": f"copy-{index:04d}",
                 "type": f"copy_{artifact.artifact_type}",
                 "target": str(target_path),
@@ -156,13 +127,14 @@ class Planner:
             )
 
         # ---------------------------------------------------------------------
-        # Build plan
+        # Plan object
         # ---------------------------------------------------------------------
 
         plan: Dict[str, Any] = {
             "plan_version": 1,
             "generated_at": datetime.now(UTC).isoformat(),
             "source_discovery": {
+                # Schema requires 'path'
                 "path": planning_input.main_map,
                 "schema_version": 1,
                 "artifact_count": len(artifacts),
@@ -175,7 +147,9 @@ class Planner:
             "invariants": [],
         }
 
-        LOGGER.info("Plan generation complete: actions=%d", len(actions))
+        LOGGER.info("Plan generation complete actions=%d", len(actions))
+
+        self.validate(plan)
 
         return plan
 
@@ -186,11 +160,6 @@ class Planner:
     def validate(self, plan: Dict[str, Any]) -> None:
         """
         Validate plan against schema + invariants.
-
-        Parameters
-        ----------
-        plan:
-            Plan dictionary.
         """
         LOGGER.debug("Validating plan schema")
 

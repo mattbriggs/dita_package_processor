@@ -17,24 +17,22 @@ from typing import Any, Dict, List, Optional, Literal
 
 LOGGER = logging.getLogger(__name__)
 
-# ----------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Core execution semantics
-# ----------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 ExecutionStatus = Literal["success", "failed", "skipped"]
 
-ExecutionFailureType = Literal[
-    "policy_violation",
-    "sandbox_violation",
+ExecutionErrorType = Literal[
     "handler_error",
-    "filesystem_error",
-    "validation_error",
+    "policy_violation",
+    "executor_error",
 ]
 
 
-# ----------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Action-level results
-# ----------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
 @dataclass(frozen=True)
@@ -42,24 +40,31 @@ class ExecutionActionResult:
     """
     Result of executing a single planned action.
 
-    Fields:
-        action_id:
-            ID of the action from the plan.
-        status:
-            One of: success | failed | skipped.
-        handler:
-            Name of the handler class used.
-        dry_run:
-            Whether execution was a dry-run.
-        message:
-            Human-readable description of outcome.
-        error:
-            Error message if failure occurred.
-        failure_type:
-            Structured classification of why a failure occurred.
-            Only meaningful when status == "failed".
-        metadata:
-            Optional structured execution metadata.
+    Parameters
+    ----------
+    action_id : str
+        ID of the action from the plan.
+    status : ExecutionStatus
+        One of: "success", "failed", "skipped".
+    handler : str
+        Name of the handler or executor class used.
+    dry_run : bool
+        Whether execution was a dry-run.
+    message : str
+        Human-readable description of outcome.
+    error : Optional[str]
+        Raw error message if failure occurred.
+    error_type : Optional[ExecutionErrorType]
+        Structured classification of failure.
+
+        Only meaningful when status == "failed".
+
+        Canonical taxonomy:
+            - "handler_error"
+            - "policy_violation"
+            - "executor_error"
+    metadata : Dict[str, Any]
+        Optional structured execution metadata.
     """
 
     action_id: str
@@ -68,20 +73,28 @@ class ExecutionActionResult:
     dry_run: bool
     message: str
     error: Optional[str] = None
-    failure_type: Optional[ExecutionFailureType] = None
+    error_type: Optional[ExecutionErrorType] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
+
+    # -------------------------------------------------------------------------
+    # Serialization
+    # -------------------------------------------------------------------------
 
     def to_dict(self) -> Dict[str, Any]:
         """
         Serialize action execution result.
 
-        :return: JSON-safe dictionary.
+        Returns
+        -------
+        Dict[str, Any]
+            JSON-safe dictionary representation.
         """
         LOGGER.debug(
-            "Serializing ExecutionActionResult for action_id=%s status=%s",
+            "Serializing ExecutionActionResult action_id=%s status=%s",
             self.action_id,
             self.status,
         )
+
         return {
             "action_id": self.action_id,
             "status": self.status,
@@ -89,14 +102,14 @@ class ExecutionActionResult:
             "dry_run": self.dry_run,
             "message": self.message,
             "error": self.error,
-            "failure_type": self.failure_type,
+            "error_type": self.error_type,
             "metadata": dict(self.metadata),
         }
 
 
-# ----------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Execution report
-# ----------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
 @dataclass(frozen=True)
@@ -106,17 +119,18 @@ class ExecutionReport:
 
     Captures a complete run of an execution pipeline.
 
-    Fields:
-        execution_id:
-            Unique identifier for this execution run.
-        generated_at:
-            ISO timestamp of report creation.
-        dry_run:
-            Whether execution was simulated.
-        results:
-            List of per-action execution results.
-        summary:
-            Aggregated statistics for quick inspection.
+    Parameters
+    ----------
+    execution_id : str
+        Unique identifier for this execution run.
+    generated_at : str
+        ISO timestamp of report creation.
+    dry_run : bool
+        Whether execution was simulated.
+    results : List[ExecutionActionResult]
+        List of per-action execution results.
+    summary : Dict[str, int]
+        Aggregated statistics for quick inspection.
     """
 
     execution_id: str
@@ -124,6 +138,10 @@ class ExecutionReport:
     dry_run: bool
     results: List[ExecutionActionResult]
     summary: Dict[str, int]
+
+    # -------------------------------------------------------------------------
+    # Factory
+    # -------------------------------------------------------------------------
 
     @classmethod
     def create(
@@ -134,12 +152,20 @@ class ExecutionReport:
         results: List[ExecutionActionResult],
     ) -> ExecutionReport:
         """
-        Factory method that computes summary automatically.
+        Create execution report and compute summary.
 
-        :param execution_id: Execution identifier.
-        :param dry_run: Dry-run flag.
-        :param results: Execution results.
-        :return: ExecutionReport instance.
+        Parameters
+        ----------
+        execution_id : str
+            Execution identifier.
+        dry_run : bool
+            Dry-run flag.
+        results : List[ExecutionActionResult]
+            Execution results.
+
+        Returns
+        -------
+        ExecutionReport
         """
         LOGGER.info(
             "Creating ExecutionReport execution_id=%s dry_run=%s results=%d",
@@ -155,16 +181,18 @@ class ExecutionReport:
             "total": len(results),
         }
 
-        for r in results:
-            if r.status not in summary:
+        for result in results:
+            if result.status not in summary:
                 LOGGER.error(
-                    "Invalid execution status encountered: %s for action_id=%s",
-                    r.status,
-                    r.action_id,
+                    "Invalid execution status=%s action_id=%s",
+                    result.status,
+                    result.action_id,
                 )
-                raise ValueError(f"Invalid execution status: {r.status}")
+                raise ValueError(
+                    f"Invalid execution status: {result.status}"
+                )
 
-            summary[r.status] += 1
+            summary[result.status] += 1
 
         return cls(
             execution_id=execution_id,
@@ -174,17 +202,25 @@ class ExecutionReport:
             summary=summary,
         )
 
+    # -------------------------------------------------------------------------
+    # Serialization
+    # -------------------------------------------------------------------------
+
     def to_dict(self) -> Dict[str, Any]:
         """
         Serialize execution report.
 
-        :return: JSON-safe dictionary.
+        Returns
+        -------
+        Dict[str, Any]
+            JSON-safe dictionary representation.
         """
         LOGGER.debug(
             "Serializing ExecutionReport execution_id=%s results=%d",
             self.execution_id,
             len(self.results),
         )
+
         return {
             "execution_id": self.execution_id,
             "generated_at": self.generated_at,

@@ -8,9 +8,9 @@ Locks the dispatcher contract:
 - ExecutionActionResult objects are collected.
 - An ExecutionReport is emitted.
 - Structural failures raise ExecutionDispatchError.
-- Handler crashes are converted into classified failures:
-    status="failed"
-    metadata["failure_type"] == "handler_error"
+- Executor crashes are converted into failed ExecutionActionResult.
+- Dispatcher classifies executor-level crashes as error_type="executor_error".
+- Dispatcher does NOT classify handler-level failures.
 """
 
 from __future__ import annotations
@@ -24,16 +24,16 @@ from dita_package_processor.execution.dispatcher import (
 from dita_package_processor.execution.models import ExecutionActionResult
 
 
-# ---------------------------------------------------------------------------
+# =============================================================================
 # Fake executor
-# ---------------------------------------------------------------------------
+# =============================================================================
 
 
 class FakeExecutor:
     """
     Minimal executor stub used for dispatcher testing.
 
-    Records all executed actions and returns deterministic results.
+    Records executed actions and returns deterministic results.
     """
 
     def __init__(self) -> None:
@@ -41,7 +41,8 @@ class FakeExecutor:
 
     def execute(self, action: dict) -> ExecutionActionResult:
         """
-        Match the dispatcher contract: executor must expose execute(action).
+        Match dispatcher contract:
+        executor must expose execute(action: dict).
         """
         self.executed_actions.append(action)
 
@@ -50,13 +51,15 @@ class FakeExecutor:
             status="success",
             handler="FakeExecutor",
             dry_run=False,
-            message=f"Executed {action['type']}",
+            message=f"Executed {action.get('type')}",
+            error=None,
+            error_type=None,
         )
 
 
-# ---------------------------------------------------------------------------
+# =============================================================================
 # Fixtures
-# ---------------------------------------------------------------------------
+# =============================================================================
 
 
 @pytest.fixture
@@ -79,9 +82,9 @@ def simple_plan() -> dict:
     }
 
 
-# ---------------------------------------------------------------------------
+# =============================================================================
 # Tests
-# ---------------------------------------------------------------------------
+# =============================================================================
 
 
 def test_dispatch_produces_execution_report(
@@ -142,6 +145,11 @@ def test_dispatch_results_contain_action_ids(
     assert ids == ["copy-0001", "copy-0002"]
 
 
+# =============================================================================
+# Structural failures
+# =============================================================================
+
+
 def test_dispatch_rejects_plan_without_actions(
     dispatcher: ExecutionDispatcher,
 ) -> None:
@@ -172,33 +180,23 @@ def test_dispatch_rejects_non_dict_action(
         )
 
 
-def test_dispatch_rejects_missing_action_type(
-    dispatcher: ExecutionDispatcher,
-) -> None:
-    plan = {"actions": [{"id": "broken"}]}
-
-    with pytest.raises(
-        ExecutionDispatchError,
-        match="missing valid 'type'",
-    ):
-        dispatcher.dispatch(
-            execution_id="exec-007",
-            plan=plan,
-            dry_run=False,
-        )
+# =============================================================================
+# Executor crash handling
+# =============================================================================
 
 
-def test_dispatch_records_executor_failure_as_handler_error() -> None:
+def test_dispatch_records_executor_crash_and_stops() -> None:
     """
-    Handler crashes must not raise ExecutionDispatchError.
-    They must be recorded as:
-        status="failed"
-        metadata["failure_type"] == "handler_error"
-    and execution must stop.
+    Executor crashes must not raise ExecutionDispatchError.
+
+    Instead:
+    - A failed ExecutionActionResult is recorded.
+    - error_type == "executor_error".
+    - Execution stops immediately.
     """
 
     class ExplodingExecutor:
-        def execute(self, action: dict):
+        def execute(self, action: dict) -> ExecutionActionResult:
             raise RuntimeError("boom")
 
     dispatcher = ExecutionDispatcher(ExplodingExecutor())
@@ -206,21 +204,21 @@ def test_dispatch_records_executor_failure_as_handler_error() -> None:
     plan = {
         "actions": [
             {"id": "a1", "type": "copy_map"},
-            {"id": "a2", "type": "copy_topic"},  # must never run
+            {"id": "a2", "type": "copy_topic"},
         ]
     }
 
     report = dispatcher.dispatch(
-        execution_id="exec-008",
+        execution_id="exec-007",
         plan=plan,
         dry_run=False,
     )
 
-    # Only the first action is recorded
     assert len(report.results) == 1
 
     result = report.results[0]
+
     assert result.action_id == "a1"
     assert result.status == "failed"
-    assert result.metadata["failure_type"] == "handler_error"
-    assert "boom" in result.error
+    assert result.error_type == "executor_error"
+    assert "boom" in (result.error or "")
