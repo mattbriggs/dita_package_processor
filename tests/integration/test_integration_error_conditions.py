@@ -37,12 +37,11 @@ def _run_cli(argv: list[str], monkeypatch) -> int:
 # ---------------------------------------------------------------------------
 
 
-def test_missing_index_map_fails(tmp_path: Path, monkeypatch, capsys) -> None:
-    """
-    index.ditamap is mandatory. Its absence is fatal.
-    """
+def test_missing_main_map_fails(tmp_path: Path, monkeypatch, capsys) -> None:
     package_dir = tmp_path / "pkg"
     package_dir.mkdir()
+
+    target_dir = package_dir / "out"
 
     exit_code = _run_cli(
         [
@@ -50,6 +49,8 @@ def test_missing_index_map_fails(tmp_path: Path, monkeypatch, capsys) -> None:
             "run",
             "--package",
             str(package_dir),
+            "--target",
+            str(target_dir),
             "--docx-stem",
             "OutputDoc",
         ],
@@ -58,16 +59,15 @@ def test_missing_index_map_fails(tmp_path: Path, monkeypatch, capsys) -> None:
 
     captured = capsys.readouterr()
 
-    assert exit_code == 2
-    assert "index.ditamap" in captured.err.lower()
+    assert exit_code == 1
+    assert "no main map detected" in captured.err.lower()
 
 
-def test_index_map_without_mapref_fails(tmp_path: Path, monkeypatch, capsys) -> None:
-    """
-    index.ditamap must reference a main map.
-    """
+def test_index_without_mapref_fails(tmp_path: Path, monkeypatch, capsys) -> None:
     package_dir = tmp_path / "pkg"
     package_dir.mkdir()
+
+    target_dir = package_dir / "out"
 
     _write_file(
         package_dir / "index.ditamap",
@@ -84,6 +84,8 @@ def test_index_map_without_mapref_fails(tmp_path: Path, monkeypatch, capsys) -> 
             "run",
             "--package",
             str(package_dir),
+            "--target",
+            str(target_dir),
             "--docx-stem",
             "OutputDoc",
         ],
@@ -92,16 +94,15 @@ def test_index_map_without_mapref_fails(tmp_path: Path, monkeypatch, capsys) -> 
 
     captured = capsys.readouterr()
 
-    assert exit_code == 2
-    assert "reference a main map" in captured.err.lower()
+    assert exit_code == 1
+    assert "no main map detected" in captured.err.lower()
 
 
 def test_referenced_main_map_missing_fails(tmp_path: Path, monkeypatch, capsys) -> None:
-    """
-    The map referenced by index.ditamap must exist.
-    """
     package_dir = tmp_path / "pkg"
     package_dir.mkdir()
+
+    target_dir = package_dir / "out"
 
     _write_file(
         package_dir / "index.ditamap",
@@ -118,6 +119,8 @@ def test_referenced_main_map_missing_fails(tmp_path: Path, monkeypatch, capsys) 
             "run",
             "--package",
             str(package_dir),
+            "--target",
+            str(target_dir),
             "--docx-stem",
             "OutputDoc",
         ],
@@ -126,16 +129,15 @@ def test_referenced_main_map_missing_fails(tmp_path: Path, monkeypatch, capsys) 
 
     captured = capsys.readouterr()
 
-    assert exit_code == 2
-    assert "main map" in captured.err.lower()
+    assert exit_code == 1
+    assert "main.ditamap" in captured.err.lower()
 
 
 def test_definition_map_missing_is_non_fatal(tmp_path: Path, monkeypatch, capsys) -> None:
-    """
-    Missing definition map must warn but not abort execution.
-    """
     package_dir = tmp_path / "pkg"
     package_dir.mkdir()
+
+    target_dir = package_dir / "out"
 
     _write_file(
         package_dir / "index.ditamap",
@@ -161,6 +163,8 @@ def test_definition_map_missing_is_non_fatal(tmp_path: Path, monkeypatch, capsys
             "run",
             "--package",
             str(package_dir),
+            "--target",
+            str(target_dir),
             "--docx-stem",
             "OutputDoc",
             "--definition-map",
@@ -176,11 +180,10 @@ def test_definition_map_missing_is_non_fatal(tmp_path: Path, monkeypatch, capsys
 
 
 def test_definition_navtitle_not_found_is_non_fatal(tmp_path: Path, monkeypatch, capsys) -> None:
-    """
-    Missing definition navtitle must warn but not abort execution.
-    """
     package_dir = tmp_path / "pkg"
     package_dir.mkdir()
+
+    target_dir = package_dir / "out"
 
     _write_file(
         package_dir / "index.ditamap",
@@ -215,6 +218,8 @@ def test_definition_navtitle_not_found_is_non_fatal(tmp_path: Path, monkeypatch,
             "run",
             "--package",
             str(package_dir),
+            "--target",
+            str(target_dir),
             "--docx-stem",
             "OutputDoc",
             "--definition-map",
