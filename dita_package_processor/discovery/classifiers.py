@@ -21,7 +21,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from dita_package_processor.discovery.models import DiscoveryArtifact
 from dita_package_processor.discovery.patterns import (
@@ -29,7 +29,6 @@ from dita_package_processor.discovery.patterns import (
     Pattern,
     PatternEvaluator,
 )
-from dita_package_processor.knowledge.known_patterns import load_patterns
 from dita_package_processor.knowledge.map_types import MapType
 from dita_package_processor.knowledge.topic_types import (
     TopicKind,
@@ -40,37 +39,34 @@ LOGGER = logging.getLogger(__name__)
 
 
 # =============================================================================
-# Pattern Loading
+# Pattern Evaluator (lazy singleton)
 # =============================================================================
 
+_PATTERN_EVALUATOR: Optional[PatternEvaluator] = None
 
-def _load_patterns() -> List[Pattern]:
+
+def _get_evaluator() -> PatternEvaluator:
     """
-    Load declarative discovery patterns from YAML and normalize them
-    into Pattern objects.
+    Return the pattern evaluator, initialising it on first call.
+
+    Patterns are sourced from the plugin registry (CorePlugin first, then any
+    installed third-party plugins in alphabetical order), so that
+    plugin-contributed patterns participate in discovery automatically.
     """
-    LOGGER.info("Loading discovery patterns")
+    global _PATTERN_EVALUATOR
 
-    raw = load_patterns()
-    patterns: List[Pattern] = []
+    if _PATTERN_EVALUATOR is None:
+        from dita_package_processor.plugins.registry import get_plugin_registry
 
-    for entry in raw["patterns"]:
-        pattern = Pattern(
-            id=entry["id"],
-            applies_to=entry["applies_to"],
-            signals=entry["signals"],
-            asserts=entry["asserts"],
-            rationale=entry.get("rationale", []),
+        patterns = get_plugin_registry().all_patterns()
+        _PATTERN_EVALUATOR = PatternEvaluator(patterns)
+
+        LOGGER.info(
+            "PatternEvaluator initialised with %d patterns from plugin registry",
+            len(patterns),
         )
-        patterns.append(pattern)
 
-        LOGGER.debug("Loaded pattern: %s", pattern.id)
-
-    LOGGER.info("Total discovery patterns loaded: %d", len(patterns))
-    return patterns
-
-
-_PATTERN_EVALUATOR = PatternEvaluator(_load_patterns())
+    return _PATTERN_EVALUATOR
 
 
 # =============================================================================
@@ -92,7 +88,7 @@ def classify_map(*, path: Path, metadata: Dict) -> DiscoveryArtifact:
         metadata=metadata,
     )
 
-    evidence = _PATTERN_EVALUATOR.evaluate(artifact)
+    evidence = _get_evaluator().evaluate(artifact)
     artifact.evidence = evidence
 
     LOGGER.debug(
@@ -120,7 +116,7 @@ def classify_topic(*, path: Path, metadata: Dict) -> DiscoveryArtifact:
         metadata=metadata,
     )
 
-    evidence = _PATTERN_EVALUATOR.evaluate(artifact)
+    evidence = _get_evaluator().evaluate(artifact)
     artifact.evidence = evidence
 
     LOGGER.debug(

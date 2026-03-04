@@ -1,10 +1,14 @@
 # Steps
 
-The Steps module contains **modular planning steps** that encapsulate specific transformation logic. Each step inspects discovery or normalized data and emits plan actions when its conditions are met.  
+The `dita_package_processor.steps` modules are legacy or internal implementation surfaces retained in the repository. They are not the current primary extension mechanism for the tool.
 
-Steps do not execute transformations. They do not access the filesystem. Their sole responsibility is to recognize patterns and express intent declaratively.  
+The current public extension model is plugin-based:
 
-This design allows new behaviors to be added by introducing new steps, without modifying the planner core or execution layer. Steps are where domain knowledge becomes explicit, reviewable, and extensible.
+- patterns come from plugins
+- actions are emitted through plugin planning hooks
+- handlers are registered through plugins
+
+These step modules are documented here for completeness and code navigation, but they should not be treated as the preferred external customization API.
 
 ::: dita_package_processor.steps.base
     options:

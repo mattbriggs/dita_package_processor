@@ -32,6 +32,7 @@ from dita_package_processor.cli_discover import register_discover
 from dita_package_processor.cli_execute import register_execute
 from dita_package_processor.cli_normalize import register_normalize
 from dita_package_processor.cli_plan import register_plan
+from dita_package_processor.cli_plugin import register_plugin
 from dita_package_processor.cli_run import register_run
 
 LOGGER = logging.getLogger(__name__)
@@ -47,6 +48,7 @@ KNOWN_COMMANDS = {
     "plan",
     "execute",
     "run",
+    "plugin",
     "docs",
     "completion",
 }
@@ -150,6 +152,9 @@ def build_parser() -> argparse.ArgumentParser:
     register_plan(subparsers)
     register_execute(subparsers)
     register_run(subparsers)
+
+    # Plugin management
+    register_plugin(subparsers)
 
     # Auxiliary commands
     _register_docs(subparsers)

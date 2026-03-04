@@ -15,6 +15,8 @@ The DITA Package Processor follows a strict, artifact-driven pipeline:
 2. **Planning** produces an explicit, ordered execution plan (`plan.json`)
 3. **Execution** applies that plan using registered handlers
 
+Handler registration is now driven by the plugin system. A handler becomes available when a loaded plugin returns it from `handlers()`.
+
 Handlers live entirely in the **execution layer**. They:
 
 - Implement exactly one action type
@@ -128,13 +130,13 @@ They are intentionally ignorant of DITA semantics.
 
 Location:
 ```
-dita_package_processor/execution/handlers/filesystem/
+dita_package_processor/execution/handlers/fs/
 ```
 
 Examples:
-- `filesystem.py` (copy helpers)
 - `fs_copy_topic.py`
 - `fs_copy_media.py`
+- `fs_copy_map.py`
 
 Filesystem handlers:
 
@@ -196,7 +198,7 @@ dita_package_processor/
 └── execution/
     └── handlers/
         ├── semantic/
-        └── filesystem/
+        └── fs/
 ```
 
 Example:
@@ -208,7 +210,7 @@ execution/handlers/semantic/s_wrap_map.py
 
 ### 3. Implement the Handler Class
 
-Handlers are **class-based** and registered via the execution registry.
+Handlers are **class-based** and registered via the execution registry through plugins.
 
 Canonical shape:
 
@@ -332,17 +334,23 @@ Idempotence makes reruns survivable.
 
 ## Registering the Handler
 
-Handlers are registered via the **execution registry**.
+Handlers are registered via the **execution registry**, but not by direct import-time side effects.
 
 Conceptually:
 
 ```mermaid
 flowchart LR
-    ActionType --> Registry
+    Plugin --> Registry
     Registry --> HandlerClass
+    HandlerClass --> ActionType
 ```
 
-Registration occurs when the module is imported.  
+Current flow:
+
+1. a plugin returns handler classes from `handlers()`
+2. the plugin registry aggregates all handlers
+3. execution bootstrap registers those handler classes
+
 If an action type has no handler, execution fails immediately.
 
 This is intentional and desirable.
@@ -464,7 +472,7 @@ When a migration gets weird (it will):
 
 1. Name the pattern
 2. Encode the intent as an action
-3. Implement the smallest possible handler
+3. Expose the handler through a plugin
 4. Lock it with an execution test
 5. Move on
 

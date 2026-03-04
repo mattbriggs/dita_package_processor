@@ -29,7 +29,6 @@ from dita_package_processor.planning.contracts.planning_input import (
     PlanningInput,
 )
 from dita_package_processor.planning.invariants import validate_invariants
-from dita_package_processor.planning.layout_rules import resolve_target_path
 
 LOGGER = logging.getLogger(__name__)
 
@@ -93,38 +92,28 @@ class Planner:
 
         ordered = sorted(artifacts, key=lambda a: a.path)
 
-        actions: List[Dict[str, Any]] = []
+        # Collect action templates from all plugins (no "id" fields yet).
+        from dita_package_processor.plugins.registry import get_plugin_registry
 
-        logical_target_root = Path("target")
+        plugin_registry = get_plugin_registry()
 
-        for index, artifact in enumerate(ordered, start=1):
-            source_path = Path(artifact.path)
+        raw_actions: List[Dict[str, Any]] = []
 
-            target_path = resolve_target_path(
-                artifact_type=artifact.artifact_type,
-                source_path=source_path,
-                target_root=logical_target_root,
-            )
-
-            action: Dict[str, Any] = {
-                "id": f"copy-{index:04d}",
-                "type": f"copy_{artifact.artifact_type}",
-                "target": str(target_path),
-                "parameters": {
-                    "source_path": str(source_path),
-                    "target_path": str(target_path),
-                },
-                "reason": "Deterministic artifact ordering",
-                "derived_from_evidence": [],
-            }
-
-            actions.append(action)
+        for artifact in ordered:
+            emitted = plugin_registry.emit_actions_for(artifact, planning_input)
+            raw_actions.extend(emitted)
 
             LOGGER.debug(
-                "Action emitted: %s -> %s",
-                source_path,
-                target_path,
+                "Artifact %s → %d action(s) emitted",
+                artifact.path,
+                len(emitted),
             )
+
+        # Assign globally unique, deterministic IDs.
+        actions: List[Dict[str, Any]] = []
+        for index, action_template in enumerate(raw_actions, start=1):
+            action: Dict[str, Any] = {"id": f"action-{index:04d}", **action_template}
+            actions.append(action)
 
         # ---------------------------------------------------------------------
         # Plan object

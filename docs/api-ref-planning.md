@@ -2,7 +2,7 @@
 
 The Planning module converts discovery output into a **deterministic execution plan**. It is where intent is expressed explicitly as ordered actions with clear reasons and traceable origins.  
 
-Planning does not mutate files or execute transformations. It analyzes structure, applies planning steps, and emits a plan that can be reviewed, validated, versioned, and replayed.  
+Planning does not mutate files or execute transformations. It analyzes structure, consumes `PlanningInput`, aggregates plugin-emitted action templates, and emits a plan that can be reviewed, validated, versioned, and replayed.  
 
 This separation allows complex transformations to be reasoned about and tested independently of execution, and it makes the system explainable by design.
 

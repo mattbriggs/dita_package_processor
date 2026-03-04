@@ -1,24 +1,21 @@
 """
 Execution handler bootstrap.
 
-This module is the single authoritative place where ALL execution handlers
-are registered.
+This module is the single authoritative place where the execution handler
+registry is populated.
 
-Design rules
-------------
-- Exactly ONE registry instance exists process-wide
-- No dynamic discovery
-- No reflection
-- Explicit registration only
-- Deterministic
+Since the introduction of the plugin system, all handler registration is
+delegated to the plugin registry. Handlers are no longer imported or
+registered here explicitly — they are provided by each plugin via
+``DitaPlugin.handlers()``.
 
-Why
----
-Handlers are infrastructure, not runtime state.
-Creating multiple registries leads to:
-    - missing handlers
-    - inconsistent dispatch
-    - impossible debugging
+Design rules (unchanged)
+------------------------
+- Exactly ONE registry instance exists process-wide.
+- No dynamic discovery beyond what plugins declare.
+- Deterministic: CorePlugin loads first, then third-party plugins in
+  alphabetical entry-point order.
+- Conflict (duplicate action_type) is a startup error.
 
 Therefore this module exposes:
 
@@ -33,35 +30,6 @@ import logging
 from typing import Any, Optional
 
 from dita_package_processor.execution.registry import ExecutionHandlerRegistry
-
-# -----------------------------------------------------------------------------
-# Handler imports (explicit wiring only)
-# -----------------------------------------------------------------------------
-
-# Filesystem handlers
-from dita_package_processor.execution.handlers.fs.fs_copy_map import CopyMapHandler
-from dita_package_processor.execution.handlers.fs.fs_copy_topic import CopyTopicHandler
-from dita_package_processor.execution.handlers.fs.fs_copy_media import CopyMediaHandler
-
-# Semantic handlers
-from dita_package_processor.execution.handlers.semantic.s_copy_file import CopyFileHandler
-from dita_package_processor.execution.handlers.semantic.s_delete_file import DeleteFileHandler
-from dita_package_processor.execution.handlers.semantic.s_wrap_map import WrapMapHandler
-from dita_package_processor.execution.handlers.semantic.s_inject_topicref import (
-    InjectTopicrefHandler,
-)
-from dita_package_processor.execution.handlers.semantic.s_inject_topicrefs import (
-    InjectTopicrefsHandler,
-)
-from dita_package_processor.execution.handlers.semantic.s_wrap_map_topicrefs import (
-    WrapMapTopicrefsHandler,
-)
-from dita_package_processor.execution.handlers.semantic.s_inject_glossary import (
-    InjectGlossaryHandler,
-)
-from dita_package_processor.execution.handlers.semantic.s_extract_glossary import (
-    ExtractGlossaryHandler,
-)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -124,7 +92,9 @@ def get_registry() -> ExecutionHandlerRegistry:
     """
     Return the global execution handler registry.
 
-    This function lazily constructs the registry exactly once.
+    On first call, the registry is built by asking the plugin registry for
+    all handler classes (CorePlugin first, then any installed third-party
+    plugins in alphabetical order).
 
     Returns
     -------
@@ -136,34 +106,17 @@ def get_registry() -> ExecutionHandlerRegistry:
     if _REGISTRY is not None:
         return _REGISTRY
 
-    LOGGER.debug("Initializing execution handler registry (singleton)")
+    LOGGER.debug("Initializing execution handler registry via plugin system")
+
+    from dita_package_processor.plugins.registry import get_plugin_registry
 
     registry = ExecutionHandlerRegistry()
 
-    # ------------------------------------------------------------------
-    # Filesystem handlers
-    # ------------------------------------------------------------------
-
-    registry.register(CopyMapHandler)
-    registry.register(CopyTopicHandler)
-    registry.register(CopyMediaHandler)
-
-    # ------------------------------------------------------------------
-    # Semantic handlers
-    # ------------------------------------------------------------------
-
-    registry.register(CopyFileHandler)
-    registry.register(DeleteFileHandler)
-    registry.register(WrapMapHandler)
-    registry.register(InjectTopicrefHandler)
-    registry.register(InjectTopicrefsHandler)
-    registry.register(WrapMapTopicrefsHandler)
-    registry.register(InjectGlossaryHandler)
-    registry.register(ExtractGlossaryHandler)
+    for handler_cls in get_plugin_registry().all_handlers():
+        registry.register(handler_cls)
 
     count = _registry_size(registry)
 
-    # If we couldn't count, still log something useful.
     if count == 0:
         LOGGER.info(
             "Execution handler registry initialized (count unavailable; "

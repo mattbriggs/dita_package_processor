@@ -262,6 +262,12 @@ def _normalize_artifacts(
                 f"{context}.metadata must be object"
             )
 
+        # Carry discovery evidence forward so plugin action emitters can
+        # route on pattern roles without re-running discovery.
+        evidence = record.get("evidence", [])
+        if evidence and isinstance(evidence, list):
+            metadata = {**metadata, "evidence": evidence}
+
         try:
             artifact = PlanningArtifact(
                 path=str(path),

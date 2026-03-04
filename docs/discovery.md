@@ -250,16 +250,16 @@ Discovery answers one question only:
 
 ---
 
-## Relationship to the Transformation Pipeline
+## Relationship to the Processing Pipeline
 
-Discovery runs **before** any pipeline steps.
+Discovery runs before normalization, planning, and execution.
 
-Transformation steps must:
-- consume Discovery output
-- obey classifications
+Downstream phases must:
+- consume discovery output or normalized derivatives of it
+- obey classifications and evidence
 - respect invariant failures
 
-No step is allowed to “reinterpret” Discovery findings.
+No later phase should silently reinterpret discovery findings outside the documented contracts.
 
 ---
 
