@@ -1,204 +1,85 @@
 # Configuration (`pyproject.toml`)
 
-The DITA Package Processor is configured via **`pyproject.toml`** under the
-`[tool.dita_package_processor]` namespace.
+The current repo can load configuration from the `[tool.dita_package_processor]` namespace in `pyproject.toml`, but the active runtime contract is narrower than some older docs implied.
 
-Configuration controls **what the processor does at runtime**.
-If a step is not listed, it does not run.
+Configuration should be treated as supplemental input to the CLI and pipeline, not as a dynamic workflow-definition system.
 
-There is no implicit behavior.
+## Current Reality
 
----
+What is clearly part of the current runtime surface:
 
-## Configuration Location
+- the tool namespace can be loaded through `config.py`
+- CLI arguments provide the strongest runtime control
+- `docx_stem`, `definition_map`, and `definition_navtitle` are current concepts in the pipeline
+- plugin discovery is driven by Python entry points, not by `pyproject.toml` keys under the tool namespace
 
-Place `pyproject.toml` at the project root:
+What is not the current public model:
 
-```
-dita_package_processor/
-├── pyproject.toml
-├── dita_package_processor/
-│   └── cli.py
-```
+- defining an ordered runtime pipeline of external processing steps in config
+- using config as the primary extension mechanism
 
-The processor reads configuration automatically from this file unless
-overridden by CLI arguments.
+## Namespace
 
----
-
-## Configuration Namespace
-
-All processor configuration lives under:
+Configuration lives under:
 
 ```toml
 [tool.dita_package_processor]
 ```
 
-Nothing outside this namespace is read or interpreted by the processor.
+`config.py` returns only that subtree.
 
----
+## Common Values In This Repo
 
-## Configuration Sections
-
-### `[tool.dita_package_processor.package]`
-
-Defines the input package and output naming.
+The repository currently contains examples like:
 
 ```toml
 [tool.dita_package_processor.package]
-root_dir = "/absolute/or/relative/path/to/dita/package"
 docx_stem = "OutputDoc"
-```
 
-**Keys**
-
-- `root_dir` (str, required)  
-  Path to the root of the DITA package.  
-  Must contain `index.ditamap`.
-
-- `docx_stem` (str, required)  
-  Filename stem used when renaming the main DITA map.  
-  Example: `OutputDoc` → `OutputDoc.ditamap`
-
----
-
-### `[tool.dita_package_processor.pipeline]`
-
-Defines the ordered execution pipeline.
-
-```toml
-[tool.dita_package_processor.pipeline]
-steps = [
-  "remove-index-map",
-  "rename-main-map",
-  "process-maps",
-  "refactor-glossary",
-]
-```
-
-**Keys**
-
-- `steps` (list[str], required)  
-  Ordered list of processing steps.
-
-**Rules**
-
-- Execution order is **explicit**
-- Steps not listed do not run
-- Steps are executed exactly once, in order
-- Steps do not call each other
-
-This is a pipeline, not a workflow engine.
-
----
-
-### `[tool.dita_package_processor.definition]` (optional)
-
-Configures glossary refactoring.
-
-```toml
 [tool.dita_package_processor.definition]
 map = "Definitions.ditamap"
 navtitle = "Definition topic"
-```
 
-**Keys**
-
-- `map` (str, required if section present)  
-  Definition map filename, relative to the package root.
-
-- `navtitle` (str, optional)  
-  Navtitle used to locate the definition node.  
-  Defaults to `"Definition topic"`.
-
-**Behavior**
-
-- If this section is omitted, glossary refactoring is skipped.
-- If the map is missing, the step logs a warning and continues.
-- If the navtitle is not found, the step logs a warning and continues.
-
-Glossary refactoring is **optional by design**.
-
----
-
-### `[tool.dita_package_processor.logging]`
-
-Controls logging verbosity.
-
-```toml
 [tool.dita_package_processor.logging]
 level = "INFO"
 ```
 
-**Keys**
+These are best understood as project-local defaults or conventions, not as a complete declarative runtime API.
 
-- `level` (str)  
-  One of: `DEBUG`, `INFO`, `WARNING`, `ERROR`
+## Precedence
 
-There is no silent mode.
+The intended precedence remains:
 
----
-
-### `[tool.dita_package_processor.extensions]` (namespaced)
-
-Extensions must explicitly opt in under their own namespace.
-
-```toml
-[tool.dita_package_processor.extensions.regex_cleanup]
-enabled = false
-patterns = [
-  { find = "\\s+", replace = " " },
-  { find = "TODO:", replace = "" },
-]
-```
-
-**Rules**
-
-- Core steps must not depend on extension configuration
-- Extensions must not mutate core behavior implicitly
-- Each extension owns its namespace
-
-Extensions are additive, not magical.
-
----
-
-## CLI Overrides
-
-Configuration values may be overridden via the CLI for one-off runs.
-
-Example:
-
-```bash
-dita_package_processor \
-  -i /path/to/package \
-  -o /path/to/output \
-  -l DEBUG
-```
-
-**Precedence Order**
-
-```
+```text
 CLI arguments > pyproject.toml > defaults
 ```
 
-CLI overrides do **not** modify `pyproject.toml`.
+In practice, the current CLI exposes the most reliable operational surface.
 
----
+## Plugin Configuration
 
-## Rules of Thumb
+Plugins are not registered through `[tool.dita_package_processor.extensions]`.
 
-- Configuration is explicit or it does not exist
-- Pipelines do exactly what they say
-- Optional steps fail soft, required steps fail hard
-- New behavior should be added as a new step, not a flag
-- If you want inference, this is the wrong tool
+Plugins are discovered through the Python entry-point group:
 
----
+```toml
+[project.entry-points."dita_package_processor.plugins"]
+my_plugin = "my_package:plugin"
+```
+
+A plugin may still read its own configuration namespace if it chooses, but that is plugin-specific behavior, not core plugin registration.
+
+## Guidance
+
+- use CLI arguments for operational control
+- use the tool namespace for stable project defaults where supported
+- do not assume every key present in the sample `pyproject.toml` is an active runtime contract
+- do not model extensions as configured step lists
 
 ## Summary
 
-`pyproject.toml` defines the processor’s behavior.
-The CLI may override it.
-Nothing else is consulted.
+`pyproject.toml` is still part of the repo’s configuration story, but the current architecture is contract-and-plugin driven:
 
-This is intentional.
+- contracts define phase boundaries
+- CLI defines operational intent
+- plugins define extensibility

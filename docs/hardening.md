@@ -202,18 +202,19 @@ Transformation may only run when:
 - abstract handling rules are unambiguous
 - content maps are classified and stable
 
-### Transformation pipeline (current)
+### Transformation flow (current)
 
 ```mermaid
 flowchart TD
-    A[RemoveIndexMapStep] --> B[RenameMainMapStep]
-    B --> C[ProcessMapsStep]
-    C --> D[RefactorGlossaryStep]
+    A[Discovery] --> B[Normalization]
+    B --> C[Planning]
+    C --> D[Execution]
 ```
 
 ### Hardening emphasis
-- The pipeline should consume discovery outputs or share the same classification logic.
-- Each step must validate its preconditions and fail loudly if the contract is broken.
+- Downstream phases should consume discovery outputs or the normalized planning contract.
+- Plugin-contributed patterns, actions, and handlers must remain deterministic and test-backed.
+- Each phase must validate its preconditions and fail loudly if the contract is broken.
 
 ---
 

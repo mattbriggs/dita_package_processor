@@ -84,7 +84,7 @@ Normalization is the tool saying:
 If normalization succeeds, you know:
 
 - discovery was structurally coherent
-- downstream steps are operating on stable ground
+- downstream planning and execution phases are operating on stable ground
 
 You usually don’t need to read the normalized output unless something fails later.
 

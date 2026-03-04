@@ -123,23 +123,21 @@ That decision comes later.
 
 ### Where Patterns Live Now
 
-Patterns are no longer a separate DSL or YAML file.  
-They emerge from **discovery artifacts and normalized structure**.
+Patterns are contributed through the plugin system.
 
 Concretely:
 
-- Discovery produces:
-  - artifacts
-  - relationships
-  - graphs
-  - evidence
-- Planning evaluates those artifacts against known structural conditions
-- Pattern recognition is *implicit but deterministic*
+- plugins return `Pattern` objects from `patterns()`
+- discovery evaluates those patterns against artifacts
+- matching patterns produce evidence
+- that evidence is carried into planning
+
+The built-in stack still ships YAML-backed patterns through `CorePlugin`, but the public model is now plugin contribution rather than a separate standalone pattern layer.
 
 Patterns never mutate files.  
 They only describe what *is*.
 
-If a condition cannot be proven from discovery output, it is not treated as a pattern.
+If a condition cannot be proven from discovery output, it should not become a pattern match.
 
 ---
 
@@ -274,6 +272,13 @@ When you encounter a new migration case:
    So future runs cannot regress silently.
 
 5. **Move on**
+
+In the current repo, that usually means:
+
+- add or update a plugin pattern
+- emit a deterministic action from plugin planning logic
+- register the action handler through the plugin
+- validate through execution tests
 
 If you ever feel tempted to “just fix it in the handler,” stop.  
 That is how migration systems turn into folklore.

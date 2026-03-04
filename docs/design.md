@@ -2,386 +2,198 @@
 
 ## Overview
 
-The DITA Package Processor is a **deterministic, batch-oriented transformation engine** for bulk-generated **DITA 1.3 packages**.
+The current system is a deterministic, contract-driven DITA processing toolchain with a plugin-based extension model.
 
-It is designed to:
+The public lifecycle is:
 
-- Normalize inconsistent, machine-generated DITA into a predictable structure
-- Execute transformations in a strictly ordered, auditable pipeline
-- Support incremental extension without destabilizing existing behavior
-- Operate safely on real-world XML, not idealized samples
-- Be testable end-to-end using real filesystem fixtures
+```text
+discover -> normalize -> plan -> execute
+```
 
-This system deliberately avoids:
-- Implicit behavior
-- Runtime inference
-- Interactive workflows
-- Framework-style indirection
+The `run` command orchestrates that lifecycle and wraps execution with materialization preflight and finalize behavior.
 
-If it runs, it runs because the configuration explicitly says so.
+## Design Goals
 
----
+### 1. Deterministic Behavior
 
-## Core Design Goals
+- the same input contract should produce the same plan
+- the same plan and execution mode should produce the same execution behavior
+- ordering is explicit and stable
+- failures should be structural and loud, not heuristic
 
-### 1. Deterministic Execution
+### 2. Contracts Between Phases
 
-- All behavior is driven by explicit configuration
-- Execution order is fixed and visible
-- Each step runs exactly once per invocation
-- No conditional branching hidden inside steps
+Each phase produces a durable artifact or model boundary:
 
-The same input and configuration always produce the same output.
+- discovery produces inventory and report data
+- normalization produces `PlanningInput`
+- planning produces `plan.json`-compatible action data
+- execution produces an `ExecutionReport`
 
----
+This keeps reasoning localized. If something is wrong, there is a concrete boundary to inspect.
 
-### 2. Extensibility Without Refactoring
+### 3. Plugin-Based Extensibility
 
-- New transformations are added as new pipeline steps
-- Existing steps are not modified to accommodate new behavior
-- Extensions do not silently alter core semantics
+The current extension surface is the plugin system, not runtime pipeline step injection.
 
-Growth happens by **addition**, not mutation.
+Plugins can contribute:
 
----
+- discovery patterns
+- planning action emission
+- execution handlers
 
-### 3. Strong Separation of Concerns
+Built-in behavior is exposed through `CorePlugin`, which loads before any third-party plugin.
 
-Each concern lives in exactly one place:
+### 4. Explicit Mutation Boundaries
 
-| Concern | Location |
-|------|--------|
-| CLI contract | `cli.py` |
-| Runtime configuration | `pyproject.toml` |
-| Execution orchestration | `pipeline.py` |
-| Shared state | `context.py` |
-| XML manipulation | `dita_xml.py` |
-| Individual transformations | `steps/*` |
-
-This separation is enforced structurally, not by convention.
-
----
-
-### 4. Testability Over Cleverness
-
-- Steps are testable in isolation
-- The full pipeline is testable end-to-end
-- Tests operate on real XML and real directories
-- No heavy mocking of XML trees or filesystem behavior
-
-If a transformation matters, it is validated structurally.
-
----
-
-### 5. DITA-Aware, Not DITA-Fragile
-
-The processor uses conservative heuristics that tolerate:
-
-- Imperfect XML
-- Inconsistent authoring practices
-- Slight schema deviations common in bulk exports
-
-This is intentional. Real DITA packages are messy.
-
----
+- discovery does not mutate
+- normalization does not mutate
+- planning does not mutate
+- execution is dry-run by default
+- real writes require `--apply` and a bounded target root
 
 ## High-Level Architecture
 
-```
+```text
 CLI
- │
- ▼
-Pipeline
- │
- ├── RemoveIndexMapStep
- ├── RenameMainMapStep
- ├── ProcessMapsStep
- └── RefactorGlossaryStep
- │
- ▼
-ProcessingContext
+  -> Discovery
+  -> Normalization
+  -> Planning
+  -> Materialization preflight
+  -> Execution
+  -> Execution report
 ```
 
-Supporting layers:
+Cross-cutting extension flow:
 
-- `dita_xml.py` – Safe XML parsing and transformation helpers
-- `utils.py` – Filename and string utilities
-- `steps/*` – Independent, single-responsibility processing units
-
----
-
-## Key Design Patterns
-
-### 1. Pipeline Pattern
-
-**Where:** `pipeline.Pipeline`
-
-The processor uses a classic **Pipeline pattern**:
-
-- A pipeline is an ordered list of steps
-- Each step performs a transformation
-- The pipeline controls execution order, logging, and error propagation
-
-```python
-for step in self._steps:
-    logger.info("Running step: %s", step.name)
-    step.run(context, logger)
+```text
+plugins.patterns() -> discovery evidence
+plugins.emit_actions() -> plan actions
+plugins.handlers() -> execution registry
 ```
 
-**Why this matters**
+## Responsibility Map
 
-- Execution order is explicit and reviewable
-- Steps can be added, removed, or reordered safely
-- Behavior remains boring, predictable, and auditable
+| Concern | Current Location |
+|------|--------|
+| CLI routing and global flags | `cli.py` and `cli_*` modules |
+| Discovery scanning and reports | `discovery/*` |
+| Discovery-to-planning normalization | `planning/contracts/*` |
+| Plan generation | `planning/planner.py` |
+| Pipeline orchestration | `pipeline.py` |
+| Materialization safety/finalize | `materialization/*` |
+| Executor selection and dispatch | `orchestration.py`, `execution/*` |
+| Plugin contract and loading | `plugins/*` |
 
-Boring is a feature.
+## Plugin Design
 
----
+### `DitaPlugin`
 
-### 2. Command / Strategy Hybrid (ProcessingStep)
+`DitaPlugin` is the root extension contract.
 
-**Where:** `steps.base.ProcessingStep`
+Each plugin must expose:
 
-Each step implements a shared interface:
+- `name`
+- `version`
 
-```python
-class ProcessingStep(abc.ABC):
-    name: str
+And may expose:
 
-    @abc.abstractmethod
-    def run(self, context, logger) -> None:
-        ...
-```
+- `patterns()`
+- `emit_actions(...)`
+- `handlers()`
 
-Each step acts as:
+### Loading Model
 
-- A **Command**: “Perform this transformation”
-- A **Strategy**: One interchangeable behavior in the pipeline
+Plugins are loaded from the Python entry-point group `dita_package_processor.plugins`.
 
-**Benefits**
+Load order is deterministic:
 
-- Steps are self-contained
-- Steps do not call each other
-- Steps do not manage execution flow
-- Steps can be tested independently
+1. `CorePlugin`
+2. third-party plugins sorted by entry-point name
 
-This avoids the “giant script with flags” failure mode.
+### Conflict Rules
 
----
+The system fails at startup on:
 
-### 3. Context Object Pattern
+- duplicate pattern IDs across plugins
+- duplicate handler `action_type` values across plugins
+- structurally invalid plugins
 
-**Where:** `context.ProcessingContext`
+This is intentional. Silent extension conflicts are not acceptable in this tool.
 
-The `ProcessingContext` centralizes:
+## Discovery Design
 
-- Runtime configuration values
-- Resolved filesystem paths
-- Derived state shared across steps
+Discovery observes package structure and classification evidence.
 
-Instead of globals or parameter sprawl, the pipeline passes a single context object:
+Current discovery classification is plugin-aware:
 
-```python
-@dataclass
-class ProcessingContext:
-    package_dir: Path
-    docx_stem: str
-    main_map_path: Optional[Path]
-    renamed_main_map_path: Optional[Path]
-```
+- the classifier asks the plugin registry for all patterns
+- built-in and third-party patterns participate in the same evaluation path
+- discovery carries evidence forward for planning
 
-**Why this matters**
+Discovery is read-only and should never encode mutation behavior.
 
-- Shared state is explicit and inspectable
-- Steps remain loosely coupled
-- New derived values can be added without breaking existing steps
+## Planning Design
 
----
+Planning consumes `PlanningInput` only.
 
-### 4. Template Method (Implicit)
+The planner:
 
-**Where:** Pipeline execution loop
+- sorts artifacts deterministically
+- asks every loaded plugin to emit actions for each artifact
+- assigns stable action IDs after aggregation
+- validates the resulting plan against the schema and invariants
 
-The pipeline enforces a fixed execution structure:
+The planner does not discover files, mutate content, or register handlers.
 
-- Setup
-- Step execution
-- Logging
-- Failure propagation
+## Execution Design
 
-Steps decide **what** to do.  
-The pipeline decides **when** and **how** they run.
+Execution is mediated by executors and handlers.
 
-This prevents steps from:
-- Calling other steps
-- Managing logging inconsistently
-- Reordering execution
+- executors enforce dry-run versus apply behavior
+- handlers implement one action type each
+- the execution handler registry is populated from plugin-contributed handlers
 
----
+This means the execution layer is also plugin-aware, not manually hardcoded through import-time registration.
 
-### 5. Facade Pattern for XML Operations
+## Materialization Design
 
-**Where:** `dita_xml.py`
+Materialization remains the safety boundary around execution.
 
-All XML manipulation is wrapped behind a small, focused API:
+It is responsible for:
 
-- `read_xml`
-- `write_xml`
-- `get_map_title`
-- `get_top_level_topicrefs`
-- `create_concept_topic_xml`
-- `transform_to_glossentry`
+- preflight validation of the target root
+- finalization around execution output
+- report-related artifact handling
 
-This creates a **Facade** over `lxml`.
-
-**Benefits**
-
-- XPath logic is centralized
-- XML handling remains consistent across steps
-- DITA edge cases can be fixed in one place
-
-If DITA conventions change, the blast radius is contained.
-
----
-
-### 6. Functional Core, Imperative Shell
-
-- **Functional core**
-  - XML tree transformations
-  - Slug generation
-  - Structural rewrites
-- **Imperative shell**
-  - File I/O
-  - Logging
-  - CLI parsing
-  - Configuration loading
-
-This separation improves:
-- Reasoning about correctness
-- Unit testing
-- Debugging failed runs
-
----
-
-## Step Responsibilities
-
-### RemoveIndexMapStep
-
-- Reads `index.ditamap`
-- Resolves the referenced main map
-- Deletes `index.ditamap`
-
-**Responsibility**
-
-> Establish the true entry point and remove indirection.
-
----
-
-### RenameMainMapStep
-
-- Renames the resolved main map to `<docx_stem>.ditamap`
-
-**Why separate**
-
-Renaming is a structural operation and should not be entangled with content rewriting.
-
----
-
-### ProcessMapsStep
-
-This step performs the core normalization work:
-
-- Detects the abstract map
-- Injects abstract content into the main map
-- Numbers remaining maps deterministically
-- Creates wrapper concept topics
-- Reparents existing topicrefs under the wrapper
-
-**Cohesive responsibility**
-
-> Normalize map structure and impose a deterministic hierarchy.
-
----
-
-### RefactorGlossaryStep
-
-- Locates the definition node in the definition map
-- Iterates its child topicrefs
-- Converts each referenced topic into a `glossentry` in place
-
-This logic is isolated because glossary behavior evolves independently.
-
----
-
-## Error Handling Philosophy
-
-- **Fail fast** for structural impossibilities  
-  (missing index map, unresolved main map)
-- **Warn and continue** for content inconsistencies  
-  (missing topics, unmatched navtitles)
-- **No silent failures**
-
-Every failure mode is logged with step context.
-
----
+It does not replace planning or execution and should not become a hidden behavior layer.
 
 ## Testing Strategy
 
-### Integration-First Testing
+Current testing emphasis:
 
-- Tests use `pytest` and `tmp_path`
-- Real directories and XML files are created
-- Assertions validate structural outcomes, not internal state
+- contract tests for discovery, planning, execution, and schemas
+- execution tests around filesystem and safety behavior
+- integration tests across end-to-end flows
+- plugin-aware behavior verified through planning and execution surfaces
 
-This avoids brittle mocks and validates real-world behavior.
+## Non-Goals
 
----
+The current system is not:
 
-## Extensibility Scenarios
-
-New behavior requires no refactoring:
-
-Examples:
-
-- Regex-based cleanup step
-- Attribute normalization step
-- DITA 1.2 → 1.3 migration step
-- Metadata enrichment step
-- Validation or linting step
-
-To add behavior:
-
-1. Create a new step in `steps/`
-2. Register it
-3. Add it to `pipeline.steps`
-
-Nothing else changes.
-
----
-
-## Design Non-Goals (Intentional)
-
-This project does **not** attempt to be:
-
-- A plugin framework
-- An interactive assistant
-- A workflow engine
-- A schema repair tool
-- A dynamic inference system
-
-It is a batch processor.
-
----
+- an interactive editor
+- an inference engine
+- a silent repair tool
+- an unbounded workflow engine
+- a step-injection framework for external customization
 
 ## Summary
 
-The DITA Package Processor applies well-understood, conservative design patterns to a messy, real-world problem:
+The repo has moved from an older step-oriented architecture to a contract-and-plugin architecture:
 
-- Pipeline for orchestration
-- Command/Strategy for extensibility
-- Context object for shared state
-- Facade for XML safety
+- phases are explicit
+- extension points are explicit
+- mutation is explicit
+- conflicts fail loudly
 
-The result is a system that scales in capability without collapsing under cleverness.
-
-That is the design.
+That is the current design center.
