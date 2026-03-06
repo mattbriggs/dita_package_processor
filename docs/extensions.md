@@ -4,6 +4,8 @@ The current extension mechanism is the plugin system under `dita_package_process
 
 The old step-centric extension guidance in this repo is no longer accurate as the primary public model. Internal step modules still exist, but supported external extensibility now happens through plugins.
 
+For the full implementation playbook, see [Extension Guide](extensions-guide.md).
+
 ## Plugin Contract
 
 A plugin can contribute three things:

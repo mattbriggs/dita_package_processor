@@ -23,7 +23,6 @@ Design principles
 
 from __future__ import annotations
 
-from email import policy
 import logging
 import shutil
 from pathlib import Path
@@ -163,7 +162,11 @@ class CopyMediaHandler(ExecutionHandler):
                 status="skipped",
                 handler=self.__class__.__name__,
                 dry_run=True,
-                message="Dry-run: copy_media skipped",
+                message=(
+                    "Dry-run: copy_media skipped\n"
+                    f"  from: {rel_source.as_posix()}\n"
+                    f"  to:   {rel_target.as_posix()}"
+                ),
             )
 
         # -------------------------------------------------
@@ -221,7 +224,15 @@ class CopyMediaHandler(ExecutionHandler):
                 status="success",
                 handler=self.__class__.__name__,
                 dry_run=False,
-                message=f"Copied media to {target_path}",
+                message=(
+                    "Copied media\n"
+                    f"  from: {rel_source.as_posix()}\n"
+                    f"  to:   {rel_target.as_posix()}"
+                ),
+                metadata={
+                    "source_path": rel_source.as_posix(),
+                    "target_path": rel_target.as_posix(),
+                },
             )
 
         except Exception as exc:  # noqa: BLE001

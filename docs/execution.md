@@ -193,10 +193,26 @@ Not:
 An execution report records:
 
 - Execution identity
-- Timestamp
+- Generation timestamp
+- Execution start timestamp
+- Execution finish timestamp
+- Total duration in milliseconds
 - Whether it was a dry-run
+- Discovery summary counts
 - One entry per action
 - A summary of outcomes
+
+Top-level fields:
+
+- `execution_id`
+- `generated_at`
+- `started_at`
+- `finished_at`
+- `duration_ms`
+- `dry_run`
+- `summary`
+- `discovery`
+- `results`
 
 Each action result includes:
 
@@ -209,6 +225,8 @@ Each action result includes:
 - Optional structured metadata
 
 The report is schema-validated and immutable once written.
+
+For command examples and `jq` queries, see [Execution Report Guide](execution-report.md).
 
 ---
 

@@ -3,6 +3,8 @@
 
 This document explains how **patterns**, **actions**, and **handlers** work together in the DITA Package Processor, and how to extend them safely when developing real migration jobs.
 
+For a full plugin implementation walkthrough, see [Extension Guide](extensions-guide.md).
+
 The goal of this architecture is not elegance.  
 The goal is **survivability** under hostile, inconsistent, enterprise-scale DITA packages.
 

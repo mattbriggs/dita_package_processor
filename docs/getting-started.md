@@ -74,7 +74,8 @@ Execution:
 python3 -m dita_package_processor execute \
   --plan plan.json \
   --source-root /path/to/package \
-  --output ./build
+  --output ./build \
+  --report ./build/execution-report.json
 ```
 
 ## Plugin Awareness
@@ -102,5 +103,6 @@ python3 -m dita_package_processor plugin validate /path/to/plugin
 
 - [Extensions](extensions.md)
 - [Extension Guide](extensions-guide.md)
+- [Execution Report Guide](execution-report.md)
 - [CLI API Reference](api-ref-cli.md)
 - [Plugin API Reference](api-ref-plugins.md)

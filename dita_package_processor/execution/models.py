@@ -30,6 +30,44 @@ ExecutionErrorType = Literal[
 ]
 
 
+DiscoverySummary = Dict[str, int]
+
+
+def _default_discovery_summary() -> DiscoverySummary:
+    """
+    Return canonical empty discovery summary.
+    """
+    return {
+        "maps": 0,
+        "topics": 0,
+        "media": 0,
+        "missing_references": 0,
+        "external_references": 0,
+    }
+
+
+def _normalize_discovery_summary(
+    value: Optional[Dict[str, Any]],
+) -> DiscoverySummary:
+    """
+    Normalize discovery summary into the strict execution-report shape.
+    """
+    summary = _default_discovery_summary()
+
+    if not isinstance(value, dict):
+        return summary
+
+    for key in summary:
+        raw = value.get(key, 0)
+        try:
+            coerced = int(raw)
+        except (TypeError, ValueError):
+            coerced = 0
+        summary[key] = max(0, coerced)
+
+    return summary
+
+
 # -----------------------------------------------------------------------------
 # Action-level results
 # -----------------------------------------------------------------------------
@@ -125,19 +163,31 @@ class ExecutionReport:
         Unique identifier for this execution run.
     generated_at : str
         ISO timestamp of report creation.
+    started_at : str
+        ISO timestamp when execution started.
+    finished_at : str
+        ISO timestamp when execution finished.
+    duration_ms : int
+        End-to-end execution duration in milliseconds.
     dry_run : bool
         Whether execution was simulated.
     results : List[ExecutionActionResult]
         List of per-action execution results.
     summary : Dict[str, int]
         Aggregated statistics for quick inspection.
+    discovery : DiscoverySummary
+        Discovery-level counts included for quick debugging context.
     """
 
     execution_id: str
     generated_at: str
+    started_at: str
+    finished_at: str
+    duration_ms: int
     dry_run: bool
     results: List[ExecutionActionResult]
     summary: Dict[str, int]
+    discovery: DiscoverySummary
 
     # -------------------------------------------------------------------------
     # Factory
@@ -150,6 +200,9 @@ class ExecutionReport:
         execution_id: str,
         dry_run: bool,
         results: List[ExecutionActionResult],
+        started_at: Optional[datetime] = None,
+        finished_at: Optional[datetime] = None,
+        discovery: Optional[Dict[str, Any]] = None,
     ) -> ExecutionReport:
         """
         Create execution report and compute summary.
@@ -162,6 +215,12 @@ class ExecutionReport:
             Dry-run flag.
         results : List[ExecutionActionResult]
             Execution results.
+        started_at : Optional[datetime]
+            Optional execution start timestamp (UTC-aware expected).
+        finished_at : Optional[datetime]
+            Optional execution end timestamp (UTC-aware expected).
+        discovery : Optional[Dict[str, Any]]
+            Optional discovery summary for the report.
 
         Returns
         -------
@@ -194,12 +253,23 @@ class ExecutionReport:
 
             summary[result.status] += 1
 
+        started = started_at or datetime.now(UTC)
+        finished = finished_at or datetime.now(UTC)
+        if finished < started:
+            finished = started
+
+        duration_ms = int((finished - started).total_seconds() * 1000)
+
         return cls(
             execution_id=execution_id,
-            generated_at=datetime.now(UTC).isoformat(),
+            generated_at=finished.isoformat(),
+            started_at=started.isoformat(),
+            finished_at=finished.isoformat(),
+            duration_ms=duration_ms,
             dry_run=dry_run,
             results=results,
             summary=summary,
+            discovery=_normalize_discovery_summary(discovery),
         )
 
     # -------------------------------------------------------------------------
@@ -224,7 +294,11 @@ class ExecutionReport:
         return {
             "execution_id": self.execution_id,
             "generated_at": self.generated_at,
+            "started_at": self.started_at,
+            "finished_at": self.finished_at,
+            "duration_ms": self.duration_ms,
             "dry_run": self.dry_run,
             "results": [r.to_dict() for r in self.results],
             "summary": dict(self.summary),
+            "discovery": dict(self.discovery),
         }

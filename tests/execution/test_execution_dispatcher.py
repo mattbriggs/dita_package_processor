@@ -100,6 +100,14 @@ def test_dispatch_produces_execution_report(
     assert report.execution_id == "exec-001"
     assert len(report.results) == 2
     assert report.summary["total"] == 2
+    assert report.duration_ms >= 0
+    assert report.discovery == {
+        "maps": 1,
+        "topics": 1,
+        "media": 0,
+        "missing_references": 0,
+        "external_references": 0,
+    }
 
 
 def test_dispatch_executes_in_order(
@@ -143,6 +151,30 @@ def test_dispatch_results_contain_action_ids(
 
     ids = [r.action_id for r in report.results]
     assert ids == ["copy-0001", "copy-0002"]
+
+
+def test_dispatch_uses_explicit_discovery_summary(
+    dispatcher: ExecutionDispatcher,
+    simple_plan: dict,
+) -> None:
+    plan = dict(simple_plan)
+    plan["discovery"] = {
+        "maps": 1,
+        "topics": 12,
+        "media": 25,
+        "missing_references": 0,
+        "external_references": 0,
+    }
+
+    report = dispatcher.dispatch(
+        execution_id="exec-004b",
+        plan=plan,
+        dry_run=False,
+    )
+
+    assert report.discovery["maps"] == 1
+    assert report.discovery["topics"] == 12
+    assert report.discovery["media"] == 25
 
 
 # =============================================================================

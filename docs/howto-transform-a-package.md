@@ -202,9 +202,21 @@ The report records:
 - handler identity
 - dry-run vs applied state
 - failures and skips
+- timing (`started_at`, `finished_at`, `duration_ms`)
+- discovery counts (`maps`, `topics`, `media`, `missing_references`, `external_references`)
 
 It is a forensic artifact.  
 You can diff it, archive it, or feed it into CI.
+
+Quick checks:
+
+```bash
+jq '{dry_run, summary, discovery}' execution_report.json
+jq '{started_at, finished_at, duration_ms}' execution_report.json
+jq '.results[] | select(.status == "failed") | {action_id, handler, error_type, error}' execution_report.json
+```
+
+For full usage examples, see [Execution Report Guide](execution-report.md).
 
 ---
 

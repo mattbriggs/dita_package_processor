@@ -117,10 +117,14 @@ def test_report_writer_sorts_keys_deterministically(
 
     # And ensure the expected keys exist
     assert keys == [
+        "discovery",
         "dry_run",
+        "duration_ms",
         "execution_id",
+        "finished_at",
         "generated_at",
         "results",
+        "started_at",
         "summary",
     ]
 

@@ -27,6 +27,7 @@ nav:
     - Pipeline Integration Specification: pipeline-integration.md
     - Plan Creation: plan-creation.md
     - Execution Phase: execution.md
+    - Execution Report Guide: execution-report.md
     - Execution Contract: execution_contract.md
   - Discovery:
     - Discovery Phase: discovery.md

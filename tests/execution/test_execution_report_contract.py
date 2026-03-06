@@ -133,6 +133,32 @@ def test_execution_report_summary_is_consistent(
     assert summary["skipped"] == 1
 
 
+def test_execution_report_includes_timing_fields(
+    golden_execution_report_dict: Dict[str, Any],
+) -> None:
+    """
+    Execution report must include timing metadata.
+    """
+    assert "started_at" in golden_execution_report_dict
+    assert "finished_at" in golden_execution_report_dict
+    assert "duration_ms" in golden_execution_report_dict
+    assert golden_execution_report_dict["duration_ms"] >= 0
+
+
+def test_execution_report_includes_discovery_summary(
+    golden_execution_report_dict: Dict[str, Any],
+) -> None:
+    """
+    Discovery summary must be present with all required counters.
+    """
+    discovery = golden_execution_report_dict["discovery"]
+    assert discovery["maps"] >= 0
+    assert discovery["topics"] >= 0
+    assert discovery["media"] >= 0
+    assert discovery["missing_references"] >= 0
+    assert discovery["external_references"] >= 0
+
+
 def test_schema_rejects_missing_required_fields(
     golden_execution_report_dict: Dict[str, Any],
     execution_report_schema: Dict[str, Any],
@@ -250,6 +276,23 @@ def test_schema_rejects_additional_action_fields(
     broken["results"] = list(broken["results"])
     broken["results"][0] = dict(broken["results"][0])
     broken["results"][0]["extra"] = "illegal"
+
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.validate(
+            instance=broken,
+            schema=execution_report_schema,
+        )
+
+
+def test_schema_rejects_incomplete_discovery_summary(
+    golden_execution_report_dict: Dict[str, Any],
+    execution_report_schema: Dict[str, Any],
+) -> None:
+    """
+    Discovery summary must contain all required counters.
+    """
+    broken = dict(golden_execution_report_dict)
+    broken["discovery"] = {"maps": 1}
 
     with pytest.raises(jsonschema.ValidationError):
         jsonschema.validate(
