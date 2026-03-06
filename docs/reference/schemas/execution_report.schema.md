@@ -8,6 +8,10 @@ Deterministic execution report capturing the outcome of executing a validated pl
 |------|------|----------|-------------|
 | `execution_id` | string | yes | Unique identifier for this execution run. Used to correlate reports, logs, and downstream artifacts. |
 | `generated_at` | string | yes | ISO-8601 timestamp indicating when the execution report was generated. |
+| `started_at` | string | yes | ISO-8601 timestamp indicating when execution started. |
+| `finished_at` | string | yes | ISO-8601 timestamp indicating when execution finished. |
+| `duration_ms` | integer | yes | Total execution duration in milliseconds. |
 | `dry_run` | boolean | yes | Indicates whether this execution was performed in dry-run mode, meaning no filesystem mutation occurred. |
 | `results` | array | yes | Ordered list of per-action execution results, one entry for each action evaluated by the executor. |
 | `summary` | object | yes | Aggregate counts summarizing the execution outcomes across all actions. |
+| `discovery` | object | yes | Discovery-level context surfaced in the execution report to improve troubleshooting. |
