@@ -12,6 +12,8 @@ These tests ensure execution models:
 
 from __future__ import annotations
 
+from datetime import datetime
+
 import pytest
 
 from dita_package_processor.execution.models import (
@@ -121,6 +123,11 @@ def test_execution_report_summary_computation() -> None:
     assert report.summary["failed"] == 1
     assert report.summary["skipped"] == 1
     assert report.summary["total"] == 3
+    assert report.duration_ms >= 0
+
+    started = datetime.fromisoformat(report.started_at)
+    finished = datetime.fromisoformat(report.finished_at)
+    assert finished >= started
 
 
 def test_execution_report_serialization() -> None:
@@ -147,10 +154,20 @@ def test_execution_report_serialization() -> None:
 
     assert data["execution_id"] == "exec-xyz"
     assert data["dry_run"] is True
+    assert "started_at" in data
+    assert "finished_at" in data
+    assert "duration_ms" in data
     assert len(data["results"]) == 1
     assert data["summary"]["total"] == 1
     assert data["summary"]["success"] == 1
     assert data["results"][0]["error_type"] is None
+    assert data["discovery"] == {
+        "maps": 0,
+        "topics": 0,
+        "media": 0,
+        "missing_references": 0,
+        "external_references": 0,
+    }
 
 
 def test_execution_report_with_failed_action_contains_error_type() -> None:
@@ -181,6 +198,34 @@ def test_execution_report_with_failed_action_contains_error_type() -> None:
     assert action["status"] == "failed"
     assert action["error_type"] == "policy_violation"
     assert action["error"] == "Overwrite denied"
+
+
+def test_execution_report_serializes_discovery_summary() -> None:
+    """
+    Discovery summary must be included in serialized report output.
+    """
+    report = ExecutionReport.create(
+        execution_id="exec-discovery-001",
+        dry_run=False,
+        results=[],
+        discovery={
+            "maps": 1,
+            "topics": 12,
+            "media": 25,
+            "missing_references": 0,
+            "external_references": 0,
+        },
+    )
+
+    data = report.to_dict()
+
+    assert data["discovery"] == {
+        "maps": 1,
+        "topics": 12,
+        "media": 25,
+        "missing_references": 0,
+        "external_references": 0,
+    }
 
 
 def test_execution_report_rejects_invalid_status() -> None:

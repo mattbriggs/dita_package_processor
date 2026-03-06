@@ -135,6 +135,8 @@ def test_copy_media_dry_run(tmp_path: Path) -> None:
 
     assert not target.exists()
     assert result.status == "skipped"
+    assert "from:" in result.message
+    assert "to:" in result.message
 
 
 def test_copy_media_result_metadata(tmp_path: Path) -> None:
@@ -163,3 +165,6 @@ def test_copy_media_result_metadata(tmp_path: Path) -> None:
     assert result.handler == "CopyMediaHandler"
     assert result.status == "success"
     assert result.dry_run is False
+    assert result.message == "Copied media\n  from: source.bin\n  to:   target.bin"
+    assert result.metadata["source_path"] == "source.bin"
+    assert result.metadata["target_path"] == "target.bin"

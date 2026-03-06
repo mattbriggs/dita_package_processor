@@ -7,9 +7,13 @@
   "required": [
     "execution_id",
     "generated_at",
+    "started_at",
+    "finished_at",
+    "duration_ms",
     "dry_run",
     "results",
-    "summary"
+    "summary",
+    "discovery"
   ],
   "properties": {
     "execution_id": {
@@ -20,6 +24,21 @@
       "type": "string",
       "format": "date-time",
       "description": "ISO-8601 timestamp indicating when the execution report was generated."
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp indicating when execution started."
+    },
+    "finished_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp indicating when execution finished."
+    },
+    "duration_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total execution duration in milliseconds."
     },
     "dry_run": {
       "type": "boolean",
@@ -111,6 +130,45 @@
           "type": "integer",
           "minimum": 0,
           "description": "Total number of actions evaluated during execution."
+        }
+      },
+      "additionalProperties": false
+    },
+    "discovery": {
+      "type": "object",
+      "description": "Discovery-level context surfaced in the execution report to improve troubleshooting.",
+      "required": [
+        "maps",
+        "topics",
+        "media",
+        "missing_references",
+        "external_references"
+      ],
+      "properties": {
+        "maps": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of discovered maps."
+        },
+        "topics": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of discovered topics."
+        },
+        "media": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of discovered media artifacts."
+        },
+        "missing_references": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of unresolved internal references discovered upstream."
+        },
+        "external_references": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of references pointing outside the package."
         }
       },
       "additionalProperties": false
