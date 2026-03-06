@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+<map id="plugin_development_map" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Plugin Development Guide</title>
+  <topicref href="../topics/plugin/extension-architecture.dita" navtitle="Extension Architecture" format="dita"/>
+  <topicref href="../topics/plugin/patterns-actions-handlers.dita" navtitle="Patterns, Actions, and Handlers" format="dita"/>
+  <topicref href="../topics/plugin/plugin-lifecycle.dita" navtitle="Plugin Lifecycle" format="dita"/>
+  <topicref href="../topics/plugin/create-a-pattern.dita" navtitle="Create a Pattern" format="dita"/>
+  <topicref href="../topics/plugin/create-an-action-emitter.dita" navtitle="Create an Action Emitter" format="dita"/>
+  <topicref href="../topics/plugin/implement-a-handler.dita" navtitle="Implement a Handler" format="dita"/>
+  <topicref href="../topics/plugin/register-a-plugin.dita" navtitle="Register a Plugin" format="dita"/>
+  <topicref href="../topics/plugin/write-tests-for-a-plugin.dita" navtitle="Write Tests for a Plugin" format="dita"/>
+  <topicref href="../topics/plugin/plugin-contracts-reference.dita" navtitle="Plugin Contracts" format="dita"/>
+  <topicref href="../topics/plugin/handler-execution-contract-reference.dita" navtitle="Handler Execution Contract" format="dita"/>
+</map>

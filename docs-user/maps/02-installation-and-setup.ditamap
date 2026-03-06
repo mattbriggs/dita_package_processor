@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+<map id="installation_map" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Installation and Setup</title>
+  <topicref href="../topics/installation/install-dita-package-processor.dita" navtitle="Install the DITA Package Processor" format="dita"/>
+  <topicref href="../topics/installation/configure-migration-workspace.dita" navtitle="Configure a Migration Workspace" format="dita"/>
+  <topicref href="../topics/installation/verify-installation.dita" navtitle="Verify Installation" format="dita"/>
+  <topicref href="../topics/installation/system-requirements.dita" navtitle="System Requirements" format="dita"/>
+</map>

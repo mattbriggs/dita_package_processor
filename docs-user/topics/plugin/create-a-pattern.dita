@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="create_plugin_pattern" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Create a Pattern</title>
+  <shortdesc>Create plugin pattern definitions that emit stable evidence for planning.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>Create a plugin package with a <codeph>DitaPlugin</codeph> subclass and collect representative migration fixtures.</p>
+      <p>For first-time plugin onboarding, start with one pattern and one fixture package before you add additional rules.</p>
+    </prereq>
+    <steps>
+      <step>
+        <cmd>Define a namespaced pattern ID and explicit <codeph>applies_to</codeph> value.</cmd>
+        <info>
+          <p>Use a plugin namespace prefix such as <codeph>com.acme.migration.special_map_by_filename</codeph>.</p>
+        </info>
+      </step>
+      <step>
+        <cmd>Define deterministic <codeph>signals</codeph> and explicit <codeph>asserts</codeph> role and confidence.</cmd>
+        <info>
+          <codeblock outputclass="language-python">from dita_package_processor.discovery.patterns import Pattern
+
+Pattern(
+    id="com.acme.migration.special_map_by_filename",
+    applies_to="map",
+    signals={"filename": {"equals": "SpecialMap.ditamap"}},
+    asserts={"role": "special_map", "confidence": 1.0},
+    rationale=["SpecialMap.ditamap is the migration entry map for this corpus."],
+)</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Return pattern objects from <codeph>patterns()</codeph> in your plugin class.</cmd>
+      </step>
+      <step>
+        <cmd>Validate plugin structure before running migration jobs.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor plugin validate /path/to/plugin-package</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Run discovery on fixture packages and verify expected evidence appears.</cmd>
+      </step>
+    </steps>
+    <result>
+      <p>Discovery emits stable evidence records that planning can consume for deterministic routing.</p>
+      <p>Expected output:</p>
+      <codeblock outputclass="language-text">plugin validate output includes:
+  Validation passed - 1 entry point(s) OK
+discovery evidence includes new pattern_id entries</codeblock>
+    </result>
+  </taskbody>
+</task>

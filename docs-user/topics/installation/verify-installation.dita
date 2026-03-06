@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="verify_installation" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Verify Installation</title>
+  <shortdesc>Validate CLI behavior, plugin registry loading, and a full dry-run pipeline before you process production packages.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>Activate the virtual environment where you installed the package.</p>
+      <p>For first-time onboarding, use a small package to inspect every generated artifact before running larger migrations.</p>
+    </prereq>
+    <steps>
+      <step>
+        <cmd>Check the installed version and top-level command list.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor --version
+python3 -m dita_package_processor --help</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Check plugin registry visibility.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor plugin list
+python3 -m dita_package_processor plugin info dita_package_processor.core</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Run a smoke-test pipeline in dry-run mode on a small package.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor run \
+  --package /path/to/small-package \
+  --docx-stem SmokeDoc \
+  --target build/smoke \
+  --report build/smoke/execution-report.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Inspect the report summary and discovery counts.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq '{dry_run, summary, discovery}' build/smoke/execution-report.json</codeblock>
+        </info>
+      </step>
+    </steps>
+    <result>
+      <p>You confirmed that command routing, plugin loading, planning, and execution reporting work in your environment.</p>
+      <p>Expected output:</p>
+      <codeblock outputclass="language-text">dry_run: true
+summary.total: &gt; 0
+discovery.maps: &gt;= 1
+discovery.topics: &gt;= 1</codeblock>
+    </result>
+  </taskbody>
+</task>

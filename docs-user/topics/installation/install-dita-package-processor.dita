@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="install_dita_package_processor" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Install the DITA Package Processor</title>
+  <shortdesc>Install the processor in a Python virtual environment so CLI commands and plugin loading run with the expected dependencies.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>Install Python 3.10 or later and clone the repository to your local machine.</p>
+      <p>If this is your first run, keep this repository checked out and use the <codeph>docs-user</codeph> directory later as a safe practice package.</p>
+    </prereq>
+    <steps>
+      <step>
+        <cmd>Create and activate a virtual environment from the repository root.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m venv .venv
+source .venv/bin/activate</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Install runtime dependencies and the package in editable mode.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">pip install -r requirements.txt
+pip install -e .</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Verify that the CLI starts and prints help.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor --help</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Optional: install shell completion support if your workflow uses completion scripts.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">pip install argcomplete
+python3 -m dita_package_processor completion --shell zsh</codeblock>
+        </info>
+      </step>
+    </steps>
+    <result>
+      <p>You can run <codeph>discover</codeph>, <codeph>normalize</codeph>, <codeph>plan</codeph>, <codeph>execute</codeph>, <codeph>run</codeph>, and <codeph>plugin</codeph> commands from the active environment.</p>
+      <p>Expected output:</p>
+      <codeblock outputclass="language-text">usage: dita_package_processor [-h] [--json] [--quiet] ...
+{discover,normalize,plan,execute,run,plugin,docs,completion} ...</codeblock>
+    </result>
+  </taskbody>
+</task>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="review_migration_plan" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Review a Migration Plan</title>
+  <shortdesc>Review plan actions before execution to confirm targets, intent, and evidence lineage.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>Generate <codeph>plan.json</codeph> from a normalized planning input file.</p>
+      <p>For first-time onboarding, review at least the first twenty actions and all action-type groups before execution.</p>
+    </prereq>
+    <steps>
+      <step>
+        <cmd>Inspect top-level plan metadata.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq '{plan_version, generated_at, source_discovery, intent, action_count: (.actions | length)}' build/plan.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Review action distribution by type.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq '.actions | group_by(.type) | map({type: .[0].type, count: length})' build/plan.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Review selected actions for target paths and reasons.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq '.actions[:20] | map({id, type, target, reason, derived_from_evidence})' build/plan.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Check for unexpected target roots or custom action types.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq '.actions[] | select((.target | startswith("target/")) | not) | {id, type, target}' build/plan.json</codeblock>
+        </info>
+      </step>
+    </steps>
+    <result>
+      <p>You confirm that plan intent matches your migration objective before execution runs.</p>
+      <p>Expected output:</p>
+      <codeblock outputclass="language-text">plan_version: 1
+action_count: &gt; 0
+actions[].id pattern: action-0001, action-0002, ...</codeblock>
+    </result>
+  </taskbody>
+</task>

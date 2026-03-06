@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE troubleshooting PUBLIC "-//OASIS//DTD DITA Troubleshooting//EN" "troubleshooting.dtd">
+<troubleshooting id="troubleshooting_template" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Troubleshooting Topic Template</title>
+  <shortdesc>Use this template guidance to write troubleshooting topics with a direct symptom-to-resolution path.</shortdesc>
+  <troublebody>
+    <p><b>Problem:</b> Describe one observable failure symptom in operational terms.</p>
+    <p><b>Cause:</b> List one or more concrete causes tied to artifacts, commands, or contract mismatches.</p>
+    <p><b>Resolution:</b></p>
+    <ul>
+      <li>Provide deterministic checks in command form.</li>
+      <li>Map each check to an expected result.</li>
+      <li>End with the corrective action and rerun verification step.</li>
+    </ul>
+  </troublebody>
+</troubleshooting>

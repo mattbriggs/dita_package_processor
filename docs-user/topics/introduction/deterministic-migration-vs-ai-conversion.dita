@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="deterministic_vs_ai" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Deterministic Migration vs AI Conversion</title>
+  <shortdesc>Use deterministic migration to make structure and execution outcomes inspectable before you apply changes.</shortdesc>
+  <conbody>
+    <p>AI conversion can generate DITA quickly, but generated content often carries structural variance that blocks predictable downstream publishing. Deterministic migration complements AI conversion by enforcing explicit review points and explicit mutation contracts.</p>
+    <section>
+      <title>Comparison</title>
+      <simpletable>
+        <sthead>
+          <stentry>Question</stentry>
+          <stentry>AI conversion only</stentry>
+          <stentry>Deterministic migration workflow</stentry>
+        </sthead>
+        <strow>
+          <stentry>How is package state observed?</stentry>
+          <stentry>Implicit in generated output.</stentry>
+          <stentry>Explicit in <codeph>discovery.json</codeph>.</stentry>
+        </strow>
+        <strow>
+          <stentry>How is intent recorded?</stentry>
+          <stentry>Embedded in conversion logic.</stentry>
+          <stentry>Explicit in ordered <codeph>plan.json</codeph> actions.</stentry>
+        </strow>
+        <strow>
+          <stentry>How are mutations audited?</stentry>
+          <stentry>Often by log review.</stentry>
+          <stentry>Per-action status in <codeph>execution-report.json</codeph>.</stentry>
+        </strow>
+        <strow>
+          <stentry>How do you rerun safely?</stentry>
+          <stentry>Manual safeguards vary.</stentry>
+          <stentry>Dry-run by default, apply only with <codeph>--apply</codeph>.</stentry>
+        </strow>
+      </simpletable>
+    </section>
+    <section>
+      <title>Recommended workflow</title>
+      <p>Use AI conversion to create a first-pass package, then use this processor to normalize structure, validate assumptions, and produce an auditable migration output. This reduces ambiguity when multiple engineers or teams work in parallel.</p>
+    </section>
+  </conbody>
+</concept>

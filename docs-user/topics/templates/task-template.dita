@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="task_template" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Task Topic Template</title>
+  <shortdesc>Use this template guidance to write task topics that let new users execute commands and verify outcomes.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>State environment setup, required files, and permissions.</p>
+    </prereq>
+    <steps>
+      <step>
+        <cmd>Start each step with an imperative command.</cmd>
+        <info>
+          <p>Add context only when needed for safe execution.</p>
+        </info>
+      </step>
+      <step>
+        <cmd>Include exact commands in code blocks.</cmd>
+        <info>
+          <p>Use command examples that can run without hidden assumptions.</p>
+        </info>
+      </step>
+      <step>
+        <cmd>Add verification checks after critical commands.</cmd>
+        <info>
+          <p>Use report filtering commands or explicit expected outputs.</p>
+        </info>
+      </step>
+    </steps>
+    <result>
+      <p>State the observable outcome and named artifacts produced by the task.</p>
+      <p>Expected output:</p>
+      <codeblock outputclass="language-text">Expected output:
+- Artifact names and locations
+- Key status fields or counts
+- Verification command result shape</codeblock>
+    </result>
+  </taskbody>
+</task>

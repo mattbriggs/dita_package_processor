@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="write_plugin_tests" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Write Tests for a Plugin</title>
+  <shortdesc>Test pattern matching, action emission, and handler behavior before you deploy plugin logic to production migration jobs.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>Set up a plugin test package with fixture content and <codeph>pytest</codeph>.</p>
+      <p>For first-time plugin onboarding, keep fixture packages small and isolate one edge case per test.</p>
+    </prereq>
+    <steps>
+      <step>
+        <cmd>Write unit tests for pattern IDs, roles, and confidence values.</cmd>
+      </step>
+      <step>
+        <cmd>Write unit tests for <codeph>emit_actions(...)</codeph> with positive and negative evidence cases.</cmd>
+      </step>
+      <step>
+        <cmd>Write handler tests for success, failure, and dry-run outcomes.</cmd>
+      </step>
+      <step>
+        <cmd>Add an integration test that runs a fixture package through discovery, planning, and execution.</cmd>
+      </step>
+      <step>
+        <cmd>Run plugin structure validation and test suite in CI.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor plugin validate /path/to/plugin-package
+pytest -q</codeblock>
+        </info>
+      </step>
+    </steps>
+    <fig>
+      <title>Plugin test matrix</title>
+      <image href="../../media/plugin-test-matrix.png">
+        <alt>Pattern, action, and handler tests flow into integration testing, plugin validation, and staged rollout.</alt>
+      </image>
+    </fig>
+    <result>
+      <p>You reduce rollout risk by validating each extension layer independently and then validating the full plugin slice end to end.</p>
+      <p>Expected output:</p>
+      <codeblock outputclass="language-text">plugin validate: pass
+pytest: all plugin unit and integration tests pass
+fixture execution report matches expected statuses</codeblock>
+    </result>
+  </taskbody>
+</task>

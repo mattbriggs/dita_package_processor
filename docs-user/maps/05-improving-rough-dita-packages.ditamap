@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+<map id="improving_packages_map" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Improving Rough DITA Packages</title>
+  <topicref href="../topics/improve/typical-problems-ai-generated-dita.dita" navtitle="Typical Problems in AI-Generated DITA" format="dita"/>
+  <topicref href="../topics/improve/best-practices-dita-package-structure.dita" navtitle="Best Practices for DITA Package Structure" format="dita"/>
+  <topicref href="../topics/improve/normalize-topic-hierarchies.dita" navtitle="Normalize Topic Hierarchies" format="dita"/>
+  <topicref href="../topics/improve/repair-map-structures.dita" navtitle="Repair Map Structures" format="dita"/>
+  <topicref href="../topics/improve/resolve-broken-references.dita" navtitle="Resolve Broken References" format="dita"/>
+  <topicref href="../topics/improve/clean-up-duplicate-topics.dita" navtitle="Clean Up Duplicate Topics" format="dita"/>
+</map>

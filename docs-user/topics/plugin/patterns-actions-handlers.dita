@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="patterns_actions_handlers" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Patterns, Actions, and Handlers</title>
+  <shortdesc>Keep pattern recognition, planning intent, and execution mutation separate to maintain deterministic behavior.</shortdesc>
+  <conbody>
+    <fig>
+      <title>Patterns to Actions to Handlers</title>
+      <image href="../../media/patterns-actions-handlers.png">
+        <alt>Patterns produce evidence, actions declare intent, and handlers apply mutations.</alt>
+      </image>
+    </fig>
+    <section>
+      <title>Pattern layer</title>
+      <p>Patterns answer the question, "What condition exists in this artifact?" Patterns do not mutate files and do not emit execution logic.</p>
+    </section>
+    <section>
+      <title>Action layer</title>
+      <p>Actions answer the question, "What should happen?" Each action must be explicit, ordered, and schema-valid. The planner assigns action IDs after collecting emitted action templates.</p>
+    </section>
+    <section>
+      <title>Handler layer</title>
+      <p>Handlers answer the question, "How do I apply one action safely?" Handlers enforce source-root boundaries, sandbox boundaries, and mutation policy before they write files.</p>
+    </section>
+    <section>
+      <title>Debugging rule</title>
+      <p>If intent is wrong, fix patterns or action emission. If intent is correct but filesystem outcome is wrong, fix handler implementation.</p>
+    </section>
+  </conbody>
+</concept>

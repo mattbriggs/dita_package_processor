@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="plugin_lifecycle" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Plugin Lifecycle</title>
+  <shortdesc>Follow a lifecycle that starts with observed migration gaps and ends with validated plugin rollout.</shortdesc>
+  <conbody>
+    <fig>
+      <title>Plugin lifecycle flow</title>
+      <image href="../../media/plugin-lifecycle.png">
+        <alt>Lifecycle from gap identification to pattern design, action emission, handler execution, and report review.</alt>
+      </image>
+    </fig>
+    <fig>
+      <title>Plugin decision flow</title>
+      <image href="../../media/migration-decision-flow.png">
+        <alt>Decision points for when a migration issue requires a plugin or core-compatible routing.</alt>
+      </image>
+    </fig>
+    <section>
+      <title>Who, what, where, when, and why</title>
+      <simpletable>
+        <sthead>
+          <stentry>Question</stentry>
+          <stentry>Guidance</stentry>
+        </sthead>
+        <strow>
+          <stentry>Who creates plugins?</stentry>
+          <stentry>Engineers who own migration edge cases for a corpus and can validate behavior with fixtures.</stentry>
+        </strow>
+        <strow>
+          <stentry>What is a plugin?</stentry>
+          <stentry>An installable package that implements <codeph>DitaPlugin</codeph> and contributes one or more extension points.</stentry>
+        </strow>
+        <strow>
+          <stentry>Where does it run?</stentry>
+          <stentry>In the same Python environment as <codeph>dita_package_processor</codeph>, discovered by entry points.</stentry>
+        </strow>
+        <strow>
+          <stentry>When do you add one?</stentry>
+          <stentry>When recurring migration cases are not solved by core action types and routing logic.</stentry>
+        </strow>
+        <strow>
+          <stentry>Why use this model?</stentry>
+          <stentry>To keep custom migration behavior deterministic, testable, and auditable.</stentry>
+        </strow>
+      </simpletable>
+    </section>
+    <section>
+      <title>Five-whys framing for plugin decisions</title>
+      <ol>
+        <li>Why is the migration failing or producing low-quality structure? Identify the observed artifact pattern.</li>
+        <li>Why does core planning not route this case correctly? Identify missing evidence or missing routing logic.</li>
+        <li>Why can this not be solved with existing action types alone? Determine if custom handler semantics are required.</li>
+        <li>Why is this case recurring? Validate across multiple fixture packages.</li>
+        <li>Why is a plugin the correct boundary? Confirm ownership, test coverage plan, and rollout process.</li>
+      </ol>
+    </section>
+  </conbody>
+</concept>

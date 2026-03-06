@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="common_structural_patterns" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Common Structural Patterns in DITA Packages</title>
+  <shortdesc>Use common pattern categories to triage package structure before you design migration actions.</shortdesc>
+  <conbody>
+    <section>
+      <title>Map-level patterns</title>
+      <ul>
+        <li>Main map candidates based on index naming or structural weight.</li>
+        <li>Abstract map candidates identified by title or structure.</li>
+        <li>Fallback unknown map role when semantic evidence is absent.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Topic-level patterns</title>
+      <ul>
+        <li>Glossary topic candidates by root element or known structure.</li>
+        <li>Fallback unknown topic role when a topic has no matching semantic signal.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Relationship patterns</title>
+      <p>Discovery extracts topic references, map references, and media references into relationships. These relationship edges are critical for planning order, dependency analysis, and missing reference diagnostics.</p>
+    </section>
+    <section>
+      <title>Triage recommendation</title>
+      <p>Start with counts and unresolved structure. If unknown or ambiguous cases repeat across packages, define plugin patterns with stable namespaced IDs so planning can route those cases deterministically.</p>
+    </section>
+  </conbody>
+</concept>

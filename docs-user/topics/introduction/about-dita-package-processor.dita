@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="about_dita_package_processor" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>About the DITA Package Processor</title>
+  <shortdesc>Use the DITA Package Processor to run deterministic, auditable migration jobs across maps, topics, and media.</shortdesc>
+  <conbody>
+    <p>The DITA Package Processor is a migration engine for DITA packages created from mixed sources such as Word, HTML, Markdown, and generated XML. The engine keeps discovery, planning, and execution separate so you inspect intent before you apply filesystem changes.</p>
+    <section>
+      <title>What the tool does</title>
+      <ul>
+        <li>Scans package structure and relationships without mutation.</li>
+        <li>Normalizes discovery output into a planning contract.</li>
+        <li>Generates a deterministic <codeph>plan.json</codeph>.</li>
+        <li>Executes the plan in dry-run mode or apply mode.</li>
+        <li>Writes an <codeph>execution-report.json</codeph> with per-action outcomes, timing, and discovery context.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Why deterministic migration matters</title>
+      <p>When content quality varies across hundreds or thousands of files, you need predictable behavior. The processor does not hide decisions in handlers or runtime heuristics. You can review artifacts at each boundary:</p>
+      <ul>
+        <li><codeph>discovery.json</codeph>: what exists.</li>
+        <li><codeph>planning_input.json</codeph>: what planning is allowed to use.</li>
+        <li><codeph>plan.json</codeph>: what should happen.</li>
+        <li><codeph>execution-report.json</codeph>: what happened.</li>
+      </ul>
+    </section>
+    <section>
+      <title>What the tool does not do</title>
+      <ul>
+        <li>It does not mutate files during discovery.</li>
+        <li>It does not infer custom business rules unless you implement a plugin.</li>
+        <li>It does not apply changes unless you pass <codeph>--apply</codeph>.</li>
+      </ul>
+    </section>
+  </conbody>
+</concept>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "reference.dtd">
+<reference id="cli_reference_ref" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>CLI Reference</title>
+  <shortdesc>Use this full CLI reference for command syntax, stage boundaries, and plugin inspection commands.</shortdesc>
+  <refbody>
+    <section>
+      <title>Root command syntax</title>
+      <codeblock outputclass="language-bash">python3 -m dita_package_processor &lt;command&gt; [options]</codeblock>
+      <p>Global options: <codeph>--json</codeph>, <codeph>--quiet</codeph>, <codeph>--log-level {DEBUG,INFO,WARNING,ERROR}</codeph>, <codeph>--version</codeph>.</p>
+    </section>
+    <section>
+      <title>Pipeline commands</title>
+      <simpletable>
+        <sthead>
+          <stentry>Command</stentry>
+          <stentry>Required options</stentry>
+          <stentry>Notes</stentry>
+        </sthead>
+        <strow>
+          <stentry><codeph>discover</codeph></stentry>
+          <stentry><codeph>--package</codeph></stentry>
+          <stentry>Read-only scan. Optional <codeph>--fail-on-invariants</codeph>.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>normalize</codeph></stentry>
+          <stentry><codeph>--input</codeph>, <codeph>--output</codeph></stentry>
+          <stentry>Builds planning input contract.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>plan</codeph></stentry>
+          <stentry><codeph>--input</codeph>, <codeph>--output</codeph></stentry>
+          <stentry>Deterministic action generation and validation.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>execute</codeph></stentry>
+          <stentry><codeph>--plan</codeph>, <codeph>--source-root</codeph>, <codeph>--output</codeph></stentry>
+          <stentry>Dry-run by default; add <codeph>--apply</codeph> to mutate.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>run</codeph></stentry>
+          <stentry><codeph>--package</codeph>, <codeph>--docx-stem</codeph></stentry>
+          <stentry>Orchestrates full pipeline. <codeph>--target</codeph> required when <codeph>--apply</codeph> is used.</stentry>
+        </strow>
+      </simpletable>
+    </section>
+    <section>
+      <title>Plugin commands</title>
+      <codeblock outputclass="language-bash">python3 -m dita_package_processor plugin list
+python3 -m dita_package_processor plugin info dita_package_processor.core
+python3 -m dita_package_processor plugin validate /path/to/plugin-package</codeblock>
+    </section>
+    <section>
+      <title>Auxiliary commands</title>
+      <ul>
+        <li><codeph>docs</codeph>: emit CLI help text.</li>
+        <li><codeph>completion</codeph>: emit shell completion script for bash, zsh, or fish.</li>
+      </ul>
+    </section>
+  </refbody>
+</reference>

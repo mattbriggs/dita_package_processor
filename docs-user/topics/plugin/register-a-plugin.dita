@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="register_plugin" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Register a Plugin</title>
+  <shortdesc>Register and install your plugin so the platform can discover it through entry points.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>Create a plugin package with <codeph>pyproject.toml</codeph> and a plugin instance or plugin class.</p>
+      <p>For first-time plugin onboarding, validate and inspect plugin metadata before running any package migration.</p>
+    </prereq>
+    <steps>
+      <step>
+        <cmd>Add a plugin entry-point declaration to <codeph>pyproject.toml</codeph>.</cmd>
+        <info>
+          <codeblock outputclass="language-toml">[project.entry-points."dita_package_processor.plugins"]
+acme_dita_migration = "acme_dita_migration:plugin"</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Install the plugin package into the runtime environment.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m pip install -e /path/to/plugin-package</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Validate plugin structure locally.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor plugin validate /path/to/plugin-package</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Verify plugin registry visibility.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor plugin list
+python3 -m dita_package_processor plugin info com.acme.dita_migration</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Run a fixture migration and inspect emitted action types and outcomes.</cmd>
+      </step>
+    </steps>
+    <result>
+      <p>Your plugin is registered in the active environment and participates in discovery, planning, and execution according to its implemented extension points.</p>
+      <p>Expected output:</p>
+      <codeblock outputclass="language-text">plugin list includes your plugin name
+plugin info shows expected pattern and handler counts
+migration plan includes plugin-driven action types or routes</codeblock>
+    </result>
+  </taskbody>
+</task>

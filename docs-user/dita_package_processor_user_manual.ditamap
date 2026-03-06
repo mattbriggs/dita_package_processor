@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+<map id="dita_package_processor_user_manual" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>DITA Package Processor User Manual</title>
+
+  <topicref href="maps/01-introduction.ditamap" format="ditamap" type="map" navtitle="Introduction"/>
+  <topicref href="maps/02-installation-and-setup.ditamap" format="ditamap" type="map" navtitle="Installation and Setup"/>
+  <topicref href="maps/03-running-migration-jobs.ditamap" format="ditamap" type="map" navtitle="Running Migration Jobs"/>
+  <topicref href="maps/04-understanding-the-migration-pipeline.ditamap" format="ditamap" type="map" navtitle="Understanding the Migration Pipeline"/>
+  <topicref href="maps/05-improving-rough-dita-packages.ditamap" format="ditamap" type="map" navtitle="Improving Rough DITA Packages"/>
+  <topicref href="maps/06-plugin-development-guide.ditamap" format="ditamap" type="map" navtitle="Plugin Development Guide"/>
+  <topicref href="maps/07-troubleshooting.ditamap" format="ditamap" type="map" navtitle="Troubleshooting"/>
+  <topicref href="maps/08-reference.ditamap" format="ditamap" type="map" navtitle="Reference"/>
+</map>

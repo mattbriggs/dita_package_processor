@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="run_migration_job" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Run a Migration Job</title>
+  <shortdesc>Run the full pipeline with <codeph>run</codeph>, then review execution artifacts before and after apply mode.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>Have a source package directory and a writable target directory.</p>
+      <p>For first-time onboarding, run this task against a non-production package and keep dry-run and apply reports in separate files.</p>
+    </prereq>
+    <steps>
+      <step>
+        <cmd>Run the full pipeline in dry-run mode first.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor run \
+  --package /path/to/package \
+  --docx-stem OutputDoc \
+  --target build/job-001 \
+  --report build/job-001/execution-report-dry.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Inspect dry-run summary and discovery context.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq '{dry_run, summary, discovery}' build/job-001/execution-report-dry.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Run apply mode only after dry-run results match your expectation.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor run \
+  --package /path/to/package \
+  --docx-stem OutputDoc \
+  --target build/job-001 \
+  --apply \
+  --report build/job-001/execution-report-apply.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Inspect apply report for failures and timing.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq '{started_at, finished_at, duration_ms, summary}' build/job-001/execution-report-apply.json
+jq '.results[] | select(.status=="failed")' build/job-001/execution-report-apply.json</codeblock>
+        </info>
+      </step>
+    </steps>
+    <result>
+      <p>You produce a target package output and an audit trail for discovery context, action outcomes, and execution timing.</p>
+      <p>Expected output:</p>
+      <codeblock outputclass="language-text">execution-report-dry.json: dry_run=true, summary.skipped=summary.total
+execution-report-apply.json: dry_run=false, summary.failed=0</codeblock>
+    </result>
+  </taskbody>
+</task>

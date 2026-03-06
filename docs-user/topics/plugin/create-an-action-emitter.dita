@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="create_action_emitter" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Create an Action Emitter</title>
+  <shortdesc>Implement <codeph>emit_actions(...)</codeph> to transform evidence into deterministic action templates.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>Create at least one pattern that emits evidence for the target migration case.</p>
+      <p>For first-time plugin onboarding, emit one action type first, then add additional routes after tests pass.</p>
+    </prereq>
+    <steps>
+      <step>
+        <cmd>Implement <codeph>emit_actions(artifact, evidence, context)</codeph> in your plugin class.</cmd>
+      </step>
+      <step>
+        <cmd>Read roles from evidence and branch deterministically.</cmd>
+        <info>
+          <codeblock outputclass="language-python">from pathlib import Path
+from typing import Any
+
+
+def emit_actions(self, artifact, evidence: list[dict[str, Any]], context):
+    roles = {ev.get("asserted_role") for ev in evidence}
+
+    if artifact.artifact_type == "map" and "special_map" in roles:
+        source_path = artifact.path
+        target_path = f"target/maps/{Path(source_path).name}"
+        return [{
+            "type": "copy_map",
+            "target": target_path,
+            "parameters": {
+                "source_path": source_path,
+                "target_path": target_path,
+            },
+            "reason": "Route special maps into target/maps.",
+            "derived_from_evidence": [
+                ev["pattern_id"] for ev in evidence if ev.get("pattern_id")
+            ],
+        }]
+
+    return []</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Keep action templates contract-safe.</cmd>
+        <info>
+          <ul>
+            <li>Do not include an <codeph>id</codeph> field.</li>
+            <li>Use package-relative targets.</li>
+            <li>Include clear <codeph>reason</codeph> text for auditability.</li>
+          </ul>
+        </info>
+      </step>
+      <step>
+        <cmd>Generate a plan from fixtures and verify emitted actions.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor plan --input build/planning_input.json --output build/plan.json
+jq '.actions[] | {id, type, target, reason, derived_from_evidence}' build/plan.json</codeblock>
+        </info>
+      </step>
+    </steps>
+    <result>
+      <p>Your plugin emits explicit action intent that execution can dispatch without hidden logic.</p>
+      <p>Expected output:</p>
+      <codeblock outputclass="language-text">plan.json includes emitted actions with:
+  type
+  target
+  reason
+  derived_from_evidence
+and no id field in emitted templates before planner assignment</codeblock>
+    </result>
+  </taskbody>
+</task>

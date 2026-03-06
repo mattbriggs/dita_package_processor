@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="resolve_broken_references" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Resolve Broken References</title>
+  <shortdesc>Identify and correct broken internal references so execution output remains navigable and complete.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>Run discovery and generate an execution report from dry-run or apply mode.</p>
+    </prereq>
+    <steps>
+      <step>
+        <cmd>Check discovery-level missing reference counts in execution report.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq '.discovery | {missing_references, external_references}' build/execution-report.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Inspect relationship edges for unresolved targets.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq '.relationships[] | {source, type, target}' build/discovery.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Fix source paths, map topicrefs, or media paths in the package or plugin routing rules.</cmd>
+        <info>
+          <p>Keep path normalization deterministic. Do not rely on runtime fallback guesses.</p>
+        </info>
+      </step>
+      <step>
+        <cmd>Regenerate discovery and re-run dry-run execution to verify counts.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor discover --package /path/to/package --output build/discovery.json
+python3 -m dita_package_processor execute --plan build/plan.json --source-root /path/to/package --output build/target --report build/execution-report.json</codeblock>
+        </info>
+      </step>
+    </steps>
+    <result>
+      <p>Internal links and media references resolve cleanly in the migrated output package.</p>
+      <p>Expected output:</p>
+      <codeblock outputclass="language-text">execution-report.json discovery fields trend toward:
+  missing_references: 0
+  external_references: expected value for your policy</codeblock>
+    </result>
+  </taskbody>
+</task>

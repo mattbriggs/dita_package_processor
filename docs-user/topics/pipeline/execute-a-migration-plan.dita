@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="execute_migration_plan" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Execute a Migration Plan</title>
+  <shortdesc>Run plan execution in dry-run mode, then apply mode, and verify the resulting execution report.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>Have a validated <codeph>plan.json</codeph> and confirm the source root points to the package that generated the plan.</p>
+      <p>For first-time onboarding, keep this task in dry-run mode until plan targets and summary counts match expectations.</p>
+    </prereq>
+    <steps>
+      <step>
+        <cmd>Run dry-run execution and write a report.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor execute \
+  --plan build/plan.json \
+  --source-root /path/to/package \
+  --output build/target \
+  --report build/execution-report-dry.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Validate dry-run behavior from report output.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq '{dry_run, summary, discovery}' build/execution-report-dry.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Execute apply mode and write a second report.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor execute \
+  --plan build/plan.json \
+  --source-root /path/to/package \
+  --output build/target \
+  --apply \
+  --report build/execution-report-apply.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Inspect success, failure, and timing fields.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq '{started_at, finished_at, duration_ms, summary}' build/execution-report-apply.json
+jq '.results[] | select(.status=="failed") | {action_id, handler, error_type, message}' build/execution-report-apply.json</codeblock>
+        </info>
+      </step>
+    </steps>
+    <result>
+      <p>You complete plan execution with an auditable result record and a clear failure triage path when needed.</p>
+      <p>Expected output:</p>
+      <codeblock outputclass="language-text">execution-report-dry.json: dry_run=true
+execution-report-apply.json: dry_run=false
+duration_ms: integer &gt;= 0</codeblock>
+    </result>
+  </taskbody>
+</task>

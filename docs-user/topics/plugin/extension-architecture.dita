@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="extension_architecture" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Extension Architecture</title>
+  <shortdesc>Extend migration behavior through plugins that contribute patterns, action emission logic, and handlers.</shortdesc>
+  <conbody>
+    <p>The extension surface is the <codeph>DitaPlugin</codeph> protocol. A plugin is an installable Python package discovered by entry points in the <codeph>dita_package_processor.plugins</codeph> group.</p>
+    <section>
+      <title>Where plugins fit</title>
+      <ul>
+        <li>Discovery: plugin <codeph>patterns()</codeph> add pattern evidence.</li>
+        <li>Planning: plugin <codeph>emit_actions(...)</codeph> converts evidence into action templates.</li>
+        <li>Execution: plugin <codeph>handlers()</codeph> registers action handlers.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Load order and conflict rules</title>
+      <ul>
+        <li><codeph>CorePlugin</codeph> always loads first.</li>
+        <li>Third-party plugins load in sorted entry-point order.</li>
+        <li>Duplicate pattern IDs across plugins are startup errors.</li>
+        <li>Duplicate handler <codeph>action_type</codeph> values across plugins are startup errors.</li>
+      </ul>
+    </section>
+    <section>
+      <title>When to create a plugin</title>
+      <p>Create a plugin when you observe recurring migration cases that cannot be expressed safely through existing core behavior. Use discovery and execution artifacts to prove the recurring case before you introduce extension logic.</p>
+    </section>
+  </conbody>
+</concept>

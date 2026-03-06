@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE troubleshooting PUBLIC "-//OASIS//DTD DITA Troubleshooting//EN" "troubleshooting.dtd">
+<troubleshooting id="discovery_incorrect" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Discovery Output Looks Incorrect</title>
+  <shortdesc>Resolve discovery inventory or relationship anomalies before you continue to planning.</shortdesc>
+  <troublebody>
+    <p><b>Problem:</b> Discovery counts, classifications, or relationship edges do not match expected package structure.</p>
+    <p><b>Cause:</b> XML parsing issues, unsupported edge case structures, incorrect package root selection, or missing plugin patterns for corpus-specific structures.</p>
+    <p><b>Resolution:</b></p>
+    <ul>
+      <li>Confirm package root path is correct and includes the expected files.</li>
+      <li>Inspect map and topic artifacts: <codeph>jq '.artifacts[] | {path, artifact_type, classification, metadata}' build/discovery.json</codeph>.</li>
+      <li>Inspect relationships: <codeph>jq '.relationships[] | {source, type, target}' build/discovery.json</codeph>.</li>
+      <li>Run with debug logging: <codeph>python3 -m dita_package_processor --log-level DEBUG discover ...</codeph>.</li>
+      <li>Add or adjust patterns for recurring unsupported structures and rerun discovery.</li>
+    </ul>
+  </troublebody>
+</troubleshooting>

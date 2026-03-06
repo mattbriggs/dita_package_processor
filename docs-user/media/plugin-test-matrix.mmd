@@ -1,0 +1,7 @@
+flowchart TB
+    A[Pattern tests] --> D[Integration test]
+    B[emit_actions tests] --> D
+    C[Handler tests] --> D
+    D --> E[plugin validate]
+    E --> F[Dry-run migration on fixture package]
+    F --> G[Apply mode on staging corpus]

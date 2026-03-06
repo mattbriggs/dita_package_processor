@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+<map id="introduction_map" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Introduction</title>
+  <topicref href="../topics/introduction/about-dita-package-processor.dita" navtitle="About the DITA Package Processor" format="dita"/>
+  <topicref href="../topics/introduction/who-should-use-this-tool.dita" navtitle="Who Should Use This Tool" format="dita"/>
+  <topicref href="../topics/introduction/deterministic-migration-vs-ai-conversion.dita" navtitle="Deterministic Migration vs AI Conversion" format="dita"/>
+  <topicref href="../topics/introduction/architecture-overview.dita" navtitle="Architecture Overview" format="dita"/>
+</map>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="best_practices_structure" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Best Practices for DITA Package Structure</title>
+  <shortdesc>Use predictable map, topic, and media organization so migration plans remain stable across repeated runs.</shortdesc>
+  <conbody>
+    <section>
+      <title>Map practices</title>
+      <ul>
+        <li>Maintain one clear main map per package.</li>
+        <li>Use map files to express navigation hierarchy, not file dump order.</li>
+        <li>Keep map references explicit and avoid hidden indirection.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Topic practices</title>
+      <ul>
+        <li>Keep topic type semantics consistent with root element intent.</li>
+        <li>Use stable filenames and titles that support deterministic routing.</li>
+        <li>Separate reusable fragments from narrative topics.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Media and references</title>
+      <ul>
+        <li>Use package-relative paths for media references.</li>
+        <li>Avoid duplicate media names with different content.</li>
+        <li>Validate internal references after each structural refactor pass.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Operational best practice</title>
+      <p>Always run dry-run execution before apply mode and archive the execution report. This gives you a reproducible record when structure or plugin logic changes over time.</p>
+    </section>
+  </conbody>
+</concept>

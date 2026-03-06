@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="implement_handler" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Implement a Handler</title>
+  <shortdesc>Implement an execution handler when you introduce a custom action type or custom mutation semantics.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>Define the action type emitted by your plugin and decide whether core handlers can execute it.</p>
+      <p>For first-time plugin onboarding, implement dry-run behavior before filesystem writes so you can validate dispatch safely.</p>
+    </prereq>
+    <steps>
+      <step>
+        <cmd>Create a handler class that inherits from <codeph>ExecutionHandler</codeph> and defines <codeph>action_type</codeph>.</cmd>
+      </step>
+      <step>
+        <cmd>Implement parameter validation, source-root validation, and dry-run behavior.</cmd>
+        <info>
+          <codeblock outputclass="language-python">from pathlib import Path
+from typing import Any, Dict
+
+from dita_package_processor.execution.models import ExecutionActionResult
+from dita_package_processor.execution.registry import ExecutionHandler
+
+
+class RouteSpecialTopicHandler(ExecutionHandler):
+    action_type = "com.acme.route_special_topic"
+
+    def execute(self, *, action: Dict[str, Any], source_root: Path, sandbox, policy):
+        action_id = str(action.get("id", "&lt;unknown&gt;"))
+        params = action.get("parameters", {})
+        dry_run = bool(action.get("dry_run", False))
+
+        # Validate required fields before path operations.
+        if "source_path" not in params or "target_path" not in params:
+            return ExecutionActionResult(
+                action_id=action_id,
+                status="failed",
+                handler=self.__class__.__name__,
+                dry_run=dry_run,
+                message="Missing required parameters: source_path, target_path",
+            )
+
+        if dry_run:
+            return ExecutionActionResult(
+                action_id=action_id,
+                status="skipped",
+                handler=self.__class__.__name__,
+                dry_run=True,
+                message="Dry-run: custom handler skipped",
+            )</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Enforce sandbox and mutation policy before writing files.</cmd>
+      </step>
+      <step>
+        <cmd>Return <codeph>ExecutionActionResult</codeph> with structured status and metadata.</cmd>
+      </step>
+      <step>
+        <cmd>Register the handler class from <codeph>handlers()</codeph> and run execution tests.</cmd>
+      </step>
+    </steps>
+    <result>
+      <p>Your action type has a deterministic execution implementation with explicit failure reporting.</p>
+      <p>Expected output:</p>
+      <codeblock outputclass="language-text">handler tests show:
+  success case returns status=success
+  dry-run case returns status=skipped
+  failure case returns status=failed with error details</codeblock>
+    </result>
+  </taskbody>
+</task>

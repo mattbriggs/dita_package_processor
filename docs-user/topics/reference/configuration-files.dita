@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "reference.dtd">
+<reference id="configuration_files_ref" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Configuration Files</title>
+  <shortdesc>Review key repository and runtime configuration files that control CLI behavior, plugin loading, and schema validation.</shortdesc>
+  <refbody>
+    <section>
+      <title>Primary configuration files</title>
+      <simpletable>
+        <sthead>
+          <stentry>File</stentry>
+          <stentry>Purpose</stentry>
+        </sthead>
+        <strow>
+          <stentry><codeph>pyproject.toml</codeph></stentry>
+          <stentry>Python packaging metadata and console script registration for the core project.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>requirements.txt</codeph></stentry>
+          <stentry>Runtime dependency set for repository-based installation.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>dita_package_processor/knowledge/known_patterns.yaml</codeph></stentry>
+          <stentry>Built-in pattern data used by <codeph>CorePlugin</codeph>.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>dita_package_processor/*/schema/*.json</codeph></stentry>
+          <stentry>Discovery, planning, and execution contract schemas.</stentry>
+        </strow>
+      </simpletable>
+    </section>
+    <section>
+      <title>Plugin package configuration</title>
+      <p>Each plugin package must define an entry-point section in its own <codeph>pyproject.toml</codeph>:</p>
+      <codeblock outputclass="language-toml">[project.entry-points."dita_package_processor.plugins"]
+my_plugin = "my_plugin_package:plugin"</codeblock>
+    </section>
+    <section>
+      <title>Operational guidance</title>
+      <ul>
+        <li>Keep schema and code changes versioned together.</li>
+        <li>Validate plugin packages before installation.</li>
+        <li>Use dedicated build directories for generated artifacts.</li>
+      </ul>
+    </section>
+  </refbody>
+</reference>

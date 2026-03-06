@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="migration_job_lifecycle" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Migration Job Lifecycle</title>
+  <shortdesc>Use the lifecycle to plan safe checkpoints from discovery through applied execution.</shortdesc>
+  <conbody>
+    <p>A migration job is a controlled sequence of observable artifacts. You can run this sequence with one <codeph>run</codeph> command or with explicit stage commands.</p>
+    <fig>
+      <title>Lifecycle from observation to mutation</title>
+      <image href="../../media/job-lifecycle.png">
+        <alt>Package input through discover, normalize, plan, execute dry-run, and execute apply.</alt>
+      </image>
+    </fig>
+    <section>
+      <title>Lifecycle checkpoints</title>
+      <simpletable>
+        <sthead>
+          <stentry>Checkpoint</stentry>
+          <stentry>Primary artifact</stentry>
+          <stentry>Review question</stentry>
+        </sthead>
+        <strow>
+          <stentry>Discovery</stentry>
+          <stentry><codeph>discovery.json</codeph></stentry>
+          <stentry>Does inventory and relationship extraction match package reality?</stentry>
+        </strow>
+        <strow>
+          <stentry>Planning input</stentry>
+          <stentry><codeph>planning_input.json</codeph></stentry>
+          <stentry>Is there exactly one <codeph>main_map</codeph> for planning?</stentry>
+        </strow>
+        <strow>
+          <stentry>Plan</stentry>
+          <stentry><codeph>plan.json</codeph></stentry>
+          <stentry>Are action types, targets, and reasons correct?</stentry>
+        </strow>
+        <strow>
+          <stentry>Execution</stentry>
+          <stentry><codeph>execution-report.json</codeph></stentry>
+          <stentry>Did outcomes and timings match intent?</stentry>
+        </strow>
+      </simpletable>
+    </section>
+    <section>
+      <title>When to use run versus stepwise commands</title>
+      <p>Use <codeph>run</codeph> when you want fast end-to-end orchestration with standard behavior. Use stepwise commands when you need to inspect or modify artifacts between boundaries, or when you are validating plugin behavior.</p>
+    </section>
+  </conbody>
+</concept>

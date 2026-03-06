@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "reference.dtd">
+<reference id="handler_execution_contract_ref" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Handler Execution Contract</title>
+  <shortdesc>Use this contract when you implement action handlers for plugin-defined or overridden action types.</shortdesc>
+  <refbody>
+    <section>
+      <title>Handler class requirements</title>
+      <ul>
+        <li>Inherit from <codeph>ExecutionHandler</codeph>.</li>
+        <li>Define class attribute <codeph>action_type</codeph>.</li>
+        <li>Implement callable <codeph>execute(...)</codeph> method.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Execute method inputs</title>
+      <simpletable>
+        <sthead>
+          <stentry>Input</stentry>
+          <stentry>Description</stentry>
+        </sthead>
+        <strow>
+          <stentry><codeph>action</codeph></stentry>
+          <stentry>Normalized action dictionary with ID, type, and parameters.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>source_root</codeph></stentry>
+          <stentry>Absolute source boundary for reads.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>sandbox</codeph></stentry>
+          <stentry>Target boundary resolver for writes.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>policy</codeph></stentry>
+          <stentry>Mutation policy for overwrite and target validation.</stentry>
+        </strow>
+      </simpletable>
+    </section>
+    <section>
+      <title>ExecutionActionResult requirements</title>
+      <p>Return <codeph>ExecutionActionResult</codeph> with these core fields: <codeph>action_id</codeph>, <codeph>status</codeph>, <codeph>handler</codeph>, <codeph>dry_run</codeph>, and <codeph>message</codeph>. Optionally return <codeph>error</codeph>, <codeph>error_type</codeph>, and metadata for diagnostics.</p>
+      <p>Allowed status values: <codeph>success</codeph>, <codeph>failed</codeph>, <codeph>skipped</codeph>.</p>
+    </section>
+    <section>
+      <title>Safety expectations</title>
+      <ul>
+        <li>Reject parameter omissions early.</li>
+        <li>Reject source path traversal outside <codeph>source_root</codeph>.</li>
+        <li>Resolve write targets through <codeph>sandbox</codeph>.</li>
+        <li>Honor dry-run mode with no filesystem mutation.</li>
+      </ul>
+    </section>
+  </refbody>
+</reference>

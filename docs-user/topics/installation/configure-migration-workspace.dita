@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="configure_migration_workspace" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Configure a Migration Workspace</title>
+  <shortdesc>Set up a repeatable workspace layout to inspect artifacts and rerun jobs with traceability.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>Complete installation and identify the source package directory that you want to migrate.</p>
+      <p>For your first onboarding run, use <codeph>docs-user</codeph> as the package input to practice the full workflow.</p>
+    </prereq>
+    <steps>
+      <step>
+        <cmd>Create a dedicated workspace for generated artifacts.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">mkdir -p build
+mkdir -p build/reports</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Run discovery and store the report in the workspace.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor discover \
+  --package /path/to/package \
+  --output build/discovery.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Normalize discovery output and generate a plan.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor normalize \
+  --input build/discovery.json \
+  --output build/planning_input.json
+
+python3 -m dita_package_processor plan \
+  --input build/planning_input.json \
+  --output build/plan.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Run dry-run execution and persist an execution report for review.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor execute \
+  --plan build/plan.json \
+  --source-root /path/to/package \
+  --output build/target \
+  --report build/reports/execution-report-dry.json</codeblock>
+        </info>
+      </step>
+    </steps>
+    <result>
+      <p>Your workspace contains a complete artifact chain for diff, review, and change control: <codeph>discovery.json</codeph>, <codeph>planning_input.json</codeph>, <codeph>plan.json</codeph>, and <codeph>execution-report-dry.json</codeph>.</p>
+      <p>Expected output:</p>
+      <codeblock outputclass="language-text">build/
+  discovery.json
+  planning_input.json
+  plan.json
+  reports/execution-report-dry.json</codeblock>
+    </result>
+  </taskbody>
+</task>

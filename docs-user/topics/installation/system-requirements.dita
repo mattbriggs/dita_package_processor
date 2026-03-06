@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "reference.dtd">
+<reference id="system_requirements_ref" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>System Requirements</title>
+  <shortdesc>Review runtime and tooling requirements for CLI operation, plugin development, and report inspection.</shortdesc>
+  <refbody>
+    <section>
+      <title>Runtime requirements</title>
+      <simpletable>
+        <sthead>
+          <stentry>Requirement</stentry>
+          <stentry>Minimum</stentry>
+          <stentry>Notes</stentry>
+        </sthead>
+        <strow>
+          <stentry>Python</stentry>
+          <stentry>3.10</stentry>
+          <stentry>The project virtual environment in this repository can use later versions.</stentry>
+        </strow>
+        <strow>
+          <stentry>Operating system</stentry>
+          <stentry>macOS, Linux, or Windows with Python support</stentry>
+          <stentry>Examples in this guide use POSIX shell syntax.</stentry>
+        </strow>
+        <strow>
+          <stentry>Core dependencies</stentry>
+          <stentry><codeph>requirements.txt</codeph></stentry>
+          <stentry>Includes XML and schema dependencies used by discovery and planning.</stentry>
+        </strow>
+      </simpletable>
+    </section>
+    <section>
+      <title>Recommended tools</title>
+      <ul>
+        <li><codeph>jq</codeph> for report filtering and CI checks.</li>
+        <li><codeph>pytest</codeph> for plugin and pipeline tests.</li>
+        <li>Mermaid CLI (<codeph>mmdc</codeph>) when you generate architecture diagrams as PNG for DITA topics.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Filesystem and run constraints</title>
+      <ul>
+        <li>Dry-run is the default. No mutation happens until you add <codeph>--apply</codeph>.</li>
+        <li><codeph>execute</codeph> requires explicit <codeph>--source-root</codeph> and <codeph>--output</codeph>.</li>
+        <li><codeph>run --apply</codeph> requires explicit <codeph>--target</codeph>.</li>
+      </ul>
+    </section>
+  </refbody>
+</reference>

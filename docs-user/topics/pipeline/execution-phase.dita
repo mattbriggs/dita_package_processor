@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="execution_phase" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Execution Phase</title>
+  <shortdesc>Execution dispatches plan actions to registered handlers and records per-action outcomes in an execution report.</shortdesc>
+  <conbody>
+    <p>Execution has two modes:</p>
+    <ul>
+      <li>Dry-run mode (default): validates dispatch and records skipped outcomes without filesystem mutation.</li>
+      <li>Apply mode (<codeph>--apply</codeph>): runs handlers against explicit source and target roots and records success or failure for each action.</li>
+    </ul>
+    <section>
+      <title>Dispatcher and handler responsibilities</title>
+      <ul>
+        <li>Dispatcher iterates ordered actions and captures started and finished timestamps.</li>
+        <li>Execution registry resolves handlers by <codeph>action_type</codeph>.</li>
+        <li>Handlers validate parameters, enforce sandbox and policy rules, and return <codeph>ExecutionActionResult</codeph>.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Failure model</title>
+      <p>Failures are explicit and typed. Reports can include <codeph>handler_error</codeph>, <codeph>policy_violation</codeph>, or <codeph>executor_error</codeph>. Use <codeph>action_id</codeph> to map failures back to plan intent.</p>
+    </section>
+  </conbody>
+</concept>

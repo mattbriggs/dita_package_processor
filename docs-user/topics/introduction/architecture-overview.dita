@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="architecture_overview" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Architecture Overview</title>
+  <shortdesc>Understand the deterministic pipeline and the Patterns to Actions to Handlers model.</shortdesc>
+  <conbody>
+    <p>The architecture separates observation, intent, and mutation so you debug by reading artifacts instead of reverse-engineering side effects.</p>
+    <fig>
+      <title>Migration pipeline</title>
+      <image href="../../media/pipeline-overview.png">
+        <alt>Discovery to Pattern Recognition to Planning to Execution to Reporting.</alt>
+      </image>
+    </fig>
+    <fig>
+      <title>Patterns, Actions, and Handlers</title>
+      <image href="../../media/patterns-actions-handlers.png">
+        <alt>Patterns describe conditions, actions declare intent, handlers apply changes.</alt>
+      </image>
+    </fig>
+    <fig>
+      <title>Operational lifecycle</title>
+      <image href="../../media/job-lifecycle.png">
+        <alt>Package input through discovery, normalize, plan, execute dry-run, and execute apply.</alt>
+      </image>
+    </fig>
+    <section>
+      <title>Boundary responsibilities</title>
+      <ul>
+        <li>Discovery records observed package facts.</li>
+        <li>Normalize enforces the planning input contract.</li>
+        <li>Plan emits ordered action intent.</li>
+        <li>Execute dispatches actions to handlers and records outcomes.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Debugging approach</title>
+      <p>When a run fails, inspect artifacts in sequence. If <codeph>plan.json</codeph> intent is wrong, adjust discovery interpretation or planning logic. If plan intent is correct but outcomes fail, inspect handler execution paths and policy enforcement.</p>
+    </section>
+  </conbody>
+</concept>

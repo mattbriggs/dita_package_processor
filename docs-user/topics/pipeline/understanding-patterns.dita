@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="understanding_patterns" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Understanding Patterns</title>
+  <shortdesc>Patterns express observable conditions that generate evidence for planning.</shortdesc>
+  <conbody>
+    <p>A pattern is a declarative rule with fields such as <codeph>id</codeph>, <codeph>applies_to</codeph>, <codeph>signals</codeph>, and <codeph>asserts</codeph>. Pattern evaluation emits evidence when artifact signals match pattern requirements.</p>
+    <section>
+      <title>Pattern contract</title>
+      <ul>
+        <li><codeph>id</codeph>: globally unique identifier.</li>
+        <li><codeph>applies_to</codeph>: <codeph>map</codeph>, <codeph>topic</codeph>, or <codeph>media</codeph>.</li>
+        <li><codeph>signals</codeph>: deterministic conditions such as filename or root element checks.</li>
+        <li><codeph>asserts</codeph>: role and confidence emitted into evidence.</li>
+        <li><codeph>rationale</codeph>: human-readable explanation.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Fallback patterns</title>
+      <p>Fallback patterns are classification helpers and are evaluated only when semantic matches are absent and fallback mode is enabled. This keeps classification deterministic while avoiding over-assertion.</p>
+    </section>
+    <section>
+      <title>How planning uses patterns</title>
+      <p>Planning does not run discovery again. It reads evidence forwarded through artifact metadata and emits action templates from plugin <codeph>emit_actions(...)</codeph> methods.</p>
+    </section>
+  </conbody>
+</concept>

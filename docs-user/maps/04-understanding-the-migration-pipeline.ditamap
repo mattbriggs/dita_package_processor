@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+<map id="pipeline_map" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Understanding the Migration Pipeline</title>
+  <topicref href="../topics/pipeline/discovery-phase.dita" navtitle="Discovery Phase" format="dita"/>
+  <topicref href="../topics/pipeline/discovery-artifacts.dita" navtitle="Discovery Artifacts" format="dita"/>
+  <topicref href="../topics/pipeline/generate-discovery-report.dita" navtitle="Generate a Discovery Report" format="dita"/>
+  <topicref href="../topics/pipeline/understanding-patterns.dita" navtitle="Understanding Patterns" format="dita"/>
+  <topicref href="../topics/pipeline/common-structural-patterns.dita" navtitle="Common Structural Patterns in DITA Packages" format="dita"/>
+  <topicref href="../topics/pipeline/planning-phase.dita" navtitle="Planning Phase" format="dita"/>
+  <topicref href="../topics/pipeline/plan-json-structure.dita" navtitle="Plan JSON Structure" format="dita"/>
+  <topicref href="../topics/pipeline/review-a-migration-plan.dita" navtitle="Review a Migration Plan" format="dita"/>
+  <topicref href="../topics/pipeline/execution-phase.dita" navtitle="Execution Phase" format="dita"/>
+  <topicref href="../topics/pipeline/execution-reports.dita" navtitle="Execution Reports" format="dita"/>
+  <topicref href="../topics/pipeline/execute-a-migration-plan.dita" navtitle="Execute a Migration Plan" format="dita"/>
+</map>

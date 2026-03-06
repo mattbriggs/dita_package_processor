@@ -210,3 +210,6 @@ __marimo__/
 dita_package_processor.egg-info/
 .DS_Store
 .pytest_cache/
+
+out/
+temp/

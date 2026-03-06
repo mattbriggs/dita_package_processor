@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "reference.dtd">
+<reference id="schema_definitions_ref" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Schema Definitions</title>
+  <shortdesc>Use schema files to validate discovery, planning input, plan, and execution report contracts.</shortdesc>
+  <refbody>
+    <section>
+      <title>Schema file locations</title>
+      <simpletable>
+        <sthead>
+          <stentry>Schema</stentry>
+          <stentry>Path</stentry>
+        </sthead>
+        <strow>
+          <stentry>Discovery schema</stentry>
+          <stentry><codeph>dita_package_processor/discovery/schema/discovery.schema.json</codeph></stentry>
+        </strow>
+        <strow>
+          <stentry>Planning input schema</stentry>
+          <stentry><codeph>dita_package_processor/planning/contracts/planning_input.schema.json</codeph></stentry>
+        </strow>
+        <strow>
+          <stentry>Plan schema</stentry>
+          <stentry><codeph>dita_package_processor/planning/schema/plan.schema.json</codeph></stentry>
+        </strow>
+        <strow>
+          <stentry>Execution report schema</stentry>
+          <stentry><codeph>dita_package_processor/execution/schema/execution_report.schema.json</codeph></stentry>
+        </strow>
+      </simpletable>
+    </section>
+    <section>
+      <title>Required field highlights</title>
+      <ul>
+        <li>Planning input requires <codeph>contract_version</codeph>, <codeph>main_map</codeph>, <codeph>artifacts</codeph>, and <codeph>relationships</codeph>.</li>
+        <li>Plan requires <codeph>plan_version</codeph>, <codeph>generated_at</codeph>, <codeph>source_discovery</codeph>, <codeph>intent</codeph>, and <codeph>actions</codeph>.</li>
+        <li>Execution report requires timing fields (<codeph>started_at</codeph>, <codeph>finished_at</codeph>, <codeph>duration_ms</codeph>) and discovery counts.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Validation guidance</title>
+      <p>Built-in commands validate contracts at each stage. Use command failure output and schema paths to diagnose contract mismatches when you introduce plugin-driven action changes.</p>
+    </section>
+  </refbody>
+</reference>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "reference.dtd">
+<reference id="execution_reports_ref" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Execution Reports</title>
+  <shortdesc>Use execution reports to audit action outcomes, timing, and discovery context for every run.</shortdesc>
+  <refbody>
+    <section>
+      <title>Top-level fields</title>
+      <simpletable>
+        <sthead>
+          <stentry>Field</stentry>
+          <stentry>Description</stentry>
+        </sthead>
+        <strow>
+          <stentry><codeph>execution_id</codeph></stentry>
+          <stentry>Run identifier passed by the executor.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>generated_at</codeph></stentry>
+          <stentry>Report generation timestamp.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>started_at</codeph></stentry>
+          <stentry>Execution start timestamp.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>finished_at</codeph></stentry>
+          <stentry>Execution finish timestamp.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>duration_ms</codeph></stentry>
+          <stentry>Elapsed execution time in milliseconds.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>summary</codeph></stentry>
+          <stentry>Aggregate counts for success, failed, skipped, and total.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>discovery</codeph></stentry>
+          <stentry>Discovery context with maps, topics, media, missing references, and external references.</stentry>
+        </strow>
+      </simpletable>
+    </section>
+    <section>
+      <title>Per-action results</title>
+      <p>Each result entry includes <codeph>action_id</codeph>, <codeph>status</codeph>, <codeph>handler</codeph>, <codeph>message</codeph>, optional <codeph>error</codeph>, optional <codeph>error_type</codeph>, and optional <codeph>metadata</codeph>.</p>
+      <p>For <codeph>copy_media</codeph> actions, messages include explicit source and target paths and metadata includes <codeph>source_path</codeph> and <codeph>target_path</codeph>.</p>
+    </section>
+    <fig>
+      <title>Execution report triage flow</title>
+      <image href="../../media/execution-report-triage.png">
+        <alt>Flow for checking dry run, failed count, failed action details, and fix path.</alt>
+      </image>
+    </fig>
+    <section>
+      <title>Quick inspection commands</title>
+      <codeblock outputclass="language-bash">jq '{execution_id, dry_run, summary, discovery}' build/execution-report.json
+jq '{started_at, finished_at, duration_ms}' build/execution-report.json
+jq '.results[] | select(.status=="failed") | {action_id, handler, error_type, error, message}' build/execution-report.json
+jq '.results[] | select(.metadata.source_path? != null) | {action_id, source: .metadata.source_path, target: .metadata.target_path}' build/execution-report.json</codeblock>
+    </section>
+  </refbody>
+</reference>

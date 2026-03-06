@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="typical_ai_generated_problems" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Typical Problems in AI-Generated DITA</title>
+  <shortdesc>Identify recurring structural defects in generated DITA to prioritize deterministic refactoring actions.</shortdesc>
+  <conbody>
+    <section>
+      <title>Map structure issues</title>
+      <ul>
+        <li>Multiple candidate entry maps with no clear main map.</li>
+        <li>Flat map hierarchies with weak section boundaries.</li>
+        <li>Map references that duplicate or conflict with topic references.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Topic structure issues</title>
+      <ul>
+        <li>Topic titles and navtitles that do not align.</li>
+        <li>Mixed concept, task, and reference semantics in a single topic.</li>
+        <li>Generated topics with weak metadata and missing role signals.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Reference and media issues</title>
+      <ul>
+        <li>Broken <codeph>href</codeph> paths after package reorganization.</li>
+        <li>Media files copied into unexpected folders.</li>
+        <li>External references that should be internalized for delivery builds.</li>
+      </ul>
+    </section>
+    <section>
+      <title>How to prioritize fixes</title>
+      <p>Start with issues that block deterministic planning and execution: missing entry map certainty, broken references, and repeated duplicate topics. Then address structure quality improvements that improve navigation and reuse.</p>
+    </section>
+  </conbody>
+</concept>

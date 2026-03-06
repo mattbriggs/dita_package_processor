@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="run_discovery_only" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Run Discovery Only</title>
+  <shortdesc>Run the discovery scanner when you need package facts without planning or mutation.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>Have read access to the package root directory.</p>
+      <p>For first-time onboarding, use this task to build confidence with package inventory output before you generate a plan.</p>
+    </prereq>
+    <steps>
+      <step>
+        <cmd>Run discovery and write the JSON report.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor discover \
+  --package /path/to/package \
+  --output build/discovery.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Optional: print the full report to stdout for quick review.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor discover \
+  --package /path/to/package \
+  --json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Fail the command if discovery invariants fail.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor discover \
+  --package /path/to/package \
+  --output build/discovery.json \
+  --fail-on-invariants</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Check high-level counts and invariant status.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq '{summary, invariants}' build/discovery.json</codeblock>
+        </info>
+      </step>
+    </steps>
+    <result>
+      <p>You have a read-only inventory artifact for triage, planning input generation, or plugin analysis.</p>
+      <p>Expected output:</p>
+      <codeblock outputclass="language-text">summary:
+  map: &gt;= 1
+  topic: &gt;= 1
+  media: &gt;= 0
+invariants.passed: true or false (explicit)</codeblock>
+    </result>
+  </taskbody>
+</task>

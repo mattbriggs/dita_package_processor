@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+<map id="reference_map" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Reference</title>
+  <topicref href="../topics/reference/configuration-files.dita" navtitle="Configuration Files" format="dita"/>
+  <topicref href="../topics/reference/schema-definitions.dita" navtitle="Schema Definitions" format="dita"/>
+  <topicref href="../topics/reference/cli-reference.dita" navtitle="CLI Reference" format="dita"/>
+  <topicref href="../topics/reference/artifact-file-formats.dita" navtitle="Artifact File Formats" format="dita"/>
+  <topicref href="../topics/templates/concept-template.dita" navtitle="Concept Topic Template" format="dita"/>
+  <topicref href="../topics/templates/task-template.dita" navtitle="Task Topic Template" format="dita"/>
+  <topicref href="../topics/templates/reference-template.dita" navtitle="Reference Topic Template" format="dita"/>
+  <topicref href="../topics/templates/troubleshooting-template.dita" navtitle="Troubleshooting Topic Template" format="dita"/>
+</map>

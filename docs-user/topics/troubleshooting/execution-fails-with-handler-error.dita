@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE troubleshooting PUBLIC "-//OASIS//DTD DITA Troubleshooting//EN" "troubleshooting.dtd">
+<troubleshooting id="execution_handler_error" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Execution Fails with Handler Error</title>
+  <shortdesc>Diagnose handler-level execution failures by mapping report failures back to plan intent and handler implementation.</shortdesc>
+  <troublebody>
+    <p><b>Problem:</b> One or more actions fail during execution and the report includes <codeph>status: "failed"</codeph>.</p>
+    <p><b>Cause:</b> Common causes include missing handler parameters, path traversal rejection, source file absence, or plugin handler logic defects.</p>
+    <p><b>Resolution:</b></p>
+    <ul>
+      <li>Filter failed entries: <codeph>jq '.results[] | select(.status=="failed") | {action_id, handler, error_type, error, message}' build/execution-report.json</codeph>.</li>
+      <li>Trace each <codeph>action_id</codeph> in <codeph>plan.json</codeph> to inspect intended parameters.</li>
+      <li>Confirm source path existence under <codeph>--source-root</codeph>.</li>
+      <li>Run the same plan in dry-run mode to isolate dispatch from filesystem writes.</li>
+      <li>Fix handler validation logic or action emission parameters, then rerun.</li>
+    </ul>
+  </troublebody>
+</troubleshooting>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="discovery_phase" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Discovery Phase</title>
+  <shortdesc>Discovery scans the package in read-only mode and records observable structure, relationships, and invariant status.</shortdesc>
+  <conbody>
+    <p>Discovery is the first boundary in the migration pipeline. It scans maps, topics, and media files, extracts relationships, and writes inventory facts to <codeph>discovery.json</codeph>. Discovery does not apply transformation logic.</p>
+    <section>
+      <title>Inputs and outputs</title>
+      <ul>
+        <li>Input: package root passed to <codeph>discover --package</codeph>.</li>
+        <li>Output: artifacts, relationships, summary, and invariants in discovery output.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Classification behavior</title>
+      <p>Discovery classifies artifacts from observed signals and plugin-contributed patterns. If discovery cannot prove a semantic role, it leaves classification empty instead of inventing one.</p>
+    </section>
+    <section>
+      <title>Invariant behavior</title>
+      <p>Discovery includes invariant status in the output payload. Use <codeph>--fail-on-invariants</codeph> when you want non-zero exit codes for invariant failures in CI or preflight checks.</p>
+    </section>
+  </conbody>
+</concept>

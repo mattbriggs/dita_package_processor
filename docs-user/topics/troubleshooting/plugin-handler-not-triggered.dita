@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE troubleshooting PUBLIC "-//OASIS//DTD DITA Troubleshooting//EN" "troubleshooting.dtd">
+<troubleshooting id="plugin_handler_not_triggered" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Plugin Handler Not Triggered</title>
+  <shortdesc>Resolve cases where plugin action types are present or expected but plugin handlers do not execute.</shortdesc>
+  <troublebody>
+    <p><b>Problem:</b> Custom handler logic does not run during execution.</p>
+    <p><b>Cause:</b> Plugin is not installed in the active environment, entry-point registration is incorrect, action type mismatch exists between <codeph>emit_actions(...)</codeph> and handler <codeph>action_type</codeph>, or plugin validation failed.</p>
+    <p><b>Resolution:</b></p>
+    <ul>
+      <li>Validate plugin package: <codeph>python3 -m dita_package_processor plugin validate /path/to/plugin</codeph>.</li>
+      <li>Inspect loaded plugins: <codeph>python3 -m dita_package_processor plugin list</codeph>.</li>
+      <li>Inspect plugin details: <codeph>python3 -m dita_package_processor plugin info com.acme.dita_migration</codeph>.</li>
+      <li>Confirm plan contains expected custom action types.</li>
+      <li>Confirm handler class exports matching <codeph>action_type</codeph> and is returned from <codeph>handlers()</codeph>.</li>
+    </ul>
+  </troublebody>
+</troubleshooting>

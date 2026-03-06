@@ -1,0 +1,14 @@
+flowchart TD
+    Q1{Recurring migration case?}
+    Q2{Covered by built-in behavior?}
+    Q3{Needs custom mutation semantics?}
+    A1[Do not add plugin]
+    A2[Add patterns + planning only]
+    A3[Add patterns + planning + handler]
+
+    Q1 -- No --> A1
+    Q1 -- Yes --> Q2
+    Q2 -- Yes --> A2
+    Q2 -- No --> Q3
+    Q3 -- No --> A2
+    Q3 -- Yes --> A3

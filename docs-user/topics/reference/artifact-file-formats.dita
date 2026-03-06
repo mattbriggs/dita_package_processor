@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "reference.dtd">
+<reference id="artifact_formats_ref" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Artifact File Formats</title>
+  <shortdesc>Use this artifact format reference to understand how data moves between migration stages.</shortdesc>
+  <refbody>
+    <section>
+      <title>Artifact chain</title>
+      <simpletable>
+        <sthead>
+          <stentry>Artifact</stentry>
+          <stentry>Produced by</stentry>
+          <stentry>Consumed by</stentry>
+        </sthead>
+        <strow>
+          <stentry><codeph>discovery.json</codeph></stentry>
+          <stentry><codeph>discover</codeph></stentry>
+          <stentry><codeph>normalize</codeph></stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>planning_input.json</codeph></stentry>
+          <stentry><codeph>normalize</codeph></stentry>
+          <stentry><codeph>plan</codeph></stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>plan.json</codeph></stentry>
+          <stentry><codeph>plan</codeph></stentry>
+          <stentry><codeph>execute</codeph></stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>execution-report.json</codeph></stentry>
+          <stentry><codeph>run</codeph> or <codeph>execute</codeph></stentry>
+          <stentry>Operators, CI checks, and debugging workflows</stentry>
+        </strow>
+      </simpletable>
+    </section>
+    <section>
+      <title>Execution report essentials</title>
+      <ul>
+        <li>Timing: <codeph>started_at</codeph>, <codeph>finished_at</codeph>, <codeph>duration_ms</codeph>.</li>
+        <li>Outcome summary: <codeph>success</codeph>, <codeph>failed</codeph>, <codeph>skipped</codeph>, <codeph>total</codeph>.</li>
+        <li>Discovery context: <codeph>maps</codeph>, <codeph>topics</codeph>, <codeph>media</codeph>, <codeph>missing_references</codeph>, <codeph>external_references</codeph>.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Format stability guidance</title>
+      <p>Store generated artifacts with job identifiers and timestamps. Keep dry-run and apply reports separate so comparisons remain clear during incident review.</p>
+    </section>
+  </refbody>
+</reference>

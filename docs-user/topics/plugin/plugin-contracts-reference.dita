@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "reference.dtd">
+<reference id="plugin_contracts_ref" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Plugin Contracts</title>
+  <shortdesc>Use this contract reference to implement valid <codeph>DitaPlugin</codeph> classes.</shortdesc>
+  <refbody>
+    <section>
+      <title>Required identity properties</title>
+      <simpletable>
+        <sthead>
+          <stentry>Property</stentry>
+          <stentry>Requirement</stentry>
+        </sthead>
+        <strow>
+          <stentry><codeph>name</codeph></stentry>
+          <stentry>Non-empty string. Use globally unique namespace style.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>version</codeph></stentry>
+          <stentry>Non-empty string.</stentry>
+        </strow>
+      </simpletable>
+    </section>
+    <section>
+      <title>Optional extension methods</title>
+      <simpletable>
+        <sthead>
+          <stentry>Method</stentry>
+          <stentry>Return type</stentry>
+          <stentry>Purpose</stentry>
+        </sthead>
+        <strow>
+          <stentry><codeph>patterns()</codeph></stentry>
+          <stentry>list of Pattern</stentry>
+          <stentry>Contribute discovery patterns.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>emit_actions(...)</codeph></stentry>
+          <stentry>list of dict</stentry>
+          <stentry>Emit planning action templates per artifact.</stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>handlers()</codeph></stentry>
+          <stentry>list of handler classes</stentry>
+          <stentry>Register execution handlers.</stentry>
+        </strow>
+      </simpletable>
+    </section>
+    <section>
+      <title>Validation and conflict rules</title>
+      <ul>
+        <li><codeph>plugin validate</codeph> checks identity, handler structure, and pattern fields.</li>
+        <li>Registry aggregation checks cross-plugin conflicts for pattern IDs and action types.</li>
+        <li>Conflicts fail startup to prevent ambiguous execution behavior.</li>
+      </ul>
+    </section>
+  </refbody>
+</reference>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+<map id="troubleshooting_map" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Troubleshooting</title>
+  <topicref href="../topics/troubleshooting/migration-plan-is-empty.dita" navtitle="Migration Plan Is Empty" format="dita"/>
+  <topicref href="../topics/troubleshooting/execution-fails-with-handler-error.dita" navtitle="Execution Fails with Handler Error" format="dita"/>
+  <topicref href="../topics/troubleshooting/unexpected-file-mutations.dita" navtitle="Unexpected File Mutations" format="dita"/>
+  <topicref href="../topics/troubleshooting/discovery-output-looks-incorrect.dita" navtitle="Discovery Output Looks Incorrect" format="dita"/>
+  <topicref href="../topics/troubleshooting/plugin-handler-not-triggered.dita" navtitle="Plugin Handler Not Triggered" format="dita"/>
+</map>

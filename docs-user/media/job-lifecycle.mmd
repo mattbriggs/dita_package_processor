@@ -1,0 +1,13 @@
+flowchart LR
+    A[Package Input] --> B[discover]
+    B --> C[discovery.json]
+    C --> D[normalize]
+    D --> E[planning_input.json]
+    E --> F[plan]
+    F --> G[plan.json]
+    G --> H[execute dry-run]
+    H --> I[execution-report.json]
+    I --> J{Review report}
+    J -- Approved --> K[execute --apply]
+    K --> L[target output + execution-report.json]
+    J -- Not approved --> M[Adjust patterns or plan and rerun]

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="repair_map_structures" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Repair Map Structures</title>
+  <shortdesc>Repair map structure issues that prevent deterministic main-map selection and stable relationship extraction.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>Generate <codeph>discovery.json</codeph> and review map artifact classifications.</p>
+    </prereq>
+    <steps>
+      <step>
+        <cmd>Inspect map classifications and confidence scores.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq '.artifacts[] | select(.artifact_type=="map") | {path, classification, confidence, metadata}' build/discovery.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Resolve ambiguous entry map conditions.</cmd>
+        <info>
+          <p>If discovery cannot resolve a single main map consistently, adjust source map structure or add plugin patterns that identify the intended entry map deterministically.</p>
+        </info>
+      </step>
+      <step>
+        <cmd>Validate relationship integrity for map references and topic references.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq '.relationships[] | select(.source | endswith(".ditamap")) | {source, type, target}' build/discovery.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Regenerate planning input and plan after map corrections.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor normalize --input build/discovery.json --output build/planning_input.json
+python3 -m dita_package_processor plan --input build/planning_input.json --output build/plan.json</codeblock>
+        </info>
+      </step>
+    </steps>
+    <result>
+      <p>Map structure supports deterministic planning and stable plan generation across repeated runs.</p>
+      <p>Expected output:</p>
+      <codeblock outputclass="language-text">planning_input.json contains one main_map
+plan generation succeeds without main-map ambiguity errors</codeblock>
+    </result>
+  </taskbody>
+</task>

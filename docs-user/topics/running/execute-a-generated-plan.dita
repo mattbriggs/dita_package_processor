@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="execute_generated_plan" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Execute a Generated Plan</title>
+  <shortdesc>Execute an existing <codeph>plan.json</codeph> with explicit source and output roots.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>Generate or receive a valid <codeph>plan.json</codeph> and confirm the source root matches the plan context.</p>
+      <p>For first-time onboarding, execute dry-run first and review each action type before any apply run.</p>
+    </prereq>
+    <steps>
+      <step>
+        <cmd>Run dry-run execution to validate dispatch and handler resolution.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor execute \
+  --plan build/plan.json \
+  --source-root /path/to/package \
+  --output build/target \
+  --report build/execution-report-dry.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Inspect skipped actions and verify discovery counts.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq '{summary, discovery}' build/execution-report-dry.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Run apply mode after dry-run validation passes.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor execute \
+  --plan build/plan.json \
+  --source-root /path/to/package \
+  --output build/target \
+  --apply \
+  --report build/execution-report-apply.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Filter report output for failures and policy violations.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq '.results[] | select(.status=="failed") | {action_id, handler, error_type, error, message}' build/execution-report-apply.json</codeblock>
+        </info>
+      </step>
+    </steps>
+    <result>
+      <p>You execute the approved plan in a bounded filesystem context and retain a deterministic record of outcomes.</p>
+      <p>Expected output:</p>
+      <codeblock outputclass="language-text">execution-report-dry.json: summary.skipped=summary.total
+execution-report-apply.json: summary.success + summary.failed = summary.total</codeblock>
+    </result>
+  </taskbody>
+</task>

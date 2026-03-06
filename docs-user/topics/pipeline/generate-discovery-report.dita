@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="generate_discovery_report" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Generate a Discovery Report</title>
+  <shortdesc>Generate and inspect <codeph>discovery.json</codeph> so planning starts from verified package structure.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>Have read access to the package and a writable directory for reports.</p>
+      <p>For first-time onboarding, save one discovery report as a baseline so you can compare future runs.</p>
+    </prereq>
+    <steps>
+      <step>
+        <cmd>Run discovery and write JSON output to disk.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor discover \
+  --package /path/to/package \
+  --output build/discovery.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Inspect the summary counts and invariant status.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq '{summary, invariants}' build/discovery.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Inspect map artifact metadata and relationships for the expected entry map.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq '.artifacts[] | select(.artifact_type=="map") | {path, classification, confidence, metadata}' build/discovery.json
+jq '.relationships[] | select(.type=="topicref") | {source, target, pattern_id}' build/discovery.json</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Optional: enforce invariant failure as a hard stop.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor discover \
+  --package /path/to/package \
+  --output build/discovery.json \
+  --fail-on-invariants</codeblock>
+        </info>
+      </step>
+    </steps>
+    <result>
+      <p>You have a validated discovery artifact that can be normalized into planning input.</p>
+      <p>Expected output:</p>
+      <codeblock outputclass="language-text">discovery.json includes:
+  artifacts[]
+  relationships[]
+  summary
+  invariants</codeblock>
+    </result>
+  </taskbody>
+</task>

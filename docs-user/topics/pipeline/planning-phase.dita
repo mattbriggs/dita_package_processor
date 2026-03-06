@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="planning_phase" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Planning Phase</title>
+  <shortdesc>Planning converts normalized discovery data into an ordered, deterministic list of action intent.</shortdesc>
+  <conbody>
+    <p>Planning consumes only <codeph>planning_input.json</codeph>. It does not read discovery output directly and does not run execution logic. This boundary prevents cross-layer coupling.</p>
+    <section>
+      <title>Planner behavior</title>
+      <ul>
+        <li>Sorts artifacts deterministically.</li>
+        <li>Invokes plugin <codeph>emit_actions(...)</codeph> for each artifact.</li>
+        <li>Assigns globally unique action IDs.</li>
+        <li>Validates the resulting plan against the plan schema and invariants.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Action intent model</title>
+      <p>Each action captures type, target, reason, parameters, and evidence lineage. Execution must follow this contract exactly and must not invent or reorder intent.</p>
+    </section>
+    <section>
+      <title>Review checkpoint</title>
+      <p>Planning is your last checkpoint before execution. If targets, action types, or reasons look wrong, adjust discovery logic or plugin emission rules before you execute.</p>
+    </section>
+  </conbody>
+</concept>

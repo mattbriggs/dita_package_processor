@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE troubleshooting PUBLIC "-//OASIS//DTD DITA Troubleshooting//EN" "troubleshooting.dtd">
+<troubleshooting id="unexpected_mutations" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Unexpected File Mutations</title>
+  <shortdesc>Investigate unexpected output structure by validating plan targets and handler routing.</shortdesc>
+  <troublebody>
+    <p><b>Problem:</b> Applied output contains files in unexpected locations or with unexpected naming.</p>
+    <p><b>Cause:</b> Target path calculation in planning or plugin action emission is incorrect, or a custom handler writes beyond intended logical structure while still inside sandbox bounds.</p>
+    <p><b>Resolution:</b></p>
+    <ul>
+      <li>Inspect plan targets: <codeph>jq '.actions[] | {id, type, target, parameters}' build/plan.json</codeph>.</li>
+      <li>Inspect execution metadata for source and target pairs where available.</li>
+      <li>Confirm that plugin <codeph>emit_actions(...)</codeph> uses deterministic target path rules.</li>
+      <li>Run dry-run and review projected actions before apply mode.</li>
+      <li>Add or update tests that assert exact target paths for representative fixtures.</li>
+    </ul>
+  </troublebody>
+</troubleshooting>

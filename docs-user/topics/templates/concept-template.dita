@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="concept_template" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Concept Topic Template</title>
+  <shortdesc>Use this template guidance to write concept topics that build mental models before procedural steps.</shortdesc>
+  <conbody>
+    <section>
+      <title>Required structure</title>
+      <ul>
+        <li>Use a single clear topic statement in <codeph>shortdesc</codeph>.</li>
+        <li>Start with the core concept in plain language.</li>
+        <li>Add sections that answer what, why, and when.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Recommended section order</title>
+      <ol>
+        <li>Definition of the concept and its scope.</li>
+        <li>How the concept relates to pipeline stages or contracts.</li>
+        <li>Operational implications for operators and plugin developers.</li>
+      </ol>
+    </section>
+    <section>
+      <title>Concept writing checklist</title>
+      <ul>
+        <li>Do not include command steps unless they support concept understanding.</li>
+        <li>Prefer explicit terminology used by the codebase and schemas.</li>
+        <li>Add diagrams when the concept includes sequence or layer boundaries.</li>
+      </ul>
+    </section>
+  </conbody>
+</concept>

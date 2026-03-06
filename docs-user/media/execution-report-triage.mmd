@@ -1,0 +1,11 @@
+flowchart TD
+    A[Open execution-report.json] --> B{dry_run}
+    B -- true --> C[Expect skipped actions]
+    B -- false --> D[Expect success or failed actions]
+    C --> E[Check summary.skipped equals summary.total]
+    D --> F[Check summary.failed]
+    F -- 0 --> G[Check discovery counts and spot-check results]
+    F -- "greater than 0" --> H[Filter failed results by action_id and error_type]
+    H --> I[Trace action_id in plan.json]
+    I --> J[Fix plan, plugin, or handler]
+    G --> K[Promote run result]

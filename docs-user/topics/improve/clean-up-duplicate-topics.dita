@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="clean_up_duplicate_topics" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Clean Up Duplicate Topics</title>
+  <shortdesc>Reduce duplicate topic content and duplicate routing targets to improve package quality and migration speed.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>Generate plan and execution reports to detect repeated source or target patterns.</p>
+    </prereq>
+    <steps>
+      <step>
+        <cmd>Identify repeated topic targets in plan actions.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq -r '.actions[] | select(.type=="copy_topic") | .target' build/plan.json | sort | uniq -cd</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Identify repeated topic sources in execution metadata or action parameters.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq -r '.actions[] | select(.type=="copy_topic") | .parameters.source_path' build/plan.json | sort | uniq -cd</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Define canonical topics and update map references to point to canonical files.</cmd>
+        <info>
+          <p>Keep canonical naming stable so repeated runs produce consistent targets.</p>
+        </info>
+      </step>
+      <step>
+        <cmd>Regenerate artifacts and validate that duplicate routing counts decrease.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">python3 -m dita_package_processor run --package /path/to/package --docx-stem OutputDoc --target build/target --report build/execution-report.json
+jq '.summary' build/execution-report.json</codeblock>
+        </info>
+      </step>
+    </steps>
+    <result>
+      <p>Topic routing and map references are simpler, which reduces maintenance effort and lowers migration risk.</p>
+      <p>Expected output:</p>
+      <codeblock outputclass="language-text">duplicate target and source counts decrease across reruns
+plan actions route to canonical topic files</codeblock>
+    </result>
+  </taskbody>
+</task>

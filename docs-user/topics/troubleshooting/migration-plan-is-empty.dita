@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE troubleshooting PUBLIC "-//OASIS//DTD DITA Troubleshooting//EN" "troubleshooting.dtd">
+<troubleshooting id="plan_empty" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Migration Plan Is Empty</title>
+  <shortdesc>Resolve conditions where planning emits no actions.</shortdesc>
+  <troublebody>
+    <p><b>Problem:</b> <codeph>plan.json</codeph> contains zero actions and execution does not change package state.</p>
+    <p><b>Cause:</b> Discovery may contain no eligible artifacts, plugin <codeph>emit_actions(...)</codeph> may return empty lists for all artifacts, or planning input may not carry expected evidence metadata.</p>
+    <p><b>Resolution:</b></p>
+    <ul>
+      <li>Inspect planning input artifact count: <codeph>jq '{main_map, artifact_count: (.artifacts|length)}' build/planning_input.json</codeph>.</li>
+      <li>Inspect evidence on candidate artifacts: <codeph>jq '.artifacts[] | {path, artifact_type, metadata}' build/planning_input.json</codeph>.</li>
+      <li>Inspect plugin behavior with <codeph>plugin info</codeph> and unit tests for <codeph>emit_actions(...)</codeph>.</li>
+      <li>Regenerate plan and verify action count before execution.</li>
+    </ul>
+  </troublebody>
+</troubleshooting>

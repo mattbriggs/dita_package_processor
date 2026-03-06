@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="who_should_use_tool" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Who Should Use This Tool</title>
+  <shortdesc>Use this guide if you migrate DITA packages at scale or if you extend migration behavior through plugins.</shortdesc>
+  <conbody>
+    <section>
+      <title>Audience 1: Content migration engineers</title>
+      <p>You are a migration engineer if you run jobs, inspect artifacts, approve plans, and move content to target packages.</p>
+      <p>Use this manual to learn how to:</p>
+      <ul>
+        <li>Run safe dry-run and apply workflows.</li>
+        <li>Inspect discovery and execution artifacts.</li>
+        <li>Diagnose failures by <codeph>action_id</codeph>, handler, and error type.</li>
+        <li>Refactor rough package structure with repeatable procedures.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Audience 2: Plugin developers</title>
+      <p>You are a plugin developer if you add new detection logic, planning actions, or execution handlers for migration edge cases.</p>
+      <p>Use this manual to learn how to:</p>
+      <ul>
+        <li>Identify when core behavior is not enough for a corpus.</li>
+        <li>Implement <codeph>patterns()</codeph>, <codeph>emit_actions(...)</codeph>, and <codeph>handlers()</codeph>.</li>
+        <li>Validate plugins with <codeph>plugin validate</codeph> and integration tests.</li>
+        <li>Install plugins through the <codeph>dita_package_processor.plugins</codeph> entry-point group.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Skills and prerequisites</title>
+      <p>Use this manual effectively by reading DITA maps and topics, running command-line workflows, and inspecting JSON artifacts. For plugin work, you also need Python packaging and automated test experience.</p>
+    </section>
+  </conbody>
+</concept>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+<map id="running_jobs_map" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Running Migration Jobs</title>
+  <topicref href="../topics/running/migration-job-lifecycle.dita" navtitle="Migration Job Lifecycle" format="dita"/>
+  <topicref href="../topics/running/run-a-migration-job.dita" navtitle="Run a Migration Job" format="dita"/>
+  <topicref href="../topics/running/run-discovery-only.dita" navtitle="Run Discovery Only" format="dita"/>
+  <topicref href="../topics/running/execute-a-generated-plan.dita" navtitle="Execute a Generated Plan" format="dita"/>
+  <topicref href="../topics/running/cli-command-reference.dita" navtitle="CLI Command Reference" format="dita"/>
+</map>

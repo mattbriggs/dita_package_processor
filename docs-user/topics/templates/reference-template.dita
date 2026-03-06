@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "reference.dtd">
+<reference id="reference_template" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Reference Topic Template</title>
+  <shortdesc>Use this template guidance to write reference topics for commands, fields, and contracts.</shortdesc>
+  <refbody>
+    <section>
+      <title>Reference content rules</title>
+      <ul>
+        <li>Present stable facts, field definitions, and option tables.</li>
+        <li>Avoid narrative explanation better suited to concept topics.</li>
+        <li>Avoid procedural steps better suited to task topics.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Recommended reference layout</title>
+      <ol>
+        <li>Scope statement for the contract or interface.</li>
+        <li>Field table or command option table.</li>
+        <li>Validation notes and compatibility notes.</li>
+      </ol>
+    </section>
+    <section>
+      <title>Style guidance</title>
+      <p>Use neutral, specific terms. Keep definitions precise and avoid ambiguous qualifiers.</p>
+    </section>
+  </refbody>
+</reference>

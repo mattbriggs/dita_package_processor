@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="normalize_topic_hierarchies" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>Normalize Topic Hierarchies</title>
+  <shortdesc>Restructure topic organization so map navigation and topic relationships are consistent and auditable.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>Generate discovery and plan artifacts for the package that you want to refactor.</p>
+    </prereq>
+    <steps>
+      <step>
+        <cmd>Identify flat or overloaded sections from map relationship output.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq '.relationships[] | select(.type=="topicref") | .source' build/discovery.json | sort | uniq -c | sort -nr</codeblock>
+        </info>
+      </step>
+      <step>
+        <cmd>Group topics by functional section and define target hierarchy paths.</cmd>
+        <info>
+          <p>Capture proposed grouping in a migration note or plan review checklist so your team can review hierarchy intent before apply mode.</p>
+        </info>
+      </step>
+      <step>
+        <cmd>Update planning logic or plugin action emission to route topics into section-aware target paths.</cmd>
+        <info>
+          <p>Use deterministic target conventions such as <codeph>target/topics/&lt;section&gt;/&lt;topic&gt;.dita</codeph>.</p>
+        </info>
+      </step>
+      <step>
+        <cmd>Run dry-run and confirm action targets match intended hierarchy.</cmd>
+        <info>
+          <codeblock outputclass="language-bash">jq '.actions[] | select(.type=="copy_topic") | {id, target, reason}' build/plan.json</codeblock>
+        </info>
+      </step>
+    </steps>
+    <result>
+      <p>You establish predictable topic grouping that supports navigation quality and faster downstream maintenance.</p>
+      <p>Expected output:</p>
+      <codeblock outputclass="language-text">copy_topic targets reflect section-aware paths
+example: target/topics/getting-started/intro.dita</codeblock>
+    </result>
+  </taskbody>
+</task>

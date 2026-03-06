@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "reference.dtd">
+<reference id="cli_command_reference" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" ditaarch:DITAArchVersion="1.3">
+  <title>CLI Command Reference</title>
+  <shortdesc>Use this quick reference to choose the correct command for each stage of a migration job.</shortdesc>
+  <refbody>
+    <section>
+      <title>Top-level commands</title>
+      <simpletable>
+        <sthead>
+          <stentry>Command</stentry>
+          <stentry>Purpose</stentry>
+          <stentry>Key options</stentry>
+        </sthead>
+        <strow>
+          <stentry><codeph>discover</codeph></stentry>
+          <stentry>Read-only package scan.</stentry>
+          <stentry><codeph>--package</codeph>, <codeph>--output</codeph>, <codeph>--fail-on-invariants</codeph></stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>normalize</codeph></stentry>
+          <stentry>Build planning contract from discovery.</stentry>
+          <stentry><codeph>--input</codeph>, <codeph>--output</codeph></stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>plan</codeph></stentry>
+          <stentry>Generate deterministic action plan.</stentry>
+          <stentry><codeph>--input</codeph>, <codeph>--output</codeph>, <codeph>--schema</codeph></stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>execute</codeph></stentry>
+          <stentry>Execute existing plan with explicit roots.</stentry>
+          <stentry><codeph>--plan</codeph>, <codeph>--source-root</codeph>, <codeph>--output</codeph>, <codeph>--apply</codeph></stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>run</codeph></stentry>
+          <stentry>Orchestrate full pipeline.</stentry>
+          <stentry><codeph>--package</codeph>, <codeph>--docx-stem</codeph>, <codeph>--target</codeph>, <codeph>--apply</codeph></stentry>
+        </strow>
+        <strow>
+          <stentry><codeph>plugin</codeph></stentry>
+          <stentry>Inspect and validate plugin stack.</stentry>
+          <stentry><codeph>list</codeph>, <codeph>info</codeph>, <codeph>validate</codeph></stentry>
+        </strow>
+      </simpletable>
+    </section>
+    <section>
+      <title>Global options</title>
+      <p>The root parser supports <codeph>--json</codeph>, <codeph>--quiet</codeph>, <codeph>--log-level</codeph>, and <codeph>--version</codeph>. Some subcommands also define command-scoped <codeph>--json</codeph> or <codeph>--quiet</codeph> behavior.</p>
+    </section>
+    <section>
+      <title>Implicit run behavior</title>
+      <p>If you invoke the CLI without a known command token, the CLI prepends <codeph>run</codeph>. Example: <codeph>python3 -m dita_package_processor --package /path --docx-stem DocA</codeph> is treated as <codeph>run</codeph>.</p>
+    </section>
+  </refbody>
+</reference>
