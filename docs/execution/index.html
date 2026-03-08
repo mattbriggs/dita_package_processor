@@ -1,0 +1,2823 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Deterministic DITA discovery, planning, execution, and plugin extension docs.">
+      
+      
+      
+      
+        <link rel="prev" href="../plan-creation/">
+      
+      
+        <link rel="next" href="../execution-report/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+    
+    
+      
+        <title>Execution Phase - DITA Package Processor</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#how-execution-and-run-work" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="DITA Package Processor" class="md-header__button md-logo" aria-label="DITA Package Processor" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DITA Package Processor
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Execution Phase
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DITA Package Processor" class="md-nav__button md-logo" aria-label="DITA Package Processor" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DITA Package Processor
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Pipeline
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../understand-the-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Understanding the Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../run-vs-execute/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Run vs Execute
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pipeline-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline Integration Specification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plan-creation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plan Creation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Phase
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Phase
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-role-of-execution-in-the-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Role of Execution in the System
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-execution-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Execution Contract
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-execute-does" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What execute Does
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What execute Does">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#conceptual-responsibilities-of-execute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conceptual Responsibilities of execute
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-execute-requires" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What execute Requires
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dry-run-vs-apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dry-Run vs Apply
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#executors-how-execution-is-performed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Executors: How Execution Is Performed
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Executors: How Execution Is Performed">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-executors-exist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Executors Exist
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#current-executors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current Executors
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Current Executors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#noopexecutor-noop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NoOpExecutor (noop)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filesystemexecutor-filesystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FilesystemExecutor (filesystem)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-a-plan-is-used-during-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How a Plan Is Used During Execution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#handlers-during-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Handlers During Execution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-execution-report-is" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the Execution Report Is
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What the Execution Report Is">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#execution-report-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Execution Report Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-the-report-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why the Report Matters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-run-does-and-why-it-exists" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What run Does (And Why It Exists)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-run-is-separate-from-execute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why run Is Separate from execute
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-happens-when-you-use-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Happens When You Use run
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-mental-errors-and-the-correct-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Mental Errors (And the Correct Model)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Mental Errors (And the Correct Model)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-doesnt-execute-figure-things-out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ❌ “Why doesn’t execute figure things out?”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-does-execute-need-source-root" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ❌ “Why does execute need source-root?”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-didnt-files-appear-without-apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ❌ “Why didn’t files appear without --apply?”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#correct-mental-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Correct mental model
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#debugging-execution-correctly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debugging Execution Correctly
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../execution-report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Report Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../execution_contract/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Contract
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Discovery
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery Phase
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../discovery-report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pattern-discovery-contract/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pattern Discovery Contract
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pattern-evaluator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evaluate Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pattern-worked-example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Working Pattern Example
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../new-patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documenting New Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extensions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extensions-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extension Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hardening/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardening
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing-migration-job/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developing a Migration Job
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../howto-transform-a-package/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transform a DITA Package
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../patterns-actions-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Patterns, Actions, Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to-create-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Create a Handler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../executor-arc-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Executor Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-knowledge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Knowledge
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-materialization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Materialization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-planning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-execution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-steps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Steps
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_9_1" id="__nav_9_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schemas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_9_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Schemas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/plan.schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/discovery.schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/execution_report.schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/metaschema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metaschema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/planning_input.schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Planning Input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-role-of-execution-in-the-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Role of Execution in the System
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-execution-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Execution Contract
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-execute-does" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What execute Does
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What execute Does">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#conceptual-responsibilities-of-execute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conceptual Responsibilities of execute
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-execute-requires" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What execute Requires
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dry-run-vs-apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dry-Run vs Apply
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#executors-how-execution-is-performed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Executors: How Execution Is Performed
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Executors: How Execution Is Performed">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-executors-exist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Executors Exist
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#current-executors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current Executors
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Current Executors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#noopexecutor-noop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NoOpExecutor (noop)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filesystemexecutor-filesystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FilesystemExecutor (filesystem)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-a-plan-is-used-during-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How a Plan Is Used During Execution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#handlers-during-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Handlers During Execution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-execution-report-is" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the Execution Report Is
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What the Execution Report Is">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#execution-report-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Execution Report Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-the-report-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why the Report Matters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-run-does-and-why-it-exists" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What run Does (And Why It Exists)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-run-is-separate-from-execute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why run Is Separate from execute
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-happens-when-you-use-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Happens When You Use run
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-mental-errors-and-the-correct-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Mental Errors (And the Correct Model)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Mental Errors (And the Correct Model)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-doesnt-execute-figure-things-out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ❌ “Why doesn’t execute figure things out?”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-does-execute-need-source-root" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ❌ “Why does execute need source-root?”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-didnt-files-appear-without-apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ❌ “Why didn’t files appear without --apply?”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#correct-mental-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Correct mental model
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#debugging-execution-correctly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debugging Execution Correctly
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="how-execution-and-run-work">How Execution and Run Work<a class="headerlink" href="#how-execution-and-run-work" title="Permanent link">&para;</a></h1>
+<p><em>DITA Package Processor – Execution &amp; Orchestration Guide</em></p>
+<p>This document explains <strong>how the <code>execute</code> and <code>run</code> commands work</strong>, how they consume a plan, what guarantees they enforce, and how execution results are recorded.</p>
+<p>This is not a CLI reference.<br />
+This is a <strong>conceptual guide</strong> to how the system applies intent safely.</p>
+<hr />
+<h2 id="the-role-of-execution-in-the-system">The Role of Execution in the System<a class="headerlink" href="#the-role-of-execution-in-the-system" title="Permanent link">&para;</a></h2>
+<p>Execution is the <strong>only phase that can mutate the filesystem</strong>.</p>
+<p>Because of that, it is deliberately constrained.</p>
+<p>Execution does <strong>not</strong>:
+- discover content
+- infer structure
+- generate actions
+- fix bad plans
+- guess paths</p>
+<p>Execution answers exactly one question:</p>
+<blockquote>
+<p><strong>“Given this plan, what happened when I tried to apply it?”</strong></p>
+</blockquote>
+<p>If something is not explicitly described in the plan, execution is not allowed to do it.</p>
+<hr />
+<h2 id="the-execution-contract">The Execution Contract<a class="headerlink" href="#the-execution-contract" title="Permanent link">&para;</a></h2>
+<p>Execution operates under a strict contract:</p>
+<div class="highlight"><pre><span></span><code>Plan → Executor → Handlers → Execution Report
+</code></pre></div>
+<p>Execution trusts <strong>only</strong>:
+- the plan artifact
+- the executor configuration
+- explicit user intent (<code>--apply</code>)</p>
+<p>Everything else is rejected.</p>
+<hr />
+<h2 id="what-execute-does">What <code>execute</code> Does<a class="headerlink" href="#what-execute-does" title="Permanent link">&para;</a></h2>
+<p>The <code>execute</code> command applies a <strong>single, already-validated plan</strong>.</p>
+<h3 id="conceptual-responsibilities-of-execute">Conceptual Responsibilities of <code>execute</code><a class="headerlink" href="#conceptual-responsibilities-of-execute" title="Permanent link">&para;</a></h3>
+<p><code>execute</code> is intentionally narrow. It:</p>
+<ol>
+<li>Loads a plan artifact (<code>plan.json</code>)</li>
+<li>Normalizes it into execution-safe data</li>
+<li>Selects an executor</li>
+<li>Dispatches actions in order</li>
+<li>Records results</li>
+<li>Emits an execution report</li>
+</ol>
+<p>That is all.</p>
+<p>If you are expecting <code>execute</code> to be helpful, you are using the wrong command.</p>
+<hr />
+<h3 id="what-execute-requires">What <code>execute</code> Requires<a class="headerlink" href="#what-execute-requires" title="Permanent link">&para;</a></h3>
+<p>At minimum:</p>
+<ul>
+<li>A valid <code>plan.json</code></li>
+<li>A source root (<code>--source-root</code>)</li>
+<li>An output directory (<code>--output</code>)</li>
+<li>Explicit permission to mutate (<code>--apply</code>) if mutation is desired</li>
+</ul>
+<p>If any of these are missing, execution fails fast.</p>
+<p>This is not user hostility.<br />
+This is safety.</p>
+<hr />
+<h3 id="dry-run-vs-apply">Dry-Run vs Apply<a class="headerlink" href="#dry-run-vs-apply" title="Permanent link">&para;</a></h3>
+<p>Execution always runs in one of two modes:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dry-run (default)</td>
+<td>Actions are dispatched but <strong>never mutate</strong></td>
+</tr>
+<tr>
+<td>Apply (<code>--apply</code>)</td>
+<td>Filesystem executor is allowed to write</td>
+</tr>
+</tbody>
+</table>
+<p>Dry-run is not a shortcut.<br />
+It uses the <em>same</em> dispatch path, handlers, and validation.</p>
+<p>The only difference is whether mutations are allowed.</p>
+<hr />
+<h2 id="executors-how-execution-is-performed">Executors: How Execution Is Performed<a class="headerlink" href="#executors-how-execution-is-performed" title="Permanent link">&para;</a></h2>
+<p>Execution is mediated by an <strong>executor</strong>, not by handlers directly.</p>
+<h3 id="why-executors-exist">Why Executors Exist<a class="headerlink" href="#why-executors-exist" title="Permanent link">&para;</a></h3>
+<p>Executors enforce:
+- path resolution
+- sandbox boundaries
+- mutation policy
+- dry-run semantics</p>
+<p>Handlers do not get to decide whether they may write.</p>
+<hr />
+<h3 id="current-executors">Current Executors<a class="headerlink" href="#current-executors" title="Permanent link">&para;</a></h3>
+<h4 id="noopexecutor-noop">NoOpExecutor (<code>noop</code>)<a class="headerlink" href="#noopexecutor-noop" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Default for <code>execute</code></li>
+<li>Always dry-run</li>
+<li>Never mutates</li>
+<li>Used for inspection, CI, and safety checks</li>
+</ul>
+<h4 id="filesystemexecutor-filesystem">FilesystemExecutor (<code>filesystem</code>)<a class="headerlink" href="#filesystemexecutor-filesystem" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Activated only when <code>--apply</code> is present</li>
+<li>Enforces sandbox and mutation policy</li>
+<li>Dispatches real filesystem mutations</li>
+<li>Still records results identically to dry-run</li>
+</ul>
+<p>The executor is the <strong>last line of defense</strong> before files are touched.</p>
+<hr />
+<h2 id="how-a-plan-is-used-during-execution">How a Plan Is Used During Execution<a class="headerlink" href="#how-a-plan-is-used-during-execution" title="Permanent link">&para;</a></h2>
+<p>Execution treats the plan as immutable truth.</p>
+<p>For each action in the plan:</p>
+<ol>
+<li>The executor selects a handler by <code>action.type</code></li>
+<li>The handler validates inputs again</li>
+<li>The handler performs exactly one mutation (or skips)</li>
+<li>A structured result is returned</li>
+</ol>
+<p>No handler:
+- creates new actions
+- modifies the plan
+- reorders execution
+- inspects other actions</p>
+<p>Execution is linear and ordered.</p>
+<hr />
+<h2 id="handlers-during-execution">Handlers During Execution<a class="headerlink" href="#handlers-during-execution" title="Permanent link">&para;</a></h2>
+<p>Handlers are the only code allowed to touch files.</p>
+<p>They are:
+- action-type specific
+- deterministic
+- defensive
+- auditable</p>
+<p>Execution never “figures out” which handler to use.<br />
+That mapping is explicit and static.</p>
+<p>If a handler is missing, execution fails immediately.</p>
+<hr />
+<h2 id="what-the-execution-report-is">What the Execution Report Is<a class="headerlink" href="#what-the-execution-report-is" title="Permanent link">&para;</a></h2>
+<p>The <strong>Execution Report</strong> is the forensic record of execution.</p>
+<p>It answers:</p>
+<blockquote>
+<p><strong>“What happened when this plan was executed?”</strong></p>
+</blockquote>
+<p>Not:
+- “What does the filesystem look like now?”
+- “What would I do next?”
+- “What should have happened?”</p>
+<hr />
+<h3 id="execution-report-structure">Execution Report Structure<a class="headerlink" href="#execution-report-structure" title="Permanent link">&para;</a></h3>
+<p>An execution report records:</p>
+<ul>
+<li>Execution identity</li>
+<li>Generation timestamp</li>
+<li>Execution start timestamp</li>
+<li>Execution finish timestamp</li>
+<li>Total duration in milliseconds</li>
+<li>Whether it was a dry-run</li>
+<li>Discovery summary counts</li>
+<li>One entry per action</li>
+<li>A summary of outcomes</li>
+</ul>
+<p>Top-level fields:</p>
+<ul>
+<li><code>execution_id</code></li>
+<li><code>generated_at</code></li>
+<li><code>started_at</code></li>
+<li><code>finished_at</code></li>
+<li><code>duration_ms</code></li>
+<li><code>dry_run</code></li>
+<li><code>summary</code></li>
+<li><code>discovery</code></li>
+<li><code>results</code></li>
+</ul>
+<p>Each action result includes:</p>
+<ul>
+<li><code>action_id</code></li>
+<li><code>handler</code></li>
+<li><code>status</code> (<code>success</code>, <code>failed</code>, <code>skipped</code>)</li>
+<li><code>dry_run</code></li>
+<li>A human-readable message</li>
+<li>Optional error details</li>
+<li>Optional structured metadata</li>
+</ul>
+<p>The report is schema-validated and immutable once written.</p>
+<p>For command examples and <code>jq</code> queries, see <a href="../execution-report/">Execution Report Guide</a>.</p>
+<hr />
+<h3 id="why-the-report-matters">Why the Report Matters<a class="headerlink" href="#why-the-report-matters" title="Permanent link">&para;</a></h3>
+<p>The execution report allows you to:</p>
+<ul>
+<li>Prove what happened</li>
+<li>Diff execution outcomes</li>
+<li>Debug failures mechanically</li>
+<li>Explain changes to auditors or stakeholders</li>
+<li>Rerun safely with confidence</li>
+</ul>
+<p>Execution without a report is guesswork.<br />
+This system does not allow that.</p>
+<hr />
+<h2 id="what-run-does-and-why-it-exists">What <code>run</code> Does (And Why It Exists)<a class="headerlink" href="#what-run-does-and-why-it-exists" title="Permanent link">&para;</a></h2>
+<p>The <code>run</code> command exists to solve <strong>orchestration</strong>, not execution.</p>
+<p><code>run</code> is the <strong>only command</strong> that composes phases together.</p>
+<p>Conceptually:</p>
+<div class="highlight"><pre><span></span><code>run = discover + plan + execute
+</code></pre></div>
+<p>But critically:</p>
+<ul>
+<li>Each phase still produces its own artifacts</li>
+<li>Each phase still validates its inputs</li>
+<li>Execution still requires explicit permission to mutate</li>
+</ul>
+<p><code>run</code> does not weaken contracts.<br />
+It only wires them together.</p>
+<hr />
+<h2 id="why-run-is-separate-from-execute">Why <code>run</code> Is Separate from <code>execute</code><a class="headerlink" href="#why-run-is-separate-from-execute" title="Permanent link">&para;</a></h2>
+<p>Because conflating orchestration and execution is how systems rot.</p>
+<p><code>execute</code> must remain:
+- testable in isolation
+- reusable by other tools
+- safe by default
+- boring</p>
+<p><code>run</code> is allowed to be convenient.<br />
+<code>execute</code> is not.</p>
+<p>This separation is intentional and permanent.</p>
+<hr />
+<h2 id="what-happens-when-you-use-run">What Happens When You Use <code>run</code><a class="headerlink" href="#what-happens-when-you-use-run" title="Permanent link">&para;</a></h2>
+<p>When you invoke:</p>
+<div class="highlight"><pre><span></span><code>dita_package_processor<span class="w"> </span>run<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--package<span class="w"> </span>/path/to/package<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--docx-stem<span class="w"> </span>OutputDoc<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--target<span class="w"> </span>/path/to/output<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--apply
+</code></pre></div>
+<p>The system performs:</p>
+<div class="highlight"><pre><span></span><code>Discovery
+  ↓
+Planning
+  ↓
+Materialization preflight
+  ↓
+Execution
+</code></pre></div>
+<p>Key points:</p>
+<ul>
+<li>Discovery output is not reused implicitly</li>
+<li>Planning output is still a real plan</li>
+<li>Execution still consumes a plan artifact internally</li>
+<li>Mutation only occurs if <code>--apply</code> is present</li>
+</ul>
+<p><code>run</code> is orchestration glue, not intelligence.</p>
+<hr />
+<h2 id="common-mental-errors-and-the-correct-model">Common Mental Errors (And the Correct Model)<a class="headerlink" href="#common-mental-errors-and-the-correct-model" title="Permanent link">&para;</a></h2>
+<h3 id="why-doesnt-execute-figure-things-out">❌ “Why doesn’t execute figure things out?”<a class="headerlink" href="#why-doesnt-execute-figure-things-out" title="Permanent link">&para;</a></h3>
+<p>Because that would destroy auditability.</p>
+<h3 id="why-does-execute-need-source-root">❌ “Why does execute need source-root?”<a class="headerlink" href="#why-does-execute-need-source-root" title="Permanent link">&para;</a></h3>
+<p>Because execution must never guess where files come from.</p>
+<h3 id="why-didnt-files-appear-without-apply">❌ “Why didn’t files appear without --apply?”<a class="headerlink" href="#why-didnt-files-appear-without-apply" title="Permanent link">&para;</a></h3>
+<p>Because simulation and mutation are not the same thing.</p>
+<h3 id="correct-mental-model">✅ Correct mental model<a class="headerlink" href="#correct-mental-model" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Planning decides <em>what should happen</em></li>
+<li>Execution applies <em>only that</em></li>
+<li>Reports tell you <em>what actually happened</em></li>
+</ul>
+<hr />
+<h2 id="debugging-execution-correctly">Debugging Execution Correctly<a class="headerlink" href="#debugging-execution-correctly" title="Permanent link">&para;</a></h2>
+<p>When something goes wrong:</p>
+<ol>
+<li>Inspect <code>plan.json</code></li>
+<li>Inspect the execution report</li>
+<li>Identify the failing action</li>
+<li>Fix:</li>
+<li>planning logic <strong>or</strong></li>
+<li>handler logic</li>
+</ol>
+<p>Never debug by re-running blindly.</p>
+<p>This system gives you documents so you don’t have to guess.</p>
+<hr />
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>execute</code> applies a plan and records results</li>
+<li>It is strict by design</li>
+<li>It never infers, discovers, or plans</li>
+<li>It mutates only with explicit permission</li>
+<li>
+<p>It always produces a forensic record</p>
+</li>
+<li>
+<p><code>run</code> orchestrates the full pipeline</p>
+</li>
+<li>It preserves all boundaries</li>
+<li>It exists for ergonomics, not shortcuts</li>
+</ul>
+<p>If planning answers <em>what should happen</em>,<br />
+and execution answers <em>what happened</em>,<br />
+then <code>run</code> is simply the conductor keeping time.</p>
+<p>Execution stays boring so the system stays alive.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

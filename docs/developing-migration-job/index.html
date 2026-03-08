@@ -1,0 +1,2796 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Deterministic DITA discovery, planning, execution, and plugin extension docs.">
+      
+      
+      
+      
+        <link rel="prev" href="../testing/">
+      
+      
+        <link rel="next" href="../howto-transform-a-package/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+    
+    
+      
+        <title>Developing a Migration Job - DITA Package Processor</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#patterns-actions-and-handlers" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="DITA Package Processor" class="md-header__button md-logo" aria-label="DITA Package Processor" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DITA Package Processor
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Developing a Migration Job
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DITA Package Processor" class="md-nav__button md-logo" aria-label="DITA Package Processor" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DITA Package Processor
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Pipeline
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../understand-the-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Understanding the Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../run-vs-execute/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Run vs Execute
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pipeline-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline Integration Specification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plan-creation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plan Creation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../execution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Phase
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../execution-report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Report Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../execution_contract/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Contract
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Discovery
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery Phase
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../discovery-report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pattern-discovery-contract/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pattern Discovery Contract
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pattern-evaluator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evaluate Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pattern-worked-example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Working Pattern Example
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../new-patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documenting New Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extensions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extensions-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extension Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hardening/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardening
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developing a Migration Job
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developing a Migration Job
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#a-model-for-scalable-dita-migrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A Model for Scalable DITA Migrations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#executive-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Executive Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-three-layer-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Three-Layer Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-patterns-capturing-what-you-learn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Patterns: Capturing What You Learn
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Patterns: Capturing What You Learn">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-is-a-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Is a Pattern?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#where-patterns-live" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where Patterns Live
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#properties-of-a-good-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Properties of a Good Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-actions-declaring-intent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Actions: Declaring Intent
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Actions: Declaring Intent">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-is-an-action" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Is an Action?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#actions-as-a-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Actions as a Contract
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-handlers-performing-the-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Handlers: Performing the Work
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Handlers: Performing the Work">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-is-a-handler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Is a Handler?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#end-to-end-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        End-to-End Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#developing-for-a-migration-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Developing for a Migration Job
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Developing for a Migration Job">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-encounter-a-new-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Encounter a New Case
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-name-the-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Name the Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-decide-the-intent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Decide the Intent
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-introduce-or-reuse-an-action" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Introduce or Reuse an Action
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-implement-the-handler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Implement the Handler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-lock-it-with-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Lock It with Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-this-separation-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why This Separation Matters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#design-principles-recap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design Principles Recap
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Design Principles Recap">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Patterns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Actions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handlers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Handlers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#final-guidance-for-future-migrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Final Guidance for Future Migrations
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../howto-transform-a-package/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transform a DITA Package
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../patterns-actions-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Patterns, Actions, Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to-create-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Create a Handler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../executor-arc-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Executor Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-knowledge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Knowledge
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-materialization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Materialization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-planning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-execution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-steps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Steps
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_9_1" id="__nav_9_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schemas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_9_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Schemas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/plan.schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/discovery.schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/execution_report.schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/metaschema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metaschema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/planning_input.schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Planning Input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#a-model-for-scalable-dita-migrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A Model for Scalable DITA Migrations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#executive-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Executive Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-three-layer-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Three-Layer Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-patterns-capturing-what-you-learn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Patterns: Capturing What You Learn
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Patterns: Capturing What You Learn">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-is-a-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Is a Pattern?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#where-patterns-live" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where Patterns Live
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#properties-of-a-good-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Properties of a Good Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-actions-declaring-intent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Actions: Declaring Intent
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Actions: Declaring Intent">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-is-an-action" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Is an Action?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#actions-as-a-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Actions as a Contract
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-handlers-performing-the-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Handlers: Performing the Work
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Handlers: Performing the Work">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-is-a-handler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Is a Handler?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#end-to-end-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        End-to-End Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#developing-for-a-migration-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Developing for a Migration Job
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Developing for a Migration Job">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-encounter-a-new-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Encounter a New Case
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-name-the-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Name the Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-decide-the-intent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Decide the Intent
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-introduce-or-reuse-an-action" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Introduce or Reuse an Action
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-implement-the-handler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Implement the Handler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-lock-it-with-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Lock It with Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-this-separation-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why This Separation Matters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#design-principles-recap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design Principles Recap
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Design Principles Recap">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Patterns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Actions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handlers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Handlers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#final-guidance-for-future-migrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Final Guidance for Future Migrations
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="patterns-actions-and-handlers">Patterns, Actions, and Handlers<a class="headerlink" href="#patterns-actions-and-handlers" title="Permanent link">&para;</a></h1>
+<h2 id="a-model-for-scalable-dita-migrations">A Model for Scalable DITA Migrations<a class="headerlink" href="#a-model-for-scalable-dita-migrations" title="Permanent link">&para;</a></h2>
+<p>This document explains how <strong>patterns</strong>, <strong>actions</strong>, and <strong>handlers</strong> work together in the DITA Package Processor, and how to extend them safely when developing real migration jobs.</p>
+<p>For a full plugin implementation walkthrough, see <a href="../extensions-guide/">Extension Guide</a>.</p>
+<p>The goal of this architecture is not elegance.<br />
+The goal is <strong>survivability</strong> under hostile, inconsistent, enterprise-scale DITA packages.</p>
+<hr />
+<h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Patterns</strong> capture <em>what you observe</em> during discovery and normalization</li>
+<li><strong>Actions</strong> declare <em>what should happen</em> as a result of those observations</li>
+<li><strong>Handlers</strong> define <em>how an action is executed</em> during the execution phase</li>
+</ul>
+<p>Each layer has one job.<br />
+Each boundary is enforced.</p>
+<p>That separation is what keeps the system debuggable after the 200th exception case.</p>
+<hr />
+<h2 id="the-three-layer-model">The Three-Layer Model<a class="headerlink" href="#the-three-layer-model" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart TB
+    P[Patterns] --&gt; A[Actions]
+    A --&gt; H[Handlers]
+    H --&gt; FS[Filesystem / XML]</code></pre>
+<p>Read top to bottom:</p>
+<blockquote>
+<p>“When I observe <em>this structural condition</em>, I declare <em>these actions</em>, which are carried out by <em>these handlers</em>.”</p>
+</blockquote>
+<p>No layer gets to do the next layer’s job.</p>
+<hr />
+<h2 id="1-patterns-capturing-what-you-learn">1. Patterns: Capturing What You Learn<a class="headerlink" href="#1-patterns-capturing-what-you-learn" title="Permanent link">&para;</a></h2>
+<h3 id="what-is-a-pattern">What Is a Pattern?<a class="headerlink" href="#what-is-a-pattern" title="Permanent link">&para;</a></h3>
+<p>A <strong>pattern</strong> is an observed, repeatable structural condition in the source package.</p>
+<p>Examples:</p>
+<ul>
+<li>An <code>index.ditamap</code> exists and delegates to a real root map  </li>
+<li>Abstract content is isolated in a separate map  </li>
+<li>Maps contain unwrapped <code>topicref</code> collections  </li>
+<li>Glossary content exists structurally but not semantically  </li>
+</ul>
+<p>Patterns are <strong>not executable</strong>.<br />
+They are <strong>not instructions</strong>.</p>
+<p>They are recorded facts about the package.</p>
+<h3 id="where-patterns-live">Where Patterns Live<a class="headerlink" href="#where-patterns-live" title="Permanent link">&para;</a></h3>
+<p>In the current system, patterns are:</p>
+<ul>
+<li>Detected during <strong>discovery</strong> and <strong>normalization</strong></li>
+<li>Recorded as evidence, relationships, or invariants</li>
+<li>Referenced indirectly during <strong>planning</strong></li>
+</ul>
+<p>Patterns never mutate content.<br />
+They never imply intent.</p>
+<h3 id="properties-of-a-good-pattern">Properties of a Good Pattern<a class="headerlink" href="#properties-of-a-good-pattern" title="Permanent link">&para;</a></h3>
+<p>A useful migration pattern is:</p>
+<ul>
+<li>Observational, not prescriptive  </li>
+<li>Stable across packages  </li>
+<li>Expressible as a condition, not a workaround  </li>
+</ul>
+<p>Patterns answer one question only:</p>
+<blockquote>
+<p><em>What situation am I in?</em></p>
+</blockquote>
+<p>They deliberately avoid answering:</p>
+<blockquote>
+<p><em>What should I do about it?</em></p>
+</blockquote>
+<hr />
+<h2 id="2-actions-declaring-intent">2. Actions: Declaring Intent<a class="headerlink" href="#2-actions-declaring-intent" title="Permanent link">&para;</a></h2>
+<h3 id="what-is-an-action">What Is an Action?<a class="headerlink" href="#what-is-an-action" title="Permanent link">&para;</a></h3>
+<p>An <strong>action</strong> is a declarative instruction emitted during <strong>planning</strong>.</p>
+<p>It describes <em>what must happen</em>, not <em>how to do it</em>.</p>
+<p>Actions are serialized into <code>plan.json</code> and form a strict contract between planning and execution.</p>
+<p>Examples:</p>
+<ul>
+<li><code>copy_map</code></li>
+<li><code>copy_topic</code></li>
+<li><code>copy_media</code></li>
+<li><code>inject_topicref</code></li>
+<li><code>wrap_map</code></li>
+<li><code>delete_file</code></li>
+</ul>
+<p>An action looks like this conceptually:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;copy-main-map&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;copy_map&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;target&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OutputDoc.ditamap&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;source_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Main.ditamap&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;target_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OutputDoc.ditamap&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Resolved index map indirection&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="actions-as-a-contract">Actions as a Contract<a class="headerlink" href="#actions-as-a-contract" title="Permanent link">&para;</a></h3>
+<p>Actions are the <strong>only thing execution is allowed to trust</strong>.</p>
+<p>Planning says:</p>
+<blockquote>
+<p>“This is what should happen, and here is why.”</p>
+</blockquote>
+<p>Execution responds:</p>
+<blockquote>
+<p>“I know how to do exactly that. Nothing more.”</p>
+</blockquote>
+<p>Actions must never be:</p>
+<ul>
+<li>Implicit  </li>
+<li>Inferred at execution time  </li>
+<li>Recomputed from filesystem state  </li>
+</ul>
+<p>If it matters, it belongs in the plan.</p>
+<hr />
+<h2 id="3-handlers-performing-the-work">3. Handlers: Performing the Work<a class="headerlink" href="#3-handlers-performing-the-work" title="Permanent link">&para;</a></h2>
+<h3 id="what-is-a-handler">What Is a Handler?<a class="headerlink" href="#what-is-a-handler" title="Permanent link">&para;</a></h3>
+<p>A <strong>handler</strong> is a concrete execution unit for a single action type.</p>
+<p>Handlers:</p>
+<ul>
+<li>Receive a validated action  </li>
+<li>Resolve paths via <code>source_root</code> and sandbox rules  </li>
+<li>Enforce mutation policy  </li>
+<li>Apply exactly one mutation  </li>
+<li>Are idempotent where possible  </li>
+<li>Fail loudly when invariants are violated  </li>
+</ul>
+<p>Handlers answer one question only:</p>
+<blockquote>
+<p><em>How is this specific action carried out?</em></p>
+</blockquote>
+<p>They do <strong>not</strong> decide whether the action should exist.<br />
+They do <strong>not</strong> inspect package structure.<br />
+They do <strong>not</strong> invent behavior.</p>
+<p>That work already happened.</p>
+<hr />
+<h2 id="end-to-end-flow">End-to-End Flow<a class="headerlink" href="#end-to-end-flow" title="Permanent link">&para;</a></h2>
+<p>This is the lifecycle of a migration decision:</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant D as Discovery / Normalize
+    participant P as Planning
+    participant A as Plan Action
+    participant H as Handler
+    participant FS as Filesystem
+
+    D-&gt;&gt;P: Observed pattern
+    P-&gt;&gt;A: Emit explicit action
+    A-&gt;&gt;H: Dispatch by action type
+    H-&gt;&gt;FS: Apply bounded mutation</code></pre>
+<p>This separation is the reason the pipeline scales without collapsing into folklore.</p>
+<hr />
+<h2 id="developing-for-a-migration-job">Developing for a Migration Job<a class="headerlink" href="#developing-for-a-migration-job" title="Permanent link">&para;</a></h2>
+<p>Migration work is never done once.<br />
+This model assumes you will discover new cases mid-stream.</p>
+<p>That’s normal.</p>
+<hr />
+<h3 id="step-1-encounter-a-new-case">Step 1: Encounter a New Case<a class="headerlink" href="#step-1-encounter-a-new-case" title="Permanent link">&para;</a></h3>
+<p>Example:</p>
+<blockquote>
+<p>“Some packages contain glossary topics that should become <code>glossentry</code> topics.”</p>
+</blockquote>
+<p>Do <strong>not</strong> start in execution code.</p>
+<hr />
+<h3 id="step-2-name-the-pattern">Step 2: Name the Pattern<a class="headerlink" href="#step-2-name-the-pattern" title="Permanent link">&para;</a></h3>
+<p>Write the observation clearly:</p>
+<blockquote>
+<p>“Topics under the ‘Glossary’ node in the definition map represent glossary entries.”</p>
+</blockquote>
+<p>This prevents scope creep later.</p>
+<hr />
+<h3 id="step-3-decide-the-intent">Step 3: Decide the Intent<a class="headerlink" href="#step-3-decide-the-intent" title="Permanent link">&para;</a></h3>
+<p>Ask:</p>
+<blockquote>
+<p><em>What should happen when this pattern exists?</em></p>
+</blockquote>
+<p>Answer:</p>
+<ul>
+<li>“Refactor glossary topics into <code>glossentry</code> topics.”</li>
+</ul>
+<p>That intent becomes an <strong>action</strong>.</p>
+<hr />
+<h3 id="step-4-introduce-or-reuse-an-action">Step 4: Introduce or Reuse an Action<a class="headerlink" href="#step-4-introduce-or-reuse-an-action" title="Permanent link">&para;</a></h3>
+<p>Options:</p>
+<ul>
+<li>Reuse an existing action if semantics match  </li>
+<li>Introduce a new semantic action if intent is distinct  </li>
+</ul>
+<p>Examples:</p>
+<ul>
+<li><code>extract_glossary</code></li>
+<li><code>inject_glossary</code></li>
+<li><code>refactor_glossary_entries</code></li>
+</ul>
+<p>Prefer clarity over reuse.</p>
+<hr />
+<h3 id="step-5-implement-the-handler">Step 5: Implement the Handler<a class="headerlink" href="#step-5-implement-the-handler" title="Permanent link">&para;</a></h3>
+<p>The handler must:</p>
+<ul>
+<li>Do exactly what the action name promises  </li>
+<li>Validate inputs defensively  </li>
+<li>Respect sandbox and mutation policy  </li>
+<li>Never branch on “package shape”  </li>
+</ul>
+<p>No discovery logic.<br />
+No guessing.<br />
+No shortcuts.</p>
+<hr />
+<h3 id="step-6-lock-it-with-tests">Step 6: Lock It with Tests<a class="headerlink" href="#step-6-lock-it-with-tests" title="Permanent link">&para;</a></h3>
+<p>Extend integration tests to assert:</p>
+<ul>
+<li>Files exist where expected  </li>
+<li>Maps contain expected topicrefs  </li>
+<li>Topics were transformed correctly  </li>
+<li>Reruns are idempotent  </li>
+</ul>
+<p>The test suite becomes the living record of your migration logic.</p>
+<hr />
+<h2 id="why-this-separation-matters">Why This Separation Matters<a class="headerlink" href="#why-this-separation-matters" title="Permanent link">&para;</a></h2>
+<p>Without separation, migration systems devolve into:</p>
+<ul>
+<li>Hidden heuristics  </li>
+<li>Untraceable side effects  </li>
+<li>“It worked last time” logic  </li>
+</ul>
+<p>With separation:</p>
+<ul>
+<li>Every change is explainable  </li>
+<li>Every mutation is traceable  </li>
+<li>Every failure is local and debuggable  </li>
+</ul>
+<p>You can answer:</p>
+<ul>
+<li>“Why was this file copied?”  </li>
+<li>“Why was this topicref injected?”  </li>
+<li>“Why didn’t this glossary convert?”  </li>
+</ul>
+<p>Those answers matter when auditors, clients, or future-you ask.</p>
+<hr />
+<h2 id="design-principles-recap">Design Principles Recap<a class="headerlink" href="#design-principles-recap" title="Permanent link">&para;</a></h2>
+<h3 id="patterns">Patterns<a class="headerlink" href="#patterns" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Observational  </li>
+<li>Stable  </li>
+<li>Describe conditions  </li>
+</ul>
+<h3 id="actions">Actions<a class="headerlink" href="#actions" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Declarative  </li>
+<li>Explicit  </li>
+<li>Ordered  </li>
+<li>Serialized  </li>
+</ul>
+<h3 id="handlers">Handlers<a class="headerlink" href="#handlers" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Deterministic  </li>
+<li>Single responsibility  </li>
+<li>Policy-enforced  </li>
+<li>Boring on purpose  </li>
+</ul>
+<hr />
+<h2 id="final-guidance-for-future-migrations">Final Guidance for Future Migrations<a class="headerlink" href="#final-guidance-for-future-migrations" title="Permanent link">&para;</a></h2>
+<p>When the migration gets weird, which it will:</p>
+<ol>
+<li>Name the pattern  </li>
+<li>Declare the intent as an action  </li>
+<li>Implement the smallest correct handler  </li>
+<li>Prove it with tests  </li>
+<li>Move on  </li>
+</ol>
+<p>If you ever feel tempted to “just handle it in the handler,” stop.</p>
+<p>That’s how careful systems turn into ghost stories.</p>
+<p>This architecture isn’t academic.<br />
+It’s a record of everything you already learned the hard way.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

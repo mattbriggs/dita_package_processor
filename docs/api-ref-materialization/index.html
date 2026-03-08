@@ -1,0 +1,6306 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Deterministic DITA discovery, planning, execution, and plugin extension docs.">
+      
+      
+      
+      
+        <link rel="prev" href="../api-ref-knowledge/">
+      
+      
+        <link rel="next" href="../api-ref-planning/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+    
+    
+      
+        <title>Materialization - DITA Package Processor</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#materialization" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="DITA Package Processor" class="md-header__button md-logo" aria-label="DITA Package Processor" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DITA Package Processor
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Materialization
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DITA Package Processor" class="md-nav__button md-logo" aria-label="DITA Package Processor" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DITA Package Processor
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Pipeline
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../understand-the-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Understanding the Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../run-vs-execute/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Run vs Execute
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pipeline-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline Integration Specification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plan-creation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plan Creation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../execution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Phase
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../execution-report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Report Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../execution_contract/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Contract
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Discovery
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery Phase
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../discovery-report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pattern-discovery-contract/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pattern Discovery Contract
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pattern-evaluator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evaluate Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pattern-worked-example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Working Pattern Example
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../new-patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documenting New Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extensions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extensions-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extension Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hardening/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardening
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing-migration-job/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developing a Migration Job
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../howto-transform-a-package/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transform a DITA Package
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../patterns-actions-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Patterns, Actions, Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to-create-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Create a Handler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../executor-arc-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Executor Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-knowledge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Knowledge
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Materialization
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Materialization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.builder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        builder
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="builder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.builder.MaterializationError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializationError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.builder.TargetMaterializationBuilder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TargetMaterializationBuilder
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TargetMaterializationBuilder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.builder.TargetMaterializationBuilder.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.builder.TargetMaterializationBuilder.build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        build
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.collision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        collision
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="collision">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.collision.CollisionDetector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CollisionDetector
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CollisionDetector">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.collision.CollisionDetector.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.collision.CollisionDetector.detect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        detect
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.collision.MaterializationCollisionDetector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializationCollisionDetector
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MaterializationCollisionDetector">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.collision.MaterializationCollisionDetector.detect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        detect
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.collision.MaterializationCollisionError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializationCollisionError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.collision.TargetArtifact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TargetArtifact
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        layout
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="layout">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout.DefaultDitaLayoutPolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DefaultDitaLayoutPolicy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DefaultDitaLayoutPolicy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout.DefaultDitaLayoutPolicy.map_relative_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        map_relative_path
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout.LayoutError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LayoutError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout.LayoutPolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LayoutPolicy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="LayoutPolicy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout.LayoutPolicy.map_relative_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        map_relative_path
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout.MaterializationLayoutEngine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializationLayoutEngine
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MaterializationLayoutEngine">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout.MaterializationLayoutEngine.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout.MaterializationLayoutEngine.resolve_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        resolve_path
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout.TargetLayout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TargetLayout
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TargetLayout">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout.TargetLayout.resolve" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        resolve
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        models
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.models.MaterializationManifest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializationManifest
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MaterializationManifest">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.models.MaterializationManifest.__post_init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __post_init__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.models.MaterializationManifest.iter_files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        iter_files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.models.MaterializationManifest.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dict
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.models.MaterializedFile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializedFile
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MaterializedFile">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.models.MaterializedFile--attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attributes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.models.MaterializedFile.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dict
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        orchestrator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="orchestrator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator--orchestratorpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        orchestrator.py
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="orchestrator.py">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator--key-compatibility-note" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key compatibility note
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.Builder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Builder
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Builder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.Builder.build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        build
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.CollisionDetectorProtocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CollisionDetectorProtocol
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CollisionDetectorProtocol">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.CollisionDetectorProtocol.detect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        detect
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.ManifestWriter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ManifestWriter
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ManifestWriter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.ManifestWriter.write_final" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        write_final
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.ManifestWriter.write_preflight" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        write_preflight
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.MaterializationManifest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializationManifest
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MaterializationManifest">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.MaterializationManifest--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrationError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializationOrchestrationError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializationOrchestrator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MaterializationOrchestrator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrator--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrator.finalize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        finalize
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="finalize">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrator.finalize--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrator.finalize--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrator.preflight" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        preflight
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="preflight">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrator.preflight--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.NoOpManifestWriter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NoOpManifestWriter
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NoOpManifestWriter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.NoOpManifestWriter.write_final" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        write_final
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.NoOpManifestWriter.write_preflight" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        write_preflight
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.NoOpValidator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NoOpValidator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NoOpValidator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.NoOpValidator.validate_preflight" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate_preflight
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.Validator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Validator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.Validator.validate_preflight" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate_preflight
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.validation.MaterializationValidationError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializationValidationError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.validation.MaterializationValidator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializationValidator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MaterializationValidator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.validation.MaterializationValidator.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.validation.MaterializationValidator.validate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-planning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-execution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-steps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Steps
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_9_1" id="__nav_9_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schemas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_9_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Schemas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/plan.schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/discovery.schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/execution_report.schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/metaschema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metaschema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/planning_input.schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Planning Input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.builder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        builder
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="builder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.builder.MaterializationError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializationError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.builder.TargetMaterializationBuilder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TargetMaterializationBuilder
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TargetMaterializationBuilder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.builder.TargetMaterializationBuilder.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.builder.TargetMaterializationBuilder.build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        build
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.collision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        collision
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="collision">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.collision.CollisionDetector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CollisionDetector
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CollisionDetector">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.collision.CollisionDetector.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.collision.CollisionDetector.detect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        detect
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.collision.MaterializationCollisionDetector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializationCollisionDetector
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MaterializationCollisionDetector">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.collision.MaterializationCollisionDetector.detect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        detect
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.collision.MaterializationCollisionError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializationCollisionError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.collision.TargetArtifact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TargetArtifact
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        layout
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="layout">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout.DefaultDitaLayoutPolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DefaultDitaLayoutPolicy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DefaultDitaLayoutPolicy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout.DefaultDitaLayoutPolicy.map_relative_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        map_relative_path
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout.LayoutError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LayoutError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout.LayoutPolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LayoutPolicy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="LayoutPolicy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout.LayoutPolicy.map_relative_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        map_relative_path
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout.MaterializationLayoutEngine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializationLayoutEngine
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MaterializationLayoutEngine">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout.MaterializationLayoutEngine.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout.MaterializationLayoutEngine.resolve_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        resolve_path
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout.TargetLayout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TargetLayout
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TargetLayout">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.layout.TargetLayout.resolve" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        resolve
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        models
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.models.MaterializationManifest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializationManifest
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MaterializationManifest">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.models.MaterializationManifest.__post_init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __post_init__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.models.MaterializationManifest.iter_files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        iter_files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.models.MaterializationManifest.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dict
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.models.MaterializedFile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializedFile
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MaterializedFile">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.models.MaterializedFile--attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attributes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.models.MaterializedFile.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dict
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        orchestrator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="orchestrator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator--orchestratorpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        orchestrator.py
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="orchestrator.py">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator--key-compatibility-note" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key compatibility note
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.Builder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Builder
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Builder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.Builder.build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        build
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.CollisionDetectorProtocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CollisionDetectorProtocol
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CollisionDetectorProtocol">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.CollisionDetectorProtocol.detect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        detect
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.ManifestWriter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ManifestWriter
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ManifestWriter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.ManifestWriter.write_final" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        write_final
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.ManifestWriter.write_preflight" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        write_preflight
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.MaterializationManifest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializationManifest
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MaterializationManifest">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.MaterializationManifest--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrationError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializationOrchestrationError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializationOrchestrator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MaterializationOrchestrator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrator--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrator.finalize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        finalize
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="finalize">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrator.finalize--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrator.finalize--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrator.preflight" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        preflight
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="preflight">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrator.preflight--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.NoOpManifestWriter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NoOpManifestWriter
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NoOpManifestWriter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.NoOpManifestWriter.write_final" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        write_final
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.NoOpManifestWriter.write_preflight" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        write_preflight
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.NoOpValidator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NoOpValidator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NoOpValidator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.NoOpValidator.validate_preflight" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate_preflight
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.Validator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Validator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.orchestrator.Validator.validate_preflight" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate_preflight
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.validation.MaterializationValidationError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializationValidationError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.validation.MaterializationValidator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MaterializationValidator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MaterializationValidator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.validation.MaterializationValidator.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.materialization.validation.MaterializationValidator.validate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="materialization">Materialization<a class="headerlink" href="#materialization" title="Permanent link">&para;</a></h1>
+<p>Materialization is responsible for <strong>turning execution intent into concrete outputs</strong>. It bridges the gap between abstract actions and tangible artifacts, such as files, directories, or reports.  </p>
+<p>This module does not decide <em>what</em> should happen. It only concerns itself with <em>how</em> declared actions are realized in a controlled environment. Safety guarantees, sandboxing, and idempotence are central concerns.  </p>
+<p>Materialization logic is designed to be deterministic and auditable, ensuring that the same plan always produces the same results under the same conditions.</p>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.materialization.builder" class="doc doc-heading">
+            <code>dita_package_processor.materialization.builder</code>
+
+
+<a href="#dita_package_processor.materialization.builder" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>builder.py</p>
+<p>Materialization target builder for the DITA Package Processor.</p>
+<p>This module is a thin adapter responsible for preparing a concrete,
+publication-ready target directory for materialization output.</p>
+<p>Materialization is intentionally separated from execution and validation:</p>
+<ul>
+<li>Planning answers: "What should happen?"</li>
+<li>Execution answers: "What actually ran?"</li>
+<li>Materialization answers: "Is it safe to publish the results, and where?"</li>
+<li>Builder answers: "Can we write to the target location?"</li>
+</ul>
+<p>This module does NOT:
+- perform discovery
+- emit plans
+- execute handlers
+- validate execution semantics
+- detect collisions
+- decide safety</p>
+<p>It operates strictly on a MaterializationManifest and filesystem targets.</p>
+<p>Builder contract:
+"I prepare the place. I do not decide if it’s safe."</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.builder.MaterializationError" class="doc doc-heading">
+            <code>MaterializationError</code>
+
+
+<a href="#dita_package_processor.materialization.builder.MaterializationError" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="RuntimeError">RuntimeError</span></code></p>
+
+
+
+        <p>Raised when the target filesystem location cannot be prepared safely.</p>
+
+
+
+
+
+
+
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.builder.TargetMaterializationBuilder" class="doc doc-heading">
+            <code>TargetMaterializationBuilder</code>
+
+
+<a href="#dita_package_processor.materialization.builder.TargetMaterializationBuilder" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Prepares the target directory for materialization output.</p>
+<p>This builder is intentionally thin. It assumes upstream orchestration
+has already validated safety (execution state, layout, collisions, etc.)
+and provides a complete MaterializationManifest.</p>
+<p>Design constraints:
+- deterministic
+- idempotent
+- no implicit deletion
+- no implicit overwrites
+- filesystem readiness only</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.builder.TargetMaterializationBuilder.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">manifest</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.materialization.builder.TargetMaterializationBuilder.__init__" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initialize the builder.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>manifest</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="MaterializationManifest
+
+
+  
+      dataclass
+   (dita_package_processor.materialization.models.MaterializationManifest)" href="#dita_package_processor.materialization.models.MaterializationManifest">MaterializationManifest</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>MaterializationManifest describing the target root
+and intended outputs.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.builder.TargetMaterializationBuilder.build" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">build</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.materialization.builder.TargetMaterializationBuilder.build" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Prepare the target directory for materialization output.</p>
+<p>This method creates the target root directory if missing and performs
+minimal sanity checks that the location is usable.</p>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>MaterializationError</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the target location cannot be prepared.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.materialization.collision" class="doc doc-heading">
+            <code>dita_package_processor.materialization.collision</code>
+
+
+<a href="#dita_package_processor.materialization.collision" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>collision.py</p>
+<p>Target collision detection for materialization.</p>
+<p>This module detects filesystem conflicts before execution occurs.</p>
+<p>It ensures:
+- No two planned outputs resolve to the same target location.
+- Collision detection is deterministic and explicit.
+- No filesystem mutation occurs here.</p>
+<p>This module supports two APIs:</p>
+<p>1) Legacy style (stateful):
+   detector = CollisionDetector(artifacts=[...])
+   detector.detect()</p>
+<p>2) Injectable orchestrator style (stateless):
+   detector = MaterializationCollisionDetector()
+   detector.detect(artifacts=[...])</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.collision.CollisionDetector" class="doc doc-heading">
+            <code>CollisionDetector</code>
+
+
+<a href="#dita_package_processor.materialization.collision.CollisionDetector" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Legacy collision detector API (stateful).</p>
+<p>This class remains for backward compatibility with tests and older code.</p>
+<p>Usage:
+    detector = CollisionDetector(artifacts=[...])
+    detector.detect()</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.collision.CollisionDetector.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.materialization.collision.CollisionDetector.__init__" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initialize the detector.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>artifacts</code>
+            </td>
+            <td>
+                  <code><span title="typing.Iterable">Iterable</span>[<a class="autorefs autorefs-internal" title="TargetArtifact
+
+
+  
+      dataclass
+   (dita_package_processor.materialization.collision.TargetArtifact)" href="#dita_package_processor.materialization.collision.TargetArtifact">TargetArtifact</a>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Iterable of TargetArtifact objects.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.collision.CollisionDetector.detect" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">detect</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.materialization.collision.CollisionDetector.detect" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Detect collisions among target artifacts.</p>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>MaterializationCollisionError</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If collisions are detected.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.collision.MaterializationCollisionDetector" class="doc doc-heading">
+            <code>MaterializationCollisionDetector</code>
+
+
+<a href="#dita_package_processor.materialization.collision.MaterializationCollisionDetector" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Injectable collision detector API (stateless).</p>
+<p>This is the preferred interface for orchestration wiring.</p>
+<p>Usage:
+    detector = MaterializationCollisionDetector()
+    detector.detect(artifacts=[...])</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.collision.MaterializationCollisionDetector.detect" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">detect</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.materialization.collision.MaterializationCollisionDetector.detect" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Detect collisions among target artifacts.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>artifacts</code>
+            </td>
+            <td>
+                  <code><span title="typing.Iterable">Iterable</span>[<a class="autorefs autorefs-internal" title="TargetArtifact
+
+
+  
+      dataclass
+   (dita_package_processor.materialization.collision.TargetArtifact)" href="#dita_package_processor.materialization.collision.TargetArtifact">TargetArtifact</a>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Iterable of TargetArtifact objects.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>MaterializationCollisionError</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If collisions are detected.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.collision.MaterializationCollisionError" class="doc doc-heading">
+            <code>MaterializationCollisionError</code>
+
+
+<a href="#dita_package_processor.materialization.collision.MaterializationCollisionError" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="RuntimeError">RuntimeError</span></code></p>
+
+
+
+        <p>Raised when target path collisions are detected.</p>
+
+
+
+
+
+
+
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.collision.TargetArtifact" class="doc doc-heading">
+            <code>TargetArtifact</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.materialization.collision.TargetArtifact" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Represents a single materialized output artifact.</p>
+<p>Attributes:
+    path:
+        Absolute or resolved target path.
+    source_action_id:
+        ID of the plan action producing this artifact.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.materialization.layout" class="doc doc-heading">
+            <code>dita_package_processor.materialization.layout</code>
+
+
+<a href="#dita_package_processor.materialization.layout" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>layout.py</p>
+<p>Materialization layout rules for the DITA Package Processor.</p>
+<p>This module defines deterministic rules for mapping artifact-relative paths
+(from plans, handlers, or reports) into a concrete target package layout.</p>
+<p>Materialization layout rules answer:
+    "Given an artifact path, where should it live in the target package?"</p>
+<p>Design constraints:
+- deterministic: same input produces same output
+- conservative: refuses ambiguous or unsafe paths
+- pure mapping: no copying, no filesystem mutation
+- explicit: rules are readable and testable</p>
+<p>Default policy:
+- .ditamap files are placed at target root (flattened to filename)
+- .dita files are placed under target_root/topics/ (unless already under topics/)
+- all other files are placed under target_root/media/
+  - if already under media/, preserve relative structure
+  - if under images/, nest under media/images/
+  - otherwise flatten to filename under media/</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.layout.DefaultDitaLayoutPolicy" class="doc doc-heading">
+            <code>DefaultDitaLayoutPolicy</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.materialization.layout.DefaultDitaLayoutPolicy" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Default deterministic layout policy for DITA-like packages.</p>
+<p>This policy is intentionally conservative and predictable.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.layout.DefaultDitaLayoutPolicy.map_relative_path" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">map_relative_path</span><span class="p">(</span><span class="n">rel_path</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.materialization.layout.DefaultDitaLayoutPolicy.map_relative_path" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Map a relative artifact path into the default target layout.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>rel_path</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Relative artifact path.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Relative target path.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>LayoutError</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If input is unsafe.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.layout.LayoutError" class="doc doc-heading">
+            <code>LayoutError</code>
+
+
+<a href="#dita_package_processor.materialization.layout.LayoutError" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="ValueError">ValueError</span></code></p>
+
+
+
+        <p>Raised when an input path cannot be mapped safely into the target layout.</p>
+
+
+
+
+
+
+
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.layout.LayoutPolicy" class="doc doc-heading">
+            <code>LayoutPolicy</code>
+
+
+<a href="#dita_package_processor.materialization.layout.LayoutPolicy" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="typing.Protocol">Protocol</span></code></p>
+
+
+
+        <p>Strategy interface for layout policies.</p>
+<p>Implementations must be deterministic and must not touch the filesystem.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.layout.LayoutPolicy.map_relative_path" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">map_relative_path</span><span class="p">(</span><span class="n">rel_path</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.materialization.layout.LayoutPolicy.map_relative_path" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Map a relative artifact path into a normalized relative target path.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>rel_path</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Relative path for an artifact (e.g., "topics/a.dita").</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Relative target path (e.g., "topics/a.dita" or "media/a.png").</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>LayoutError</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the path is unsafe or cannot be mapped.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.layout.MaterializationLayoutEngine" class="doc doc-heading">
+            <code>MaterializationLayoutEngine</code>
+
+
+<a href="#dita_package_processor.materialization.layout.MaterializationLayoutEngine" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Orchestrates layout resolution for materialization.</p>
+<p>This engine provides a stable coordination surface for the
+materialization orchestrator without performing filesystem mutation.</p>
+<p>Responsibilities:
+- own TargetLayout
+- expose resolution as an explicit phase</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.layout.MaterializationLayoutEngine.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">target_root</span><span class="p">,</span> <span class="n">policy</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.materialization.layout.MaterializationLayoutEngine.__init__" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initialize the layout engine.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>target_root</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Root of the materialized target package.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>policy</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="LayoutPolicy (dita_package_processor.materialization.layout.LayoutPolicy)" href="#dita_package_processor.materialization.layout.LayoutPolicy">LayoutPolicy</a> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Optional layout policy override.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.layout.MaterializationLayoutEngine.resolve_path" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">resolve_path</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">rel_path</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.materialization.layout.MaterializationLayoutEngine.resolve_path" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Resolve an artifact-relative path into its target location.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>rel_path</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Relative artifact path.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Concrete target path.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>LayoutError</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If mapping fails.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.layout.TargetLayout" class="doc doc-heading">
+            <code>TargetLayout</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.materialization.layout.TargetLayout" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Target layout resolver.</p>
+<p>Converts artifact-relative paths into concrete target paths
+under a provided target root, using a policy object.</p>
+<p>Pattern: Strategy</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.layout.TargetLayout.resolve" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">resolve</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">rel_path</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.materialization.layout.TargetLayout.resolve" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Resolve a relative artifact path to a concrete path under target_root.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>rel_path</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Relative artifact path (must be safe).</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Concrete target path.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>LayoutError</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If rel_path is invalid or unsafe.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.materialization.models" class="doc doc-heading">
+            <code>dita_package_processor.materialization.models</code>
+
+
+<a href="#dita_package_processor.materialization.models" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Materialization domain models.</p>
+<p>These models describe the <em>intended final shape</em> of a materialized
+DITA package after execution has completed.</p>
+<p>They do NOT:
+- perform filesystem operations
+- execute handlers
+- infer missing artifacts</p>
+<p>They DO:
+- represent resolved, final target paths
+- preserve traceability to source actions
+- guarantee collision-free materialization
+- serve as the execution → publishing contract</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.models.MaterializationManifest" class="doc doc-heading">
+            <code>MaterializationManifest</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.materialization.models.MaterializationManifest" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Declarative manifest describing a fully materialized target package.</p>
+<p>This object is the <em>authoritative contract</em> between materialization
+and execution.</p>
+<p>Invariants guaranteed by this model:
+- All target paths are resolved and absolute
+- No duplicate target paths exist
+- Every file is intentional and traceable</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.models.MaterializationManifest.__post_init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">__post_init__</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.materialization.models.MaterializationManifest.__post_init__" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Enforce collision-free and structurally valid manifests.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.models.MaterializationManifest.iter_files" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">iter_files</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.materialization.models.MaterializationManifest.iter_files" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Iterate over materialized files.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="typing.Iterable">Iterable</span>[<a class="autorefs autorefs-internal" title="MaterializedFile
+
+
+  
+      dataclass
+   (dita_package_processor.materialization.models.MaterializedFile)" href="#dita_package_processor.materialization.models.MaterializedFile">MaterializedFile</a>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Iterable of MaterializedFile.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.models.MaterializationManifest.to_dict" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">to_dict</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.materialization.models.MaterializationManifest.to_dict" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Serialize the materialization manifest.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="object">object</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>JSON-safe dictionary.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.models.MaterializedFile" class="doc doc-heading">
+            <code>MaterializedFile</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.materialization.models.MaterializedFile" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Declarative record of a single materialized file.</p>
+<p>This represents a <em>resolved</em> target artifact, not a filesystem operation.</p>
+<h6 id="dita_package_processor.materialization.models.MaterializedFile--attributes">Attributes<a class="headerlink" href="#dita_package_processor.materialization.models.MaterializedFile--attributes" title="Permanent link">&para;</a></h6>
+<p>path:
+    Absolute path of the file in the target package.
+source_action_id:
+    ID of the execution action that produced this file.
+role:
+    Optional semantic role (e.g. "map", "topic", "media").
+layout_metadata:
+    Deterministic layout annotations explaining how this file
+    was placed (policy name, original relative path, etc.).</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.models.MaterializedFile.to_dict" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">to_dict</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.materialization.models.MaterializedFile.to_dict" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Serialize the materialized file record.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="object">object</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>JSON-safe dictionary.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.materialization.orchestrator" class="doc doc-heading">
+            <code>dita_package_processor.materialization.orchestrator</code>
+
+
+<a href="#dita_package_processor.materialization.orchestrator" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <h4 id="dita_package_processor.materialization.orchestrator--orchestratorpy">orchestrator.py<a class="headerlink" href="#dita_package_processor.materialization.orchestrator--orchestratorpy" title="Permanent link">&para;</a></h4>
+<p>Materialization orchestration for the DITA Package Processor.</p>
+<p>Materialization is a first-class pipeline phase and MUST occur before
+execution. This prevents publishing unsafe or ambiguous target layouts.</p>
+<p>This orchestrator is intentionally split into two phases:</p>
+<p>Preflight (MANDATORY, pre-execution):
+    - validate target_root readiness
+    - validate layout mapping rules
+    - detect collisions among planned outputs
+    - emit a materialization manifest (optional, deterministic)</p>
+<p>Finalize (post-execution):
+    - validate execution results are safe for publication (optional)
+    - write finalized manifest / reports (optional)</p>
+<p>Design constraints:
+- deterministic
+- idempotent
+- no hidden filesystem mutation
+- no inference
+- explicit failure on ambiguity</p>
+<p>Pattern notes:
+- Orchestrator coordinates collaborators (Builder, Validator, CollisionDetector,
+  ManifestWriter). Collaborators are dependency-injected for testability and
+  stability.</p>
+<h5 id="dita_package_processor.materialization.orchestrator--key-compatibility-note">Key compatibility note<a class="headerlink" href="#dita_package_processor.materialization.orchestrator--key-compatibility-note" title="Permanent link">&para;</a></h5>
+<p>The default builder (TargetMaterializationBuilder) may change its <strong>init</strong>
+signature over time (e.g., requiring a keyword-only <code>manifest</code>). This
+orchestrator adapts via runtime signature inspection and will pass only
+supported kwargs.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.orchestrator.Builder" class="doc doc-heading">
+            <code>Builder</code>
+
+
+<a href="#dita_package_processor.materialization.orchestrator.Builder" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="typing.Protocol">Protocol</span></code></p>
+
+
+
+        <p>Protocol for target filesystem readiness builders.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.orchestrator.Builder.build" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">build</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.materialization.orchestrator.Builder.build" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Prepare the filesystem target for materialization.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.orchestrator.CollisionDetectorProtocol" class="doc doc-heading">
+            <code>CollisionDetectorProtocol</code>
+
+
+<a href="#dita_package_processor.materialization.orchestrator.CollisionDetectorProtocol" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="typing.Protocol">Protocol</span></code></p>
+
+
+
+        <p>Protocol for collision detection implementations.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.orchestrator.CollisionDetectorProtocol.detect" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">detect</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.materialization.orchestrator.CollisionDetectorProtocol.detect" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Detect collisions and raise if any are found.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.orchestrator.ManifestWriter" class="doc doc-heading">
+            <code>ManifestWriter</code>
+
+
+<a href="#dita_package_processor.materialization.orchestrator.ManifestWriter" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="typing.Protocol">Protocol</span></code></p>
+
+
+
+        <p>Protocol for manifest writers.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.orchestrator.ManifestWriter.write_final" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">write_final</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">execution_report</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.materialization.orchestrator.ManifestWriter.write_final" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Optionally write a final manifest artifact.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.orchestrator.ManifestWriter.write_preflight" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">write_preflight</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.materialization.orchestrator.ManifestWriter.write_preflight" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Optionally write a preflight manifest artifact.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.orchestrator.MaterializationManifest" class="doc doc-heading">
+            <code>MaterializationManifest</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.materialization.orchestrator.MaterializationManifest" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Deterministic materialization manifest.</p>
+<p>This is a conservative, minimal representation of what materialization
+needs to prepare for (resolved target paths and their origin actions).</p>
+<h6 id="dita_package_processor.materialization.orchestrator.MaterializationManifest--parameters">Parameters<a class="headerlink" href="#dita_package_processor.materialization.orchestrator.MaterializationManifest--parameters" title="Permanent link">&para;</a></h6>
+<p>target_root:
+    Target root directory for materialization.
+artifacts:
+    Concrete resolved target artifacts derived from the plan.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.orchestrator.MaterializationOrchestrationError" class="doc doc-heading">
+            <code>MaterializationOrchestrationError</code>
+
+
+<a href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrationError" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="RuntimeError">RuntimeError</span></code></p>
+
+
+
+        <p>Raised when orchestration of materialization fails.</p>
+
+
+
+
+
+
+
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.orchestrator.MaterializationOrchestrator" class="doc doc-heading">
+            <code>MaterializationOrchestrator</code>
+
+
+<a href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrator" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Coordinate the materialization layer.</p>
+<p>This orchestrator is a strict coordinator: it does not implement mapping
+logic or collision semantics itself. It delegates those concerns to
+collaborators.</p>
+<h6 id="dita_package_processor.materialization.orchestrator.MaterializationOrchestrator--parameters">Parameters<a class="headerlink" href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrator--parameters" title="Permanent link">&para;</a></h6>
+<p>plan:
+    Immutable plan that will be executed.
+target_root:
+    Target directory where the materialized package will live.
+builder:
+    Prepares filesystem destination. If omitted, a compatible default
+    TargetMaterializationBuilder is created using a derived manifest.
+validator:
+    Preflight validator. Defaults to NoOpValidator.
+collision_detector:
+    Detects collisions among resolved target artifacts. Defaults to a
+    CollisionDetector built from derived target artifacts.
+manifest_writer:
+    Optional manifest writer. Defaults to NoOpManifestWriter.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.orchestrator.MaterializationOrchestrator.finalize" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">finalize</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">execution_report</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrator.finalize" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Finalize materialization after execution completes.</p>
+<p>This is a post-execution hook. It may write manifests or perform
+additional publication-safety checks based on execution outcomes.</p>
+<h6 id="dita_package_processor.materialization.orchestrator.MaterializationOrchestrator.finalize--parameters">Parameters<a class="headerlink" href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrator.finalize--parameters" title="Permanent link">&para;</a></h6>
+<p>execution_report:
+    Immutable forensic execution report.</p>
+<h6 id="dita_package_processor.materialization.orchestrator.MaterializationOrchestrator.finalize--raises">Raises<a class="headerlink" href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrator.finalize--raises" title="Permanent link">&para;</a></h6>
+<p>MaterializationOrchestrationError
+    If finalization fails.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.orchestrator.MaterializationOrchestrator.preflight" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">preflight</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrator.preflight" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Execute the pre-execution materialization safety gate.</p>
+<p>This MUST run before execution. If this fails, execution must not run.</p>
+<h6 id="dita_package_processor.materialization.orchestrator.MaterializationOrchestrator.preflight--raises">Raises<a class="headerlink" href="#dita_package_processor.materialization.orchestrator.MaterializationOrchestrator.preflight--raises" title="Permanent link">&para;</a></h6>
+<p>MaterializationOrchestrationError
+    If any preflight stage fails.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.orchestrator.NoOpManifestWriter" class="doc doc-heading">
+            <code>NoOpManifestWriter</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.materialization.orchestrator.NoOpManifestWriter" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Default manifest writer that performs no I/O.</p>
+<p>The system can later be extended to emit JSON manifests deterministically.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.orchestrator.NoOpManifestWriter.write_final" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">write_final</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">execution_report</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.materialization.orchestrator.NoOpManifestWriter.write_final" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>No-op.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.orchestrator.NoOpManifestWriter.write_preflight" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">write_preflight</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.materialization.orchestrator.NoOpManifestWriter.write_preflight" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>No-op.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.orchestrator.NoOpValidator" class="doc doc-heading">
+            <code>NoOpValidator</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.materialization.orchestrator.NoOpValidator" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Default validator that performs no validation.</p>
+<p>This exists so materialization can be wired before all validators are
+implemented. Replace with real validators as the safety surface grows.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.orchestrator.NoOpValidator.validate_preflight" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">validate_preflight</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.materialization.orchestrator.NoOpValidator.validate_preflight" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>No-op validation.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.orchestrator.Validator" class="doc doc-heading">
+            <code>Validator</code>
+
+
+<a href="#dita_package_processor.materialization.orchestrator.Validator" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="typing.Protocol">Protocol</span></code></p>
+
+
+
+        <p>Protocol for materialization validators.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.orchestrator.Validator.validate_preflight" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">validate_preflight</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.materialization.orchestrator.Validator.validate_preflight" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Validate pre-execution safety invariants.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.materialization.validation" class="doc doc-heading">
+            <code>dita_package_processor.materialization.validation</code>
+
+
+<a href="#dita_package_processor.materialization.validation" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>validation.py</p>
+<p>Materialization validation rules for the DITA Package Processor.</p>
+<p>This module enforces preconditions required for safe materialization.
+It performs <em>pure validation</em> only.</p>
+<p>Materialization validation answers:</p>
+<ul>
+<li>"Is this plan suitable for producing a target package?"</li>
+<li>"Is this target location safe to use?"</li>
+</ul>
+<p>This module does NOT:
+- create directories
+- modify the filesystem
+- inspect execution reports
+- infer intent</p>
+<p>It exists to fail loudly <em>before</em> irreversible work begins.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.validation.MaterializationValidationError" class="doc doc-heading">
+            <code>MaterializationValidationError</code>
+
+
+<a href="#dita_package_processor.materialization.validation.MaterializationValidationError" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="RuntimeError">RuntimeError</span></code></p>
+
+
+
+        <p>Raised when materialization preconditions are not satisfied.</p>
+<p>These are hard failures that indicate unsafe or invalid input.</p>
+
+
+
+
+
+
+
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.materialization.validation.MaterializationValidator" class="doc doc-heading">
+            <code>MaterializationValidator</code>
+
+
+<a href="#dita_package_processor.materialization.validation.MaterializationValidator" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Validates materialization preconditions.</p>
+<p>This class encapsulates all rules required to decide whether
+a target directory <em>may</em> be materialized safely.</p>
+<p>Design constraints:
+- deterministic
+- side-effect free
+- explicit failure modes</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.validation.MaterializationValidator.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">plan</span><span class="p">,</span> <span class="n">target_root</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.materialization.validation.MaterializationValidator.__init__" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initialize the validator.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>plan</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="Plan
+
+
+  
+      dataclass
+   (dita_package_processor.planning.models.Plan)" href="../api-ref-planning/#dita_package_processor.planning.models.Plan">Plan</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Validated execution plan.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>target_root</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Intended materialization root directory.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.materialization.validation.MaterializationValidator.validate" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">validate</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.materialization.validation.MaterializationValidator.validate" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Validate all materialization preconditions.</p>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>MaterializationValidationError</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If any precondition fails.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

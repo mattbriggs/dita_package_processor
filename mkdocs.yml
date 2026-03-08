@@ -1,4 +1,6 @@
 site_name: DITA Package Processor
+docs_dir: site
+site_dir: docs
 site_description: Deterministic DITA discovery, planning, execution, and plugin extension docs.
 site_url: ""
 

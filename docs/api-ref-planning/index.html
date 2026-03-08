@@ -1,0 +1,5943 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Deterministic DITA discovery, planning, execution, and plugin extension docs.">
+      
+      
+      
+      
+        <link rel="prev" href="../api-ref-materialization/">
+      
+      
+        <link rel="next" href="../api-ref-execution/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+    
+    
+      
+        <title>Planning - DITA Package Processor</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#planning" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="DITA Package Processor" class="md-header__button md-logo" aria-label="DITA Package Processor" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DITA Package Processor
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Planning
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DITA Package Processor" class="md-nav__button md-logo" aria-label="DITA Package Processor" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DITA Package Processor
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Pipeline
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../understand-the-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Understanding the Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../run-vs-execute/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Run vs Execute
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pipeline-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline Integration Specification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plan-creation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plan Creation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../execution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Phase
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../execution-report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Report Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../execution_contract/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Contract
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Discovery
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery Phase
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../discovery-report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pattern-discovery-contract/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pattern Discovery Contract
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pattern-evaluator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evaluate Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pattern-worked-example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Working Pattern Example
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../new-patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documenting New Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extensions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extensions-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extension Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hardening/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardening
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing-migration-job/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developing a Migration Job
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../howto-transform-a-package/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transform a DITA Package
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../patterns-actions-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Patterns, Actions, Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to-create-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Create a Handler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../executor-arc-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Executor Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-knowledge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Knowledge
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-materialization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Materialization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Planning
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.executor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        executor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="executor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.executor.PlanningExecutor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PlanningExecutor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PlanningExecutor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.executor.PlanningExecutor--responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.executor.PlanningExecutor.execute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        execute
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="execute">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.executor.PlanningExecutor.execute--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.executor.PlanningExecutor.execute--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        graph_planner
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="graph_planner">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner--responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner--input" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Input
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner--output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner--design-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner.GraphPlanner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GraphPlanner
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GraphPlanner">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner.GraphPlanner--guarantees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Guarantees
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner.GraphPlanner.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="__init__">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner.GraphPlanner.__init__--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner.GraphPlanner.plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        plan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="plan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner.GraphPlanner.plan--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner.GraphPlanner.plan--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner.GraphPlannerError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GraphPlannerError
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.hydrator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        hydrator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="hydrator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.hydrator.PlanHydrationError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PlanHydrationError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.hydrator.hydrate_plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        hydrate_plan
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.input_normalizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        input_normalizer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="input_normalizer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.input_normalizer.PlanningInputNormalizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PlanningInputNormalizer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PlanningInputNormalizer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.input_normalizer.PlanningInputNormalizer.normalize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        normalize
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.input_normalizer.normalize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        normalize
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.invariants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        invariants
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="invariants">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.invariants.InvariantViolationError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        InvariantViolationError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.invariants.validate_invariants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate_invariants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.layout_rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        layout_rules
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="layout_rules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.layout_rules.LayoutRuleError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LayoutRuleError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.layout_rules.resolve_target_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        resolve_target_path
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.loader" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        loader
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="loader">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.loader.PlanLoadError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PlanLoadError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.loader.load_plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        load_plan
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        models
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models--design-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design Principles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.ActionType" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ActionType
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ActionType">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.ActionType.validate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="validate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.ActionType.validate--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.ActionType.validate--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.ActionType.validate--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.Plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Plan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Plan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.Plan.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dict
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="to_dict">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.Plan.to_dict--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanAction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PlanAction
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PlanAction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanAction.copy_map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        copy_map
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanAction.copy_media" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        copy_media
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanAction.copy_topic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        copy_topic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanAction.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dict
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="to_dict">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanAction.to_dict--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanIntent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PlanIntent
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PlanIntent">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanIntent--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanIntent.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dict
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="to_dict">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanIntent.to_dict--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanSourceDiscovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PlanSourceDiscovery
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PlanSourceDiscovery">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanSourceDiscovery--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanSourceDiscovery.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dict
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="to_dict">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanSourceDiscovery.to_dict--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.planner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        planner
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="planner">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.planner--plannerpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        planner.py
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="planner.py">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.planner--responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.planner.Planner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Planner
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Planner">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.planner.Planner.plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        plan
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.planner.Planner.validate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.validation.ActionValidationError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ActionValidationError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.validation.validate_action" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate_action
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.validation.validate_copy_map_parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate_copy_map_parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-execution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-steps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Steps
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_9_1" id="__nav_9_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schemas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_9_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Schemas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/plan.schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/discovery.schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/execution_report.schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/metaschema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metaschema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/planning_input.schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Planning Input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.executor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        executor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="executor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.executor.PlanningExecutor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PlanningExecutor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PlanningExecutor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.executor.PlanningExecutor--responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.executor.PlanningExecutor.execute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        execute
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="execute">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.executor.PlanningExecutor.execute--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.executor.PlanningExecutor.execute--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        graph_planner
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="graph_planner">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner--responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner--input" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Input
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner--output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner--design-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner.GraphPlanner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GraphPlanner
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GraphPlanner">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner.GraphPlanner--guarantees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Guarantees
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner.GraphPlanner.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="__init__">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner.GraphPlanner.__init__--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner.GraphPlanner.plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        plan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="plan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner.GraphPlanner.plan--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner.GraphPlanner.plan--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.graph_planner.GraphPlannerError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GraphPlannerError
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.hydrator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        hydrator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="hydrator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.hydrator.PlanHydrationError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PlanHydrationError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.hydrator.hydrate_plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        hydrate_plan
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.input_normalizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        input_normalizer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="input_normalizer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.input_normalizer.PlanningInputNormalizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PlanningInputNormalizer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PlanningInputNormalizer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.input_normalizer.PlanningInputNormalizer.normalize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        normalize
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.input_normalizer.normalize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        normalize
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.invariants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        invariants
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="invariants">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.invariants.InvariantViolationError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        InvariantViolationError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.invariants.validate_invariants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate_invariants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.layout_rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        layout_rules
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="layout_rules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.layout_rules.LayoutRuleError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LayoutRuleError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.layout_rules.resolve_target_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        resolve_target_path
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.loader" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        loader
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="loader">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.loader.PlanLoadError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PlanLoadError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.loader.load_plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        load_plan
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        models
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models--design-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design Principles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.ActionType" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ActionType
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ActionType">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.ActionType.validate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="validate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.ActionType.validate--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.ActionType.validate--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.ActionType.validate--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.Plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Plan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Plan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.Plan.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dict
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="to_dict">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.Plan.to_dict--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanAction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PlanAction
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PlanAction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanAction.copy_map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        copy_map
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanAction.copy_media" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        copy_media
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanAction.copy_topic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        copy_topic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanAction.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dict
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="to_dict">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanAction.to_dict--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanIntent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PlanIntent
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PlanIntent">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanIntent--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanIntent.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dict
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="to_dict">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanIntent.to_dict--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanSourceDiscovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PlanSourceDiscovery
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PlanSourceDiscovery">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanSourceDiscovery--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanSourceDiscovery.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dict
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="to_dict">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.models.PlanSourceDiscovery.to_dict--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.planner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        planner
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="planner">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.planner--plannerpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        planner.py
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="planner.py">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.planner--responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.planner.Planner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Planner
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Planner">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.planner.Planner.plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        plan
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.planner.Planner.validate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.validation.ActionValidationError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ActionValidationError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.validation.validate_action" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate_action
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.planning.validation.validate_copy_map_parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate_copy_map_parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="planning">Planning<a class="headerlink" href="#planning" title="Permanent link">&para;</a></h1>
+<p>The Planning module converts discovery output into a <strong>deterministic execution plan</strong>. It is where intent is expressed explicitly as ordered actions with clear reasons and traceable origins.  </p>
+<p>Planning does not mutate files or execute transformations. It analyzes structure, consumes <code>PlanningInput</code>, aggregates plugin-emitted action templates, and emits a plan that can be reviewed, validated, versioned, and replayed.  </p>
+<p>This separation allows complex transformations to be reasoned about and tested independently of execution, and it makes the system explainable by design.</p>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.planning.executor" class="doc doc-heading">
+            <code>dita_package_processor.planning.executor</code>
+
+
+<a href="#dita_package_processor.planning.executor" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Planning execution adapter.</p>
+<p>Planning never performs execution directly.
+It delegates execution to the execution layer.</p>
+<p>This adapter exists for backward compatibility with callers that still
+invoke execution through the planning namespace.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.planning.executor.PlanningExecutor" class="doc doc-heading">
+            <code>PlanningExecutor</code>
+
+
+<a href="#dita_package_processor.planning.executor.PlanningExecutor" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Backwards-compatible execution adapter.</p>
+<p>This class does not perform execution itself. It delegates
+to <code>DryRunExecutor</code> in accordance with the execution contract.</p>
+<h6 id="dita_package_processor.planning.executor.PlanningExecutor--responsibilities">Responsibilities<a class="headerlink" href="#dita_package_processor.planning.executor.PlanningExecutor--responsibilities" title="Permanent link">&para;</a></h6>
+<ul>
+<li>Normalize incoming plan objects</li>
+<li>Delegate to execution layer</li>
+<li>Emit ExecutionReport</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.planning.executor.PlanningExecutor.execute" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">execute</span><span class="p">(</span><span class="n">plan</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">execution_id</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.planning.executor.PlanningExecutor.execute" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Execute a plan in dry-run mode.</p>
+<h6 id="dita_package_processor.planning.executor.PlanningExecutor.execute--parameters">Parameters<a class="headerlink" href="#dita_package_processor.planning.executor.PlanningExecutor.execute--parameters" title="Permanent link">&para;</a></h6>
+<p>plan : Any
+    Plan object or dictionary.
+execution_id : str
+    Unique execution identifier.</p>
+<h6 id="dita_package_processor.planning.executor.PlanningExecutor.execute--returns">Returns<a class="headerlink" href="#dita_package_processor.planning.executor.PlanningExecutor.execute--returns" title="Permanent link">&para;</a></h6>
+<p>ExecutionReport</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.planning.graph_planner" class="doc doc-heading">
+            <code>dita_package_processor.planning.graph_planner</code>
+
+
+<a href="#dita_package_processor.planning.graph_planner" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Graph-based planner for dependency resolution.</p>
+<p>This module operates strictly on the PlanningInput contract layer.</p>
+<p>It does NOT depend on discovery types or DependencyGraph.</p>
+<h5 id="dita_package_processor.planning.graph_planner--responsibilities">Responsibilities<a class="headerlink" href="#dita_package_processor.planning.graph_planner--responsibilities" title="Permanent link">&para;</a></h5>
+<ul>
+<li>Determine root artifact</li>
+<li>Walk relationships deterministically</li>
+<li>Produce stable execution ordering</li>
+<li>No filesystem</li>
+<li>No mutation</li>
+<li>No discovery coupling</li>
+</ul>
+<h5 id="dita_package_processor.planning.graph_planner--input">Input<a class="headerlink" href="#dita_package_processor.planning.graph_planner--input" title="Permanent link">&para;</a></h5>
+<p>nodes : list[str]
+relationships : list[PlanningRelationship | dict]</p>
+<h5 id="dita_package_processor.planning.graph_planner--output">Output<a class="headerlink" href="#dita_package_processor.planning.graph_planner--output" title="Permanent link">&para;</a></h5>
+<p>list[str]
+    Deterministic artifact order suitable for action emission.</p>
+<h5 id="dita_package_processor.planning.graph_planner--design-rules">Design rules<a class="headerlink" href="#dita_package_processor.planning.graph_planner--design-rules" title="Permanent link">&para;</a></h5>
+<ul>
+<li>deterministic</li>
+<li>pure</li>
+<li>contract-only</li>
+<li>fail fast</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.planning.graph_planner.GraphPlanner" class="doc doc-heading">
+            <code>GraphPlanner</code>
+
+
+<a href="#dita_package_processor.planning.graph_planner.GraphPlanner" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Deterministic dependency planner operating on contract relationships.</p>
+<h6 id="dita_package_processor.planning.graph_planner.GraphPlanner--guarantees">Guarantees<a class="headerlink" href="#dita_package_processor.planning.graph_planner.GraphPlanner--guarantees" title="Permanent link">&para;</a></h6>
+<ul>
+<li>stable ordering</li>
+<li>no duplicates</li>
+<li>dependencies visited before dependents</li>
+<li>no discovery layer coupling</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.planning.graph_planner.GraphPlanner.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="n">relationships</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.planning.graph_planner.GraphPlanner.__init__" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initialize planner.</p>
+<h6 id="dita_package_processor.planning.graph_planner.GraphPlanner.__init__--parameters">Parameters<a class="headerlink" href="#dita_package_processor.planning.graph_planner.GraphPlanner.__init__--parameters" title="Permanent link">&para;</a></h6>
+<p>nodes
+    Artifact identifiers.
+relationships
+    Contract relationships containing:
+        source, target, type, pattern_id</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.planning.graph_planner.GraphPlanner.plan" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">plan</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.planning.graph_planner.GraphPlanner.plan" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Produce deterministic traversal order.</p>
+<h6 id="dita_package_processor.planning.graph_planner.GraphPlanner.plan--returns">Returns<a class="headerlink" href="#dita_package_processor.planning.graph_planner.GraphPlanner.plan--returns" title="Permanent link">&para;</a></h6>
+<p>List[str]</p>
+<h6 id="dita_package_processor.planning.graph_planner.GraphPlanner.plan--raises">Raises<a class="headerlink" href="#dita_package_processor.planning.graph_planner.GraphPlanner.plan--raises" title="Permanent link">&para;</a></h6>
+<p>GraphPlannerError
+    If graph is cyclic or ambiguous.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.planning.graph_planner.GraphPlannerError" class="doc doc-heading">
+            <code>GraphPlannerError</code>
+
+
+<a href="#dita_package_processor.planning.graph_planner.GraphPlannerError" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="RuntimeError">RuntimeError</span></code></p>
+
+
+
+        <p>Raised when dependency planning cannot be resolved safely.</p>
+
+
+
+
+
+
+
+
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.planning.hydrator" class="doc doc-heading">
+            <code>dita_package_processor.planning.hydrator</code>
+
+
+<a href="#dita_package_processor.planning.hydrator" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Plan hydration logic.</p>
+<p>This module converts a JSON-loaded dictionary into strongly-typed
+planning domain models.</p>
+<p>Hydration is a strict boundary:</p>
+<ul>
+<li>JSON is untrusted input</li>
+<li>Models are validated, typed contracts</li>
+<li>Errors are explicit and never silent</li>
+</ul>
+<p>No filesystem or execution semantics exist here.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.planning.hydrator.PlanHydrationError" class="doc doc-heading">
+            <code>PlanHydrationError</code>
+
+
+<a href="#dita_package_processor.planning.hydrator.PlanHydrationError" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="ValueError">ValueError</span></code></p>
+
+
+
+        <p>Raised when a plan cannot be hydrated into a Plan model.</p>
+<p>This signals malformed, missing, or structurally invalid input.</p>
+
+
+
+
+
+
+
+
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="dita_package_processor.planning.hydrator.hydrate_plan" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">hydrate_plan</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.planning.hydrator.hydrate_plan" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Hydrate a :class:<code>Plan</code> model from a parsed JSON payload.</p>
+<p>This function is a strict deserialization boundary. It assumes:</p>
+<ul>
+<li>Input is untrusted</li>
+<li>All required fields must be present</li>
+<li>Types must be valid or convertible</li>
+<li>Failures must be explicit and actionable</li>
+</ul>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>payload</code>
+            </td>
+            <td>
+                  <code><span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Parsed JSON dictionary.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="Plan
+
+
+  
+      dataclass
+   (dita_package_processor.planning.models.Plan)" href="#dita_package_processor.planning.models.Plan">Plan</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Hydrated :class:<code>Plan</code> instance.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>PlanHydrationError</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If required fields are missing or invalid.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.planning.input_normalizer" class="doc doc-heading">
+            <code>dita_package_processor.planning.input_normalizer</code>
+
+
+<a href="#dita_package_processor.planning.input_normalizer" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Discovery input normalizer (legacy compatibility layer).</p>
+<p>This module exists to normalize older discovery JSON formats that still expose
+graph structures. It is NOT part of the new contract boundary.</p>
+<p>The new, canonical boundary is:</p>
+<pre><code>discovery.json
+    → planning/contracts/discovery_to_planning.py
+    → PlanningInput
+</code></pre>
+<p>This module remains only for historical pipeline compatibility and migration
+support. Planning MUST NOT depend on this module.</p>
+<p>Responsibilities:
+- Canonicalize paths
+- Remove media artifacts from graph topology
+- Remove edges involving media
+- Ensure graph nodes reference known artifacts
+- Perform no inference and no guessing</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.planning.input_normalizer.PlanningInputNormalizer" class="doc doc-heading">
+            <code>PlanningInputNormalizer</code>
+
+
+<a href="#dita_package_processor.planning.input_normalizer.PlanningInputNormalizer" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Normalize legacy discovery graph output into planner-compatible structure.</p>
+<p>WARNING:
+    This is NOT the new contract bridge.
+    The canonical bridge is planning/contracts/discovery_to_planning.py.</p>
+<p>This class only exists to stabilize older pipeline stages that still expect
+graph-shaped discovery output.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.planning.input_normalizer.PlanningInputNormalizer.normalize" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">normalize</span><span class="p">(</span><span class="n">discovery</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+<a href="#dita_package_processor.planning.input_normalizer.PlanningInputNormalizer.normalize" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Normalize legacy discovery input.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>discovery</code>
+            </td>
+            <td>
+                  <code><span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Parsed discovery JSON.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Normalized structure with semantic-only artifacts and graph.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>ValueError</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>On structural inconsistency.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="dita_package_processor.planning.input_normalizer.normalize" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">normalize</span><span class="p">(</span><span class="n">discovery</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.planning.input_normalizer.normalize" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Functional wrapper for PlanningInputNormalizer.normalize.</p>
+<p>Exists only for backward pipeline compatibility.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.planning.invariants" class="doc doc-heading">
+            <code>dita_package_processor.planning.invariants</code>
+
+
+<a href="#dita_package_processor.planning.invariants" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Invariant enforcement for DITA execution plans.</p>
+<p>This module defines and enforces <em>global execution invariants</em> that must
+hold for a plan to be considered logically safe to execute.</p>
+<p>Invariants differ from schema validation:</p>
+<ul>
+<li>Validation ensures structural correctness.</li>
+<li>Invariants ensure semantic and operational safety.</li>
+</ul>
+<p>Any invariant violation is fatal and must halt execution.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.planning.invariants.InvariantViolationError" class="doc doc-heading">
+            <code>InvariantViolationError</code>
+
+
+<a href="#dita_package_processor.planning.invariants.InvariantViolationError" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="ValueError">ValueError</span></code></p>
+
+
+
+        <p>Raised when an execution invariant is violated.</p>
+<p>This signals that a plan is unsafe to execute regardless of
+syntactic correctness.</p>
+
+
+
+
+
+
+
+
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="dita_package_processor.planning.invariants.validate_invariants" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">validate_invariants</span><span class="p">(</span><span class="n">plan</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.planning.invariants.validate_invariants" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Validate all execution invariants for a plan.</p>
+<p>This function is the single public entry point for invariant
+enforcement. It must be called after schema validation and before
+execution.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>plan</code>
+            </td>
+            <td>
+                  <code><span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Execution plan dictionary.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>InvariantViolationError</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If any invariant is violated.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.planning.layout_rules" class="doc doc-heading">
+            <code>dita_package_processor.planning.layout_rules</code>
+
+
+<a href="#dita_package_processor.planning.layout_rules" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Target layout rules for planned artifacts.</p>
+<p>This module defines deterministic rules that map an artifact type to
+its target location within the output package.</p>
+<p>This layer is <em>pure planning logic</em>:</p>
+<ul>
+<li>No filesystem access</li>
+<li>No directory creation</li>
+<li>No content inspection</li>
+<li>No mutation</li>
+</ul>
+<p>It is a pure mapping layer used by the planning system to determine
+where artifacts should be placed.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.planning.layout_rules.LayoutRuleError" class="doc doc-heading">
+            <code>LayoutRuleError</code>
+
+
+<a href="#dita_package_processor.planning.layout_rules.LayoutRuleError" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="ValueError">ValueError</span></code></p>
+
+
+
+        <p>Raised when an unknown or unsupported artifact type is encountered.</p>
+<p>This indicates a planning error: either discovery classification
+failed or a new artifact type has not yet been mapped.</p>
+
+
+
+
+
+
+
+
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="dita_package_processor.planning.layout_rules.resolve_target_path" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">resolve_target_path</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">artifact_type</span><span class="p">,</span> <span class="n">source_path</span><span class="p">,</span> <span class="n">target_root</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.planning.layout_rules.resolve_target_path" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Resolve the target filesystem path for an artifact.</p>
+<p>Layout rules:</p>
+<ul>
+<li><code>map</code>   → <code>&lt;target_root&gt;/&lt;filename&gt;</code></li>
+<li><code>topic</code> → <code>&lt;target_root&gt;/topics/&lt;filename&gt;</code></li>
+<li><code>media</code> → <code>&lt;target_root&gt;/media/&lt;filename&gt;</code></li>
+</ul>
+<p>Only the filename is preserved. All directory hierarchy from the
+source path is intentionally flattened per artifact class to ensure
+deterministic, collision-free layouts.</p>
+<p>This function performs <strong>no I/O</strong> and <strong>no mutation</strong>. It only
+returns a computed path.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>artifact_type</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Artifact classification (<code>"map"</code>, <code>"topic"</code>,
+or <code>"media"</code>).</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>source_path</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Original artifact path.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>target_root</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Root directory of the output package.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Target path for the artifact.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>LayoutRuleError</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the artifact type is unsupported.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.planning.loader" class="doc doc-heading">
+            <code>dita_package_processor.planning.loader</code>
+
+
+<a href="#dita_package_processor.planning.loader" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Plan loading utilities.</p>
+<p>Loads a <code>plan.json</code> file from disk and hydrates it into a validated
+:class:<code>~dita_package_processor.planning.models.Plan</code> model.</p>
+<p>Responsibilities:
+- Read JSON from disk
+- Parse JSON into a Python object
+- Delegate structural validation and typing to the hydrator</p>
+<p>This module enforces a <em>hard boundary</em> between:
+    Filesystem → Planning Domain</p>
+<p>No semantic validation, execution logic, or fallback behavior is allowed here.
+All failures are fatal and must abort the pipeline.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.planning.loader.PlanLoadError" class="doc doc-heading">
+            <code>PlanLoadError</code>
+
+
+<a href="#dita_package_processor.planning.loader.PlanLoadError" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="ValueError">ValueError</span></code></p>
+
+
+
+        <p>Raised when a plan file cannot be loaded or hydrated.</p>
+<p>Indicates a contract boundary failure between the filesystem
+and the planning domain model.</p>
+<p>These errors are non-recoverable by design.</p>
+
+
+
+
+
+
+
+
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="dita_package_processor.planning.loader.load_plan" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">load_plan</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.planning.loader.load_plan" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Load and hydrate a <code>plan.json</code> file.</p>
+<p>Strict process:
+    1. Read UTF-8 JSON text from disk
+    2. Parse JSON into a Python mapping
+    3. Hydrate mapping into a :class:<code>Plan</code></p>
+<p>No optional behavior, no guessing, no silent recovery.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>path</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Path to the <code>plan.json</code> file.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="Plan
+
+
+  
+      dataclass
+   (dita_package_processor.planning.models.Plan)" href="#dita_package_processor.planning.models.Plan">Plan</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Fully hydrated :class:<code>Plan</code> instance.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>PlanLoadError</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If any step fails.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.planning.models" class="doc doc-heading">
+            <code>dita_package_processor.planning.models</code>
+
+
+<a href="#dita_package_processor.planning.models" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Planning data models.</p>
+<p>This module defines the immutable data structures that represent a validated
+execution plan.</p>
+<h5 id="dita_package_processor.planning.models--design-principles">Design Principles<a class="headerlink" href="#dita_package_processor.planning.models--design-principles" title="Permanent link">&para;</a></h5>
+<ul>
+<li>Declarative only.</li>
+<li>No execution state.</li>
+<li>No mutation.</li>
+<li>No filesystem logic.</li>
+<li>No runtime side effects.</li>
+</ul>
+<p>Planning describes intent.
+Execution describes effects.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.planning.models.ActionType" class="doc doc-heading">
+            <code>ActionType</code>
+
+
+<a href="#dita_package_processor.planning.models.ActionType" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="str">str</span></code>, <code><span title="enum.Enum">Enum</span></code></p>
+
+
+
+        <p>Canonical set of allowed plan action types.</p>
+<p>This enum is the single source of truth for action identity.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.planning.models.ActionType.validate" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">validate</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
+  </span>
+
+<a href="#dita_package_processor.planning.models.ActionType.validate" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Validate and normalize an action type.</p>
+<h6 id="dita_package_processor.planning.models.ActionType.validate--parameters">Parameters<a class="headerlink" href="#dita_package_processor.planning.models.ActionType.validate--parameters" title="Permanent link">&para;</a></h6>
+<p>value:
+    String or ActionType.</p>
+<h6 id="dita_package_processor.planning.models.ActionType.validate--returns">Returns<a class="headerlink" href="#dita_package_processor.planning.models.ActionType.validate--returns" title="Permanent link">&para;</a></h6>
+<p>str
+    Canonical action type string.</p>
+<h6 id="dita_package_processor.planning.models.ActionType.validate--raises">Raises<a class="headerlink" href="#dita_package_processor.planning.models.ActionType.validate--raises" title="Permanent link">&para;</a></h6>
+<p>ValueError
+    If the action type is invalid.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.planning.models.Plan" class="doc doc-heading">
+            <code>Plan</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.planning.models.Plan" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Immutable execution plan.</p>
+<p>A Plan is:
+- Deterministic
+- Declarative
+- Immutable
+- Execution-agnostic</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.planning.models.Plan.to_dict" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">to_dict</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.planning.models.Plan.to_dict" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Serialize plan to JSON-compatible dictionary.</p>
+<h6 id="dita_package_processor.planning.models.Plan.to_dict--returns">Returns<a class="headerlink" href="#dita_package_processor.planning.models.Plan.to_dict--returns" title="Permanent link">&para;</a></h6>
+<p>Dict[str, Any]</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.planning.models.PlanAction" class="doc doc-heading">
+            <code>PlanAction</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.planning.models.PlanAction" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Declarative execution action.</p>
+<p>This structure represents intent only.
+It contains no execution state.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.planning.models.PlanAction.copy_map" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">copy_map</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">source_path</span><span class="p">,</span> <span class="n">target_path</span><span class="p">,</span> <span class="n">reason</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
+  </span>
+
+<a href="#dita_package_processor.planning.models.PlanAction.copy_map" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create COPY_MAP action.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.planning.models.PlanAction.copy_media" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">copy_media</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">source_path</span><span class="p">,</span> <span class="n">target_path</span><span class="p">,</span> <span class="n">reason</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
+  </span>
+
+<a href="#dita_package_processor.planning.models.PlanAction.copy_media" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create COPY_MEDIA action.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.planning.models.PlanAction.copy_topic" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">copy_topic</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">source_path</span><span class="p">,</span> <span class="n">target_path</span><span class="p">,</span> <span class="n">reason</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
+  </span>
+
+<a href="#dita_package_processor.planning.models.PlanAction.copy_topic" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create COPY_TOPIC action.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.planning.models.PlanAction.to_dict" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">to_dict</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.planning.models.PlanAction.to_dict" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Serialize PlanAction.</p>
+<h6 id="dita_package_processor.planning.models.PlanAction.to_dict--returns">Returns<a class="headerlink" href="#dita_package_processor.planning.models.PlanAction.to_dict--returns" title="Permanent link">&para;</a></h6>
+<p>Dict[str, Any]</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.planning.models.PlanIntent" class="doc doc-heading">
+            <code>PlanIntent</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.planning.models.PlanIntent" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>High-level intent of the plan.</p>
+<h6 id="dita_package_processor.planning.models.PlanIntent--parameters">Parameters<a class="headerlink" href="#dita_package_processor.planning.models.PlanIntent--parameters" title="Permanent link">&para;</a></h6>
+<p>target:
+    Logical execution target (e.g. "analysis_only").
+description:
+    Human-readable explanation of plan intent.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.planning.models.PlanIntent.to_dict" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">to_dict</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.planning.models.PlanIntent.to_dict" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Serialize plan intent.</p>
+<h6 id="dita_package_processor.planning.models.PlanIntent.to_dict--returns">Returns<a class="headerlink" href="#dita_package_processor.planning.models.PlanIntent.to_dict--returns" title="Permanent link">&para;</a></h6>
+<p>Dict[str, Any]</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.planning.models.PlanSourceDiscovery" class="doc doc-heading">
+            <code>PlanSourceDiscovery</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.planning.models.PlanSourceDiscovery" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Metadata describing the discovery input that produced the plan.</p>
+<h6 id="dita_package_processor.planning.models.PlanSourceDiscovery--parameters">Parameters<a class="headerlink" href="#dita_package_processor.planning.models.PlanSourceDiscovery--parameters" title="Permanent link">&para;</a></h6>
+<p>path:
+    Root path of discovery input.
+schema_version:
+    Schema version used during discovery.
+artifact_count:
+    Total artifacts discovered.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.planning.models.PlanSourceDiscovery.to_dict" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">to_dict</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.planning.models.PlanSourceDiscovery.to_dict" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Serialize discovery metadata.</p>
+<h6 id="dita_package_processor.planning.models.PlanSourceDiscovery.to_dict--returns">Returns<a class="headerlink" href="#dita_package_processor.planning.models.PlanSourceDiscovery.to_dict--returns" title="Permanent link">&para;</a></h6>
+<p>Dict[str, Any]</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.planning.planner" class="doc doc-heading">
+            <code>dita_package_processor.planning.planner</code>
+
+
+<a href="#dita_package_processor.planning.planner" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <h4 id="dita_package_processor.planning.planner--plannerpy">planner.py<a class="headerlink" href="#dita_package_processor.planning.planner--plannerpy" title="Permanent link">&para;</a></h4>
+<p>Deterministic execution planner.</p>
+<h5 id="dita_package_processor.planning.planner--responsibilities">Responsibilities<a class="headerlink" href="#dita_package_processor.planning.planner--responsibilities" title="Permanent link">&para;</a></h5>
+<ul>
+<li>Accept ONLY a PlanningInput contract</li>
+<li>Produce a deterministic Plan dictionary</li>
+<li>Perform NO discovery</li>
+<li>Perform NO normalization</li>
+<li>Perform NO schema forgiveness</li>
+</ul>
+<p>Planner is intentionally boring.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.planning.planner.Planner" class="doc doc-heading">
+            <code>Planner</code>
+
+
+<a href="#dita_package_processor.planning.planner.Planner" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Deterministic planner.</p>
+<p>Consumes only PlanningInput.
+Emits stable copy actions.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.planning.planner.Planner.plan" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">plan</span><span class="p">(</span><span class="n">planning_input</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.planning.planner.Planner.plan" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Generate deterministic execution plan.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.planning.planner.Planner.validate" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">validate</span><span class="p">(</span><span class="n">plan</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.planning.planner.Planner.validate" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Validate plan against schema + invariants.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.planning.validation" class="doc doc-heading">
+            <code>dita_package_processor.planning.validation</code>
+
+
+<a href="#dita_package_processor.planning.validation" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Execution-time validation utilities.</p>
+<p>These checks validate action parameters before execution.
+They do not perform filesystem writes or mutate any state.</p>
+<p>This module exists to enforce the executor contract:
+- Plans may be structurally valid
+- Actions may be syntactically correct
+- But execution must still fail fast if parameters are unsafe</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.planning.validation.ActionValidationError" class="doc doc-heading">
+            <code>ActionValidationError</code>
+
+
+<a href="#dita_package_processor.planning.validation.ActionValidationError" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="ValueError">ValueError</span></code></p>
+
+
+
+        <p>Raised when action parameters are invalid or unsafe for execution.</p>
+
+
+
+
+
+
+
+
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="dita_package_processor.planning.validation.validate_action" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">validate_action</span><span class="p">(</span><span class="n">action</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.planning.validation.validate_action" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Validate a PlanAction based on its type.</p>
+<p>This is the main entry point used by executors. It dispatches to the
+appropriate validator based on <code>action.type</code>.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>action</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="PlanAction
+
+
+  
+      dataclass
+   (dita_package_processor.planning.models.PlanAction)" href="#dita_package_processor.planning.models.PlanAction">PlanAction</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>PlanAction to validate.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>ActionValidationError</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If validation fails.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="dita_package_processor.planning.validation.validate_copy_map_parameters" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">validate_copy_map_parameters</span><span class="p">(</span><span class="n">action</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.planning.validation.validate_copy_map_parameters" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Validate parameters for the <code>copy_map</code> action.</p>
+<p>Required parameters:
+- source_path
+- target_path</p>
+<p>Validation rules:
+- source_path must exist
+- target_path must NOT already exist</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>action</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="PlanAction
+
+
+  
+      dataclass
+   (dita_package_processor.planning.models.PlanAction)" href="#dita_package_processor.planning.models.PlanAction">PlanAction</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>PlanAction to validate.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>ActionValidationError</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If validation fails.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

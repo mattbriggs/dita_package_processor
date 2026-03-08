@@ -1,0 +1,5701 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Deterministic DITA discovery, planning, execution, and plugin extension docs.">
+      
+      
+      
+      
+        <link rel="prev" href="../api-ref-core/">
+      
+      
+        <link rel="next" href="../api-ref-knowledge/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+    
+    
+      
+        <title>Discovery - DITA Package Processor</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#discovery" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="DITA Package Processor" class="md-header__button md-logo" aria-label="DITA Package Processor" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DITA Package Processor
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Discovery
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DITA Package Processor" class="md-nav__button md-logo" aria-label="DITA Package Processor" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DITA Package Processor
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Pipeline
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../understand-the-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Understanding the Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../run-vs-execute/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Run vs Execute
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pipeline-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline Integration Specification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plan-creation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plan Creation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../execution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Phase
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../execution-report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Report Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../execution_contract/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Contract
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Discovery
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery Phase
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../discovery-report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pattern-discovery-contract/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pattern Discovery Contract
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pattern-evaluator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evaluate Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pattern-worked-example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Working Pattern Example
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../new-patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documenting New Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extensions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extensions-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extension Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hardening/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardening
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developing-migration-job/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developing a Migration Job
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../howto-transform-a-package/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transform a DITA Package
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../patterns-actions-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Patterns, Actions, Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to-create-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Create a Handler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../executor-arc-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Executor Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.classifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        classifiers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="classifiers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.classifiers.classify_map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        classify_map
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.classifiers.classify_topic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        classify_topic
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        graph
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="graph">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph.DependencyEdge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DependencyEdge
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DependencyEdge">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph.DependencyEdge.from_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        from_dict
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph.DependencyEdge.from_relationship" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        from_relationship
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph.DependencyEdge.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dict
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph.DependencyGraph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DependencyGraph
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DependencyGraph">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph.DependencyGraph.from_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        from_dict
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph.DependencyGraph.from_discovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        from_discovery
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph.DependencyGraph.incoming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        incoming
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph.DependencyGraph.outgoing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        outgoing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph.DependencyGraph.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dict
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        models
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models--design-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design Principles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryArtifact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DiscoveryArtifact
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DiscoveryArtifact">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryArtifact--rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryArtifact.classification_label" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        classification_label
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="classification_label">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryArtifact.classification_label--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryArtifact.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dict
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryInventory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DiscoveryInventory
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DiscoveryInventory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryInventory.add_artifact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_artifact
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryInventory.resolve_main_map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        resolve_main_map
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="resolve_main_map">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryInventory.resolve_main_map--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryInventory.resolve_main_map--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryResult" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DiscoveryResult
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DiscoveryResult">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryResult.main_map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        main_map
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoverySummary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DiscoverySummary
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.path_normalizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        path_normalizer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="path_normalizer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.path_normalizer.normalize_reference_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        normalize_reference_path
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.patterns.Evidence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidence
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.patterns.Pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pattern">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.patterns.Pattern--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.patterns.PatternEvaluator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PatternEvaluator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PatternEvaluator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.patterns.PatternEvaluator--modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.patterns.PatternEvaluator.evaluate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        evaluate
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="evaluate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.patterns.PatternEvaluator.evaluate--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.patterns.PatternEvaluator.evaluate--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.relationships" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        relationships
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="relationships">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.relationships.RelationshipExtractor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RelationshipExtractor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RelationshipExtractor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.relationships.RelationshipExtractor.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.relationships.RelationshipExtractor.extract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        extract
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        report
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="report">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.report.DiscoveryReport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DiscoveryReport
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DiscoveryReport">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.report.DiscoveryReport.summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        summary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.report.DiscoveryReport.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dict
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.scanner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        scanner
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="scanner">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.scanner--responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.scanner.DiscoveryScanner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DiscoveryScanner
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DiscoveryScanner">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.scanner.DiscoveryScanner.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="__init__">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.scanner.DiscoveryScanner.__init__--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.scanner.DiscoveryScanner.scan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        scan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="scan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.scanner.DiscoveryScanner.scan--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.signatures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        signatures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="signatures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.signatures.MapSignature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MapSignature
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.signatures.TopicSignature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TopicSignature
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.signatures.extract_map_signature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        extract_map_signature
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.signatures.extract_topic_signature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        extract_topic_signature
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.signatures.has_maprefs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        has_maprefs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.signatures.has_title" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        has_title
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.signatures.has_topicrefs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        has_topicrefs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-knowledge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Knowledge
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-materialization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Materialization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-planning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-execution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-ref-steps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Steps
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_9_1" id="__nav_9_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schemas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_9_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Schemas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/plan.schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/discovery.schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/execution_report.schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/metaschema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metaschema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/schemas/planning_input.schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Planning Input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.classifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        classifiers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="classifiers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.classifiers.classify_map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        classify_map
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.classifiers.classify_topic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        classify_topic
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        graph
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="graph">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph.DependencyEdge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DependencyEdge
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DependencyEdge">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph.DependencyEdge.from_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        from_dict
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph.DependencyEdge.from_relationship" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        from_relationship
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph.DependencyEdge.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dict
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph.DependencyGraph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DependencyGraph
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DependencyGraph">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph.DependencyGraph.from_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        from_dict
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph.DependencyGraph.from_discovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        from_discovery
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph.DependencyGraph.incoming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        incoming
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph.DependencyGraph.outgoing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        outgoing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.graph.DependencyGraph.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dict
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        models
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models--design-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design Principles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryArtifact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DiscoveryArtifact
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DiscoveryArtifact">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryArtifact--rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryArtifact.classification_label" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        classification_label
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="classification_label">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryArtifact.classification_label--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryArtifact.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dict
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryInventory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DiscoveryInventory
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DiscoveryInventory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryInventory.add_artifact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_artifact
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryInventory.resolve_main_map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        resolve_main_map
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="resolve_main_map">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryInventory.resolve_main_map--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryInventory.resolve_main_map--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryResult" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DiscoveryResult
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DiscoveryResult">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoveryResult.main_map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        main_map
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.models.DiscoverySummary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DiscoverySummary
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.path_normalizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        path_normalizer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="path_normalizer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.path_normalizer.normalize_reference_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        normalize_reference_path
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.patterns.Evidence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidence
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.patterns.Pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pattern">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.patterns.Pattern--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.patterns.PatternEvaluator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PatternEvaluator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PatternEvaluator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.patterns.PatternEvaluator--modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.patterns.PatternEvaluator.evaluate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        evaluate
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="evaluate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.patterns.PatternEvaluator.evaluate--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.patterns.PatternEvaluator.evaluate--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.relationships" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        relationships
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="relationships">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.relationships.RelationshipExtractor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RelationshipExtractor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RelationshipExtractor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.relationships.RelationshipExtractor.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.relationships.RelationshipExtractor.extract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        extract
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        report
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="report">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.report.DiscoveryReport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DiscoveryReport
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DiscoveryReport">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.report.DiscoveryReport.summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        summary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.report.DiscoveryReport.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dict
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.scanner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        scanner
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="scanner">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.scanner--responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.scanner.DiscoveryScanner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DiscoveryScanner
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DiscoveryScanner">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.scanner.DiscoveryScanner.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="__init__">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.scanner.DiscoveryScanner.__init__--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.scanner.DiscoveryScanner.scan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        scan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="scan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.scanner.DiscoveryScanner.scan--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.signatures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        signatures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="signatures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.signatures.MapSignature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MapSignature
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.signatures.TopicSignature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TopicSignature
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.signatures.extract_map_signature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        extract_map_signature
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.signatures.extract_topic_signature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        extract_topic_signature
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.signatures.has_maprefs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        has_maprefs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.signatures.has_title" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        has_title
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dita_package_processor.discovery.signatures.has_topicrefs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        has_topicrefs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="discovery">Discovery<a class="headerlink" href="#discovery" title="Permanent link">&para;</a></h1>
+<p>The Discovery module performs a <strong>read-only structural scan</strong> of a DITA package. Its job is to observe what exists, not to interpret intent or make decisions.  </p>
+<p>Discovery identifies artifacts, extracts relationships, and produces a graph-based representation of the package. It does not normalize structure, enforce rules, or infer transformations. All findings are recorded with evidence and confidence where applicable.  </p>
+<p>The output of discovery is a durable, schema-validated artifact that represents the structural truth of the package at a point in time. All downstream stages depend on this output and must treat it as authoritative.</p>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.discovery.classifiers" class="doc doc-heading">
+            <code>dita_package_processor.discovery.classifiers</code>
+
+
+<a href="#dita_package_processor.discovery.classifiers" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Discovery-time classifiers for DITA packages.</p>
+<p>This module adapts declarative pattern evaluation into concrete
+classification outcomes used during discovery.</p>
+<p>It performs no transformation and no inference beyond deterministic
+resolution of emitted pattern evidence.</p>
+<p>Contract (Iteration 7 – locked):</p>
+<p>• Evidence means something was observed.
+• No evidence means nothing was observed.
+• Fallback evidence is not evidence and must never appear in output.
+• If classification is None:
+    - confidence must be None
+    - evidence must be []</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="dita_package_processor.discovery.classifiers.classify_map" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">classify_map</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.discovery.classifiers.classify_map" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Classify a DITA map using declarative pattern evaluation.</p>
+<p>Map classifications are returned as MapType enum values.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="dita_package_processor.discovery.classifiers.classify_topic" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">classify_topic</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.discovery.classifiers.classify_topic" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Classify a DITA topic using declarative pattern evaluation.</p>
+<p>Topics are classified using TopicType.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.discovery.graph" class="doc doc-heading">
+            <code>dita_package_processor.discovery.graph</code>
+
+
+<a href="#dita_package_processor.discovery.graph" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Dependency graph data structures for discovery.</p>
+<p>This module defines the read-only graph model derived from discovery output.</p>
+<p>Discovery is authoritative.
+The graph is a computed structure.</p>
+<p>Schema contract:
+- discovery.relationships use: from / to / type / pattern_id
+- graph edges use: source / target / type / pattern_id</p>
+<p>This module:
+- consumes discovery relationships
+- emits a stable graph contract
+- never invents structure</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.discovery.graph.DependencyEdge" class="doc doc-heading">
+            <code>DependencyEdge</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.discovery.graph.DependencyEdge" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Directed relationship between two artifacts.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>source</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Source artifact path.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>target</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Target artifact path.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>edge_type</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Relationship type (topicref, image, xref, etc).</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>pattern_id</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Discovery pattern identifier.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.discovery.graph.DependencyEdge.from_dict" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
+  </span>
+
+<a href="#dita_package_processor.discovery.graph.DependencyEdge.from_dict" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Build edge from graph serialization.</p>
+<p>Expected keys:
+- source
+- target
+- type
+- pattern_id</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.discovery.graph.DependencyEdge.from_relationship" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">from_relationship</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
+  </span>
+
+<a href="#dita_package_processor.discovery.graph.DependencyEdge.from_relationship" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Build edge from discovery.relationship entry.</p>
+<p>Expected keys:
+- from
+- to
+- type
+- pattern_id</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.discovery.graph.DependencyEdge.to_dict" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">to_dict</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.discovery.graph.DependencyEdge.to_dict" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Serialize edge to graph contract.</p>
+<p>Output:
+{
+  "source": "...",
+  "target": "...",
+  "type": "...",
+  "pattern_id": "..."
+}</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.discovery.graph.DependencyGraph" class="doc doc-heading">
+            <code>DependencyGraph</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.discovery.graph.DependencyGraph" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Derived dependency graph.</p>
+<p>Nodes are artifact paths.
+Edges are DependencyEdge instances.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.discovery.graph.DependencyGraph.from_dict" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
+  </span>
+
+<a href="#dita_package_processor.discovery.graph.DependencyGraph.from_dict" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Deserialize from graph serialization, not discovery JSON.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.discovery.graph.DependencyGraph.from_discovery" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">from_discovery</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">,</span> <span class="n">relationships</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
+  </span>
+
+<a href="#dita_package_processor.discovery.graph.DependencyGraph.from_discovery" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Build a graph from discovery JSON.</p>
+<p>Discovery is authoritative.
+Graph must not contain unknown nodes.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>artifacts</code>
+            </td>
+            <td>
+                  <code><span title="typing.Iterable">Iterable</span>[<span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>discovery["artifacts"]</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>relationships</code>
+            </td>
+            <td>
+                  <code><span title="typing.Iterable">Iterable</span>[<span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>discovery["relationships"]</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.discovery.graph.DependencyGraph.incoming" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">incoming</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.discovery.graph.DependencyGraph.incoming" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Edges that point to node.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.discovery.graph.DependencyGraph.outgoing" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">outgoing</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.discovery.graph.DependencyGraph.outgoing" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Edges that originate from node.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.discovery.graph.DependencyGraph.to_dict" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">to_dict</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.discovery.graph.DependencyGraph.to_dict" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Serialize graph.</p>
+<p>{
+  "nodes": [...],
+  "edges": [...]
+}</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.discovery.models" class="doc doc-heading">
+            <code>dita_package_processor.discovery.models</code>
+
+
+<a href="#dita_package_processor.discovery.models" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Discovery data models.</p>
+<p>These models represent strictly observational records of what was found
+during DITA package discovery.</p>
+<h5 id="dita_package_processor.discovery.models--design-principles">Design Principles<a class="headerlink" href="#dita_package_processor.discovery.models--design-principles" title="Permanent link">&para;</a></h5>
+<ul>
+<li>No inference</li>
+<li>No transformation</li>
+<li>No mutation of semantic meaning</li>
+<li>Deterministic structure</li>
+<li>Explicit invariants</li>
+</ul>
+<p>Discovery records facts.
+Planning interprets them.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.discovery.models.DiscoveryArtifact" class="doc doc-heading">
+            <code>DiscoveryArtifact</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.discovery.models.DiscoveryArtifact" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Observational record of a discovered filesystem artifact.</p>
+<h6 id="dita_package_processor.discovery.models.DiscoveryArtifact--rules">Rules<a class="headerlink" href="#dita_package_processor.discovery.models.DiscoveryArtifact--rules" title="Permanent link">&para;</a></h6>
+<ul>
+<li>Media artifacts are structural only.</li>
+<li>classification requires confidence.</li>
+<li>evidence requires classification.</li>
+<li>No semantic inference is performed here.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.discovery.models.DiscoveryArtifact.classification_label" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">classification_label</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.discovery.models.DiscoveryArtifact.classification_label" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return normalized string label for classification.</p>
+<h6 id="dita_package_processor.discovery.models.DiscoveryArtifact.classification_label--returns">Returns<a class="headerlink" href="#dita_package_processor.discovery.models.DiscoveryArtifact.classification_label--returns" title="Permanent link">&para;</a></h6>
+<p>Optional[str]</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.discovery.models.DiscoveryArtifact.to_dict" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">to_dict</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.discovery.models.DiscoveryArtifact.to_dict" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Serialize artifact for contract transfer.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.discovery.models.DiscoveryInventory" class="doc doc-heading">
+            <code>DiscoveryInventory</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.discovery.models.DiscoveryInventory" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Aggregational container of discovered artifacts.</p>
+<p>Mutable during discovery.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.discovery.models.DiscoveryInventory.add_artifact" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">add_artifact</span><span class="p">(</span><span class="n">artifact</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.discovery.models.DiscoveryInventory.add_artifact" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Add a discovered artifact.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.discovery.models.DiscoveryInventory.resolve_main_map" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">resolve_main_map</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.discovery.models.DiscoveryInventory.resolve_main_map" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Resolve the single MAIN map.</p>
+<h6 id="dita_package_processor.discovery.models.DiscoveryInventory.resolve_main_map--returns">Returns<a class="headerlink" href="#dita_package_processor.discovery.models.DiscoveryInventory.resolve_main_map--returns" title="Permanent link">&para;</a></h6>
+<p>Path</p>
+<h6 id="dita_package_processor.discovery.models.DiscoveryInventory.resolve_main_map--raises">Raises<a class="headerlink" href="#dita_package_processor.discovery.models.DiscoveryInventory.resolve_main_map--raises" title="Permanent link">&para;</a></h6>
+<p>ValueError</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.discovery.models.DiscoveryResult" class="doc doc-heading">
+            <code>DiscoveryResult</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.discovery.models.DiscoveryResult" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Immutable result of discovery.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.discovery.models.DiscoveryResult.main_map" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">main_map</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.discovery.models.DiscoveryResult.main_map" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return resolved MAIN map.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.discovery.models.DiscoverySummary" class="doc doc-heading">
+            <code>DiscoverySummary</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.discovery.models.DiscoverySummary" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>High-level summary of discovery.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.discovery.path_normalizer" class="doc doc-heading">
+            <code>dita_package_processor.discovery.path_normalizer</code>
+
+
+<a href="#dita_package_processor.discovery.path_normalizer" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Path normalization utilities for discovery.</p>
+<p>This module normalizes relative and absolute references found in DITA
+documents into deterministic, package-root–relative paths.</p>
+<p>It ensures that the dependency graph is stable and free from duplicate
+edges caused by path variation such as:</p>
+<pre><code>- ./topics/a.dita
+- ../topics/a.dita
+- topics/../topics/a.dita
+</code></pre>
+<p>All of these must resolve to the same canonical path string.</p>
+<p>Single responsibility:
+    Input:
+        - source file path
+        - raw reference string
+        - package root
+    Output:
+        - normalized package-root–relative POSIX path string</p>
+<p>This module performs:
+    - no filesystem mutation
+    - no semantic validation
+    - no file existence checks</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="dita_package_processor.discovery.path_normalizer.normalize_reference_path" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">normalize_reference_path</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">source_path</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">package_root</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.discovery.path_normalizer.normalize_reference_path" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Normalize a referenced path relative to the source file and package root.</p>
+<p>The returned value is always:
+- relative to the package root
+- using POSIX-style separators
+- fully normalized (no <code>..</code> or <code>.</code> segments)
+- stable across platforms</p>
+<p>Absolute references are interpreted as package-root–anchored paths.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>source_path</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Path of the file containing the reference.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>reference</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Raw reference value (e.g. from <code>href</code> or <code>data</code>).</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>package_root</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Root directory of the DITA package.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Normalized, package-root–relative path using POSIX separators.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>ValueError</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the normalized path escapes the package root.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.discovery.patterns" class="doc doc-heading">
+            <code>dita_package_processor.discovery.patterns</code>
+
+
+<a href="#dita_package_processor.discovery.patterns" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Pattern evaluation for DITA discovery.</p>
+<p>This module defines the declarative pattern model and the evaluation
+engine that converts observed discovery signals into evidence.</p>
+<p>It performs:</p>
+<ul>
+<li>No resolution</li>
+<li>No ranking</li>
+<li>No inference</li>
+<li>No mutation</li>
+</ul>
+<p>It only answers:</p>
+<pre><code>“Given this artifact and these signals, what evidence exists?”
+</code></pre>
+<p>Fallback patterns are classification helpers only.
+They fire only when explicitly enabled.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.discovery.patterns.Evidence" class="doc doc-heading">
+            <code>Evidence</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.discovery.patterns.Evidence" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Evidence emitted when a pattern matches an artifact.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.discovery.patterns.Pattern" class="doc doc-heading">
+            <code>Pattern</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.discovery.patterns.Pattern" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Declarative structural pattern.</p>
+<h6 id="dita_package_processor.discovery.patterns.Pattern--parameters">Parameters<a class="headerlink" href="#dita_package_processor.discovery.patterns.Pattern--parameters" title="Permanent link">&para;</a></h6>
+<p>id : str
+    Unique pattern identifier.
+applies_to : str
+    Artifact type this pattern applies to.
+signals : Dict[str, Any]
+    Signal requirements.
+asserts : Dict[str, Any]
+    Assertion payload. Must contain:
+        - role
+        - confidence
+rationale : List[str]
+    Human-readable reasoning.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.discovery.patterns.PatternEvaluator" class="doc doc-heading">
+            <code>PatternEvaluator</code>
+
+
+<a href="#dita_package_processor.discovery.patterns.PatternEvaluator" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Evaluate patterns against a single discovery artifact.</p>
+<h6 id="dita_package_processor.discovery.patterns.PatternEvaluator--modes">Modes<a class="headerlink" href="#dita_package_processor.discovery.patterns.PatternEvaluator--modes" title="Permanent link">&para;</a></h6>
+<p>Observation mode (default)
+    - fallback patterns ignored</p>
+<p>Classification mode (allow_fallback=True)
+    - fallback patterns fire only if no semantic match</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.discovery.patterns.PatternEvaluator.evaluate" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">evaluate</span><span class="p">(</span><span class="n">artifact</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">allow_fallback</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.discovery.patterns.PatternEvaluator.evaluate" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Evaluate all patterns against an artifact.</p>
+<h6 id="dita_package_processor.discovery.patterns.PatternEvaluator.evaluate--parameters">Parameters<a class="headerlink" href="#dita_package_processor.discovery.patterns.PatternEvaluator.evaluate--parameters" title="Permanent link">&para;</a></h6>
+<p>artifact : DiscoveryArtifact
+    Artifact to evaluate.
+allow_fallback : bool
+    Enable fallback emission if no semantic match.</p>
+<h6 id="dita_package_processor.discovery.patterns.PatternEvaluator.evaluate--returns">Returns<a class="headerlink" href="#dita_package_processor.discovery.patterns.PatternEvaluator.evaluate--returns" title="Permanent link">&para;</a></h6>
+<p>List[Evidence]</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.discovery.relationships" class="doc doc-heading">
+            <code>dita_package_processor.discovery.relationships</code>
+
+
+<a href="#dita_package_processor.discovery.relationships" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Relationship extraction for DITA discovery.</p>
+<p>This module extracts explicit, syntactic relationships between already-
+discovered artifacts by parsing DITA XML files.</p>
+<p>It does NOT:
+- classify artifacts
+- mutate files
+- infer semantic intent</p>
+<p>It ONLY records factual dependencies expressed in XML:</p>
+<ul>
+<li>map → topic via <topicref></li>
+<li>map → map via <mapref></li>
+<li>topic → media via <image>, <object>, <xref></li>
+</ul>
+<p>All emitted relationships conform strictly to the discovery schema:</p>
+<p>{
+  "source": "<package-relative path>",
+  "target": "<package-relative path>",
+  "type": "<relationship type>",
+  "pattern_id": "<discovery pattern identifier>"
+}</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.discovery.relationships.RelationshipExtractor" class="doc doc-heading">
+            <code>RelationshipExtractor</code>
+
+
+<a href="#dita_package_processor.discovery.relationships.RelationshipExtractor" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Extracts structural relationships between DITA artifacts by parsing XML.</p>
+<p>This extractor is purely syntactic and observational.
+It assumes:
+- Artifacts have already been discovered
+- Paths are package-relative
+- Files are valid XML</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.discovery.relationships.RelationshipExtractor.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">package_root</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.discovery.relationships.RelationshipExtractor.__init__" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>package_root</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Root directory of the DITA package.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.discovery.relationships.RelationshipExtractor.extract" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">extract</span><span class="p">(</span><span class="n">artifacts</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.discovery.relationships.RelationshipExtractor.extract" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Extract relationships from a set of discovered artifacts.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>artifacts</code>
+            </td>
+            <td>
+                  <code><span title="typing.List">List</span>[<span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="str">str</span>]]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>List of discovery artifact dictionaries.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="typing.List">List</span>[<span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="str">str</span>]]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>List of relationship dictionaries conforming to schema.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.discovery.report" class="doc doc-heading">
+            <code>dita_package_processor.discovery.report</code>
+
+
+<a href="#dita_package_processor.discovery.report" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Reporting utilities for DITA package discovery.</p>
+<p>This module converts a fully populated DiscoveryInventory into a stable,
+JSON-serializable discovery contract defined by discovery.schema.json.</p>
+<p>It performs no classification, parsing, or filesystem access.
+It only serializes already-discovered data into a schema-valid structure.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.discovery.report.DiscoveryReport" class="doc doc-heading">
+            <code>DiscoveryReport</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.discovery.report.DiscoveryReport" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Materialized discovery report summarizing a DiscoveryInventory.</p>
+<p>This is a pure reporting layer that emits a schema-locked discovery contract.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.discovery.report.DiscoveryReport.summary" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">summary</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.discovery.report.DiscoveryReport.summary" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return a simple artifact type histogram.</p>
+<p>Contract:
+    {
+        "map": <int>,
+        "topic": <int>,
+        "media": <int>,
+    }</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.discovery.report.DiscoveryReport.to_dict" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">to_dict</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.discovery.report.DiscoveryReport.to_dict" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Serialize the discovery report into a schema-valid structure:</p>
+<p>{
+  "artifacts": [...],
+  "relationships": [...],
+  "summary": {...}
+}</p>
+<p>Note:
+- Graph internals (source/target) are normalized into discovery contract
+  fields (from/to) here.
+- The graph itself is not exposed.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.discovery.scanner" class="doc doc-heading">
+            <code>dita_package_processor.discovery.scanner</code>
+
+
+<a href="#dita_package_processor.discovery.scanner" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Filesystem and XML scanner for DITA package discovery.</p>
+<p>This module performs strictly read-only inspection of a DITA package
+directory and produces a DiscoveryInventory.</p>
+<h5 id="dita_package_processor.discovery.scanner--responsibilities">Responsibilities<a class="headerlink" href="#dita_package_processor.discovery.scanner--responsibilities" title="Permanent link">&para;</a></h5>
+<ul>
+<li>Identify maps, topics, and media artifacts</li>
+<li>Extract shallow metadata</li>
+<li>Perform classification via classifier modules</li>
+<li>Extract relationships</li>
+<li>Build dependency graph</li>
+<li>Annotate structural weight (node_count)</li>
+<li>Resolve a single deterministic MAIN map</li>
+</ul>
+<p>This module does NOT:
+- Infer intent beyond structural evidence
+- Modify files
+- Perform planning</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.discovery.scanner.DiscoveryScanner" class="doc doc-heading">
+            <code>DiscoveryScanner</code>
+
+
+<a href="#dita_package_processor.discovery.scanner.DiscoveryScanner" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Scan a DITA package directory and produce a DiscoveryInventory.</p>
+<p>Guarantees:
+- Exactly one MAIN map is selected deterministically.
+- node_count metadata is annotated for all maps.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.discovery.scanner.DiscoveryScanner.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">package_dir</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.discovery.scanner.DiscoveryScanner.__init__" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initialize scanner.</p>
+<h6 id="dita_package_processor.discovery.scanner.DiscoveryScanner.__init__--parameters">Parameters<a class="headerlink" href="#dita_package_processor.discovery.scanner.DiscoveryScanner.__init__--parameters" title="Permanent link">&para;</a></h6>
+<p>package_dir : Path
+    Root directory of DITA package.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h5 id="dita_package_processor.discovery.scanner.DiscoveryScanner.scan" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">scan</span><span class="p">()</span></code>
+
+<a href="#dita_package_processor.discovery.scanner.DiscoveryScanner.scan" class="headerlink" title="Permanent link">&para;</a></h5>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Perform full discovery scan.</p>
+<h6 id="dita_package_processor.discovery.scanner.DiscoveryScanner.scan--returns">Returns<a class="headerlink" href="#dita_package_processor.discovery.scanner.DiscoveryScanner.scan--returns" title="Permanent link">&para;</a></h6>
+<p>DiscoveryInventory</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="dita_package_processor.discovery.signatures" class="doc doc-heading">
+            <code>dita_package_processor.discovery.signatures</code>
+
+
+<a href="#dita_package_processor.discovery.signatures" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Structural signature extraction for DITA discovery.</p>
+<p>This module defines <em>signatures</em>: normalized, comparable observations
+derived from DITA XML structure. Signatures are pure data summaries and
+contain no classification logic.</p>
+<p>Signatures exist to separate:</p>
+<ul>
+<li>observation (what is present)</li>
+<li>interpretation (what it means)</li>
+</ul>
+<p>They are stable, testable, and safe to evolve independently.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.discovery.signatures.MapSignature" class="doc doc-heading">
+            <code>MapSignature</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.discovery.signatures.MapSignature" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Structural signature extracted from a DITA map.</p>
+<p>This signature captures <em>what the map contains</em>, not what it
+represents or how it should be classified.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h4 id="dita_package_processor.discovery.signatures.TopicSignature" class="doc doc-heading">
+            <code>TopicSignature</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#dita_package_processor.discovery.signatures.TopicSignature" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Structural signature extracted from a DITA topic.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="dita_package_processor.discovery.signatures.extract_map_signature" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">extract_map_signature</span><span class="p">(</span><span class="n">map_path</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.discovery.signatures.extract_map_signature" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Extract a structural signature from a DITA map.</p>
+<p>Extraction failures are non-fatal and result in partial signatures.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="dita_package_processor.discovery.signatures.extract_topic_signature" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">extract_topic_signature</span><span class="p">(</span><span class="n">topic_path</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.discovery.signatures.extract_topic_signature" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Extract a structural signature from a DITA topic.</p>
+<p>Extraction failures are non-fatal and result in partial signatures.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="dita_package_processor.discovery.signatures.has_maprefs" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">has_maprefs</span><span class="p">(</span><span class="n">root</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.discovery.signatures.has_maprefs" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return <code>True</code> if the XML element contains any <code>&lt;mapref&gt;</code> elements.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="dita_package_processor.discovery.signatures.has_title" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">has_title</span><span class="p">(</span><span class="n">root</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.discovery.signatures.has_title" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return <code>True</code> if the XML element contains a <code>&lt;title&gt;</code> element.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="dita_package_processor.discovery.signatures.has_topicrefs" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">has_topicrefs</span><span class="p">(</span><span class="n">root</span><span class="p">)</span></code>
+
+<a href="#dita_package_processor.discovery.signatures.has_topicrefs" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return <code>True</code> if the XML element contains any <code>&lt;topicref&gt;</code> elements.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
